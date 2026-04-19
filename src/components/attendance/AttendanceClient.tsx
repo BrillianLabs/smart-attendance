@@ -2,6 +2,7 @@
 
 import { useState, useTransition, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import { useGeolocation } from '@/lib/hooks/useGeolocation';
 import { haversineDistance, formatDistance } from '@/lib/utils/distance';
 import { checkIn, checkOut } from '@/lib/actions/attendance';
@@ -35,6 +36,7 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
   const [pendingAction, setPendingAction] = useState<'check_in' | 'check_out' | 'test' | null>(null);
   const geo = useGeolocation();
 
+  const router = useRouter();
   const schoolLat = settings?.school_lat ?? -6.2088;
   const schoolLng = settings?.school_lng ?? 106.8456;
   const radius    = settings?.allowed_radius_m ?? 100;
@@ -86,15 +88,28 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
   };
 
   const handleUpdateLocation = async () => {
-    if (!geo.lat || !geo.lng) return;
-    if (!confirm('Jadikan lokasi laptop Anda saat ini sebagai titik pusat sekolah?')) return;
+    console.log('Update Location triggered with:', { lat: geo.lat, lng: geo.lng });
+    
+    if (!geo.lat || !geo.lng) {
+      toast.error('Gagal mendapatkan lokasi GPS dari perangkat Anda.');
+      return;
+    }
 
+    const loadingToast = toast.loading('Memperbarui lokasi sekolah...');
+    
     startTransition(async () => {
-      const res = await updateSchoolLocation(geo.lat!, geo.lng!);
-      if (res.success) {
-        toast.success('Lokasi sekolah berhasil diupdate! Radius sekarang aktif.');
-      } else {
-        toast.error(res.error);
+      try {
+        const res = await updateSchoolLocation(geo.lat!, geo.lng!);
+        
+        if (res.success) {
+          toast.success('Lokasi sekolah berhasil diupdate! Radius sekarang aktif.', { id: loadingToast });
+          router.refresh(); // Force fetch fresh data from server
+        } else {
+          toast.error(res.error || 'Terjadi kesalahan saat memperbarui lokasi.', { id: loadingToast });
+        }
+      } catch (err) {
+        toast.error('Gagal menghubungi server.', { id: loadingToast });
+        console.error(err);
       }
     });
   };
@@ -114,7 +129,7 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
       )}
 
       {/* Interactive Map Widget */}
-      <div className="relative h-72 rounded-[2.5rem] overflow-hidden bg-surface-container shadow-inner border border-outline-variant/10 group ring-1 ring-black/[0.03]">
+      <div className="relative z-0 h-72 rounded-[2.5rem] overflow-hidden bg-surface-container shadow-inner border border-outline-variant/10 group ring-1 ring-black/[0.03]">
         <AttendanceMap 
           userLat={geo.lat}
           userLng={geo.lng}
@@ -227,7 +242,7 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
 
       {/* Help Note if Out of Range */}
       {!geo.loading && !withinRadius && geo.lat && (
-         <div className="p-5 bg-amber-50 rounded-[2rem] border border-amber-200/50 flex flex-col gap-4 animate-fade-in">
+         <div className="relative z-10 p-5 bg-amber-50 rounded-[2rem] border border-amber-200/50 flex flex-col gap-4 animate-fade-in">
             <div className="flex gap-4">
               <span className="material-symbols-outlined text-amber-600">info</span>
               <p className="text-[11px] font-medium text-amber-900 leading-relaxed">
@@ -240,9 +255,16 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
               <button 
                 onClick={handleUpdateLocation}
                 disabled={isPending}
-                className="w-full py-3 bg-amber-200/50 hover:bg-amber-200 text-amber-900 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2"
+                className={cn(
+                  "w-full py-4 bg-amber-200/60 hover:bg-amber-300 active:scale-[0.98] text-amber-950 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 border-2 border-amber-900/5 shadow-sm group relative z-50 cursor-pointer",
+                  isPending && "opacity-50 cursor-wait"
+                )}
               >
-                {isPending ? <Loader2Icon className="animate-spin" size={14} /> : <span className="material-symbols-outlined text-[16px]">pin_drop</span>}
+                {isPending ? (
+                  <Loader2Icon className="animate-spin" size={14} />
+                ) : (
+                  <span className="material-symbols-outlined text-[18px] group-hover:scale-110 transition-transform">pin_drop</span>
+                )}
                 Update Lokasi Sekolah ke Sini
               </button>
             )}

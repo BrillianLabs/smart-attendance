@@ -1,38 +1,40 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Circle, useMap, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Fix Leaflet icon issue in Next.js
-const DefaultIcon = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
+// Fix Leaflet icon issue by initializing once on client
+const getIcons = () => {
+  const DefaultIcon = L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+  });
 
-const SchoolIcon = L.divIcon({
-  className: 'custom-school-icon',
-  html: `<div class="w-10 h-10 bg-primary rounded-full border-4 border-white shadow-xl flex items-center justify-center animate-bounce">
-           <span class="material-symbols-outlined text-white text-[20px]">school</span>
-         </div>`,
-  iconSize: [40, 40],
-  iconAnchor: [20, 20],
-});
+  const SchoolIcon = L.divIcon({
+    className: 'custom-school-icon',
+    html: `<div class="w-10 h-10 bg-primary rounded-full border-4 border-white shadow-xl flex items-center justify-center animate-bounce">
+             <span class="material-symbols-outlined text-white text-[20px]">school</span>
+           </div>`,
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+  });
 
-const UserIcon = L.divIcon({
-  className: 'custom-user-icon',
-  html: `<div class="relative">
-           <div class="w-5 h-5 bg-blue-500 rounded-full border-2 border-white shadow-lg z-10"></div>
-           <div class="absolute inset-0 w-5 h-5 bg-blue-500 rounded-full animate-ping opacity-60"></div>
-         </div>`,
-  iconSize: [20, 20],
-  iconAnchor: [10, 10],
-});
+  const UserIcon = L.divIcon({
+    className: 'custom-user-icon',
+    html: `<div class="relative">
+             <div class="w-5 h-5 bg-blue-500 rounded-full border-2 border-white shadow-lg z-10"></div>
+             <div class="absolute inset-0 w-5 h-5 bg-blue-500 rounded-full animate-ping opacity-60"></div>
+           </div>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+  });
 
-L.Marker.prototype.options.icon = DefaultIcon;
+  return { DefaultIcon, SchoolIcon, UserIcon };
+};
 
 interface MapProps {
   userLat: number | null;
@@ -46,6 +48,7 @@ function MapResizer({ userLat, userLng, schoolLat, schoolLng }: { userLat: numbe
   const map = useMap();
   
   useEffect(() => {
+    if (!map) return;
     if (userLat && userLng) {
       const bounds = L.latLngBounds([
         [userLat, userLng],
@@ -61,13 +64,8 @@ function MapResizer({ userLat, userLng, schoolLat, schoolLng }: { userLat: numbe
 }
 
 export default function AttendanceMap({ userLat, userLng, schoolLat, schoolLng, radius }: MapProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return <div className="w-full h-full bg-surface-container animate-pulse flex items-center justify-center text-[10px] font-black uppercase tracking-widest opacity-40 text-on-surface">Initializing Map...</div>;
+  // Use a stable reference to icons
+  const icons = getIcons();
 
   return (
     <div className="w-full h-full z-0 relative">
@@ -94,13 +92,13 @@ export default function AttendanceMap({ userLat, userLng, schoolLat, schoolLng, 
             dashArray: '5, 10'
           }}
         />
-        <Marker position={[schoolLat, schoolLng]} icon={SchoolIcon}>
+        <Marker position={[schoolLat, schoolLng]} icon={icons.SchoolIcon}>
           <Popup>Titik Presensi</Popup>
         </Marker>
 
         {/* User Marker */}
         {userLat && userLng && (
-          <Marker position={[userLat, userLng]} icon={UserIcon}>
+          <Marker position={[userLat, userLng]} icon={icons.UserIcon}>
             <Popup>Lokasi Anda</Popup>
           </Marker>
         )}

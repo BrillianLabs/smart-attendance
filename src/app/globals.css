@@ -65,6 +65,7 @@
 
 @layer base {
   :root {
+    --sidebar-width: 280px;
     /* Legacy Variable Support for easier migration */
     --primary: #006a61;
     --primary-hover: #005d55;

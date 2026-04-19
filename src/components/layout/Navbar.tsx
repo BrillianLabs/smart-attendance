@@ -17,8 +17,8 @@ export function Navbar({ profile, settings }: NavbarProps) {
 
   return (
     <header className={cn(
-      "fixed top-0 right-0 left-0 z-50 bg-white/80 backdrop-blur-[24px] shadow-sm shadow-primary/5 h-16 flex justify-between items-center px-6 lg:px-8 transition-all duration-300 border-b border-outline-variant/10",
-      isAdmin ? "lg:left-[var(--sidebar-width)]" : "lg:left-0"
+      "fixed top-0 right-0 z-50 bg-white/80 backdrop-blur-[24px] shadow-sm shadow-primary/5 h-16 flex justify-between items-center px-6 lg:px-8 transition-all duration-300 border-b border-outline-variant/10",
+      isAdmin ? "lg:left-[var(--sidebar-width)] left-0" : "left-0"
     )}>
       <div className="flex items-center gap-8">
         {/* Brand for Mobile & Teacher/Student Views */}

@@ -114,7 +114,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
             <span className="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">notifications</span>
           </button>
           
-          <div className="w-9 h-9 rounded-full bg-surface-container-high border border-outline-variant/10 overflow-hidden shadow-sm flex items-center justify-center">
+          <Link href="/profile" className="w-9 h-9 rounded-full bg-surface-container-high border border-outline-variant/10 overflow-hidden shadow-sm flex items-center justify-center hover:ring-2 hover:ring-primary transition-all">
             {profile.avatar_url ? (
               <Image src={profile.avatar_url} alt="Profile" width={36} height={36} className="w-full h-full object-cover" />
             ) : (
@@ -122,7 +122,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
                 {profile.full_name.charAt(0).toUpperCase()}
               </span>
             )}
-          </div>
+          </Link>
         </div>
       </div>
     </header>

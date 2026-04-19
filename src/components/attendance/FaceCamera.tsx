@@ -9,11 +9,12 @@ interface FaceCameraProps {
   referenceImageUrl?: string | null;
   onVerified: (photoBase64: string) => void;
   onCancel: () => void;
+  mode?: 'verify' | 'capture';
 }
 
 const MODEL_URL = 'https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights';
 
-export function FaceCamera({ referenceImageUrl, onVerified, onCancel }: FaceCameraProps) {
+export function FaceCamera({ referenceImageUrl, onVerified, onCancel, mode = 'verify' }: FaceCameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -79,7 +80,7 @@ export function FaceCamera({ referenceImageUrl, onVerified, onCancel }: FaceCame
       if (!videoRef.current || !canvasRef.current || !isLoaded || status === 'matched') return;
 
       const video = videoRef.current;
-      if (video.paused || video.ended || isProcessing) {
+      if (video.paused || video.ended || isProcessing || mode === 'capture') {
         animationId = requestAnimationFrame(handleRecognition);
         return;
       }
@@ -130,6 +131,13 @@ export function FaceCamera({ referenceImageUrl, onVerified, onCancel }: FaceCame
   const captureAndVerify = () => {
     if (!videoRef.current) return;
     
+    // Stop all tracks immediately to freeze the frame visually
+    if (videoRef.current.srcObject) {
+      (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => {
+        track.enabled = false; // Freeze visually
+      });
+    }
+
     const canvas = document.createElement('canvas');
     canvas.width = videoRef.current.videoWidth;
     canvas.height = videoRef.current.videoHeight;
@@ -147,7 +155,9 @@ export function FaceCamera({ referenceImageUrl, onVerified, onCancel }: FaceCame
         {/* Header */}
         <div className="p-8 border-b border-outline-variant/5 flex justify-between items-center bg-surface-container-low">
           <div>
-            <h3 className="text-xl font-black text-on-surface tracking-tight">AI Identity Verification</h3>
+            <h3 className="text-xl font-black text-on-surface tracking-tight">
+              {mode === 'capture' ? 'Update Profile Photo' : 'AI Identity Verification'}
+            </h3>
             <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest opacity-60">Atelier Academy Security</p>
           </div>
           <button onClick={onCancel} className="p-2 hover:bg-surface-container-high rounded-full transition-colors">
@@ -197,12 +207,37 @@ export function FaceCamera({ referenceImageUrl, onVerified, onCancel }: FaceCame
                   {status === 'matched' && <CheckCircle2 size={14} />}
                   <span className="text-[10px] font-black uppercase tracking-widest">
                     {status === 'loading' ? 'Booting AI...' : 
-                     status === 'scanning' ? 'Scanning Face...' : 
+                     mode === 'capture' ? 'Kamera Aktif - Siap Ambil Gambar' :
+                     status === 'scanning' ? (referenceImageUrl ? 'Scanning Face...' : 'Kamera Siap') : 
                      status === 'verifying' ? 'Verifying Identity...' : 
                      status === 'matched' ? 'Identity Confirmed' : 'Identity Denied'}
                   </span>
                 </div>
               </div>
+
+              {/* Manual Capture for Missing Profile OR Capture Mode */}
+              {(mode === 'capture' || (!referenceImageUrl && status === 'scanning')) && isCameraActive && status !== 'matched' && (
+                <div className="absolute inset-x-0 bottom-10 flex flex-col items-center animate-fade-in">
+                   <div className="bg-black/60 backdrop-blur-md p-6 rounded-[2rem] border border-white/10 flex flex-col items-center gap-4 shadow-2xl">
+                      {mode === 'verify' && (
+                        <div className="text-center">
+                          <p className="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-1">Peringatan Keamanan</p>
+                          <p className="text-xs font-bold text-white leading-tight">Foto Profil Belum Diatur Admin</p>
+                        </div>
+                      )}
+                      <button 
+                        onClick={() => {
+                          if (mode === 'verify') setStatus('matched');
+                          captureAndVerify();
+                        }}
+                        className="px-8 py-3 bg-primary hover:bg-primary-dim text-white rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl flex items-center gap-2"
+                      >
+                        <Camera size={16} />
+                        {mode === 'capture' ? 'Ambil Foto Sekarang' : 'Ambil Foto & Lanjut'}
+                      </button>
+                   </div>
+                </div>
+              )}
             </>
           )}
         </div>

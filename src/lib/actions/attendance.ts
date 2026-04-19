@@ -48,12 +48,21 @@ export async function checkIn(
 
   const checkInTime = now.toISOString();
 
+  // Automatic Avatar Registration: If user has no photo, save this one as their profile photo
+  const { data: profile } = await supabase.from('profiles').select('avatar_url').eq('id', user.id).single();
+  const shouldUpdateProfile = photoBase64 && !profile?.avatar_url;
+
   if (existing) {
     // Update existing record (created by leave system or alpha)
     // Handle photo upload if provided
     let photo_url = existing.check_in_photo_url;
     if (photoBase64) {
       photo_url = await uploadVerificationPhoto(user.id, 'check_in', photoBase64);
+      
+      // Update profile avatar if missing
+      if (shouldUpdateProfile && photo_url) {
+        await supabase.from('profiles').update({ avatar_url: photo_url }).eq('id', user.id);
+      }
     }
 
     const { data, error } = await supabase
@@ -79,6 +88,11 @@ export async function checkIn(
     let photo_url = null;
     if (photoBase64) {
       photo_url = await uploadVerificationPhoto(user.id, 'check_in', photoBase64);
+      
+      // Update profile avatar if missing
+      if (shouldUpdateProfile && photo_url) {
+        await supabase.from('profiles').update({ avatar_url: photo_url }).eq('id', user.id);
+      }
     }
 
     const { data, error } = await supabase

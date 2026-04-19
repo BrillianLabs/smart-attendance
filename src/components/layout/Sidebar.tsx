@@ -16,6 +16,7 @@ const staffNav = [
   { href: '/',           icon: 'dashboard', label: 'Dashboard' },
   { href: '/attendance', icon: 'calendar_today',   label: 'Presensi' },
   { href: '/leave',      icon: 'event_busy',        label: 'Izin' },
+  { href: '/profile',    icon: 'person',            label: 'Profil' },
 ];
 
 const adminNav = [

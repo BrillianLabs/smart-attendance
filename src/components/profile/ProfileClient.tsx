@@ -1,0 +1,258 @@
+'use client';
+
+import { useState, useTransition } from 'react';
+import { Profile } from '@/lib/types';
+import { updateProfileMetadata, updateProfileAvatar } from '@/lib/actions/profile';
+import { toast } from 'react-hot-toast';
+import Image from 'next/image';
+import { Camera, Save, User, UserCircle, Briefcase, Phone, Loader2, Webcam } from 'lucide-react';
+import { cn } from '@/lib/utils/cn';
+import { FaceCamera } from '@/components/attendance/FaceCamera';
+
+interface ProfileClientProps {
+  profile: Profile;
+}
+
+export function ProfileClient({ profile }: ProfileClientProps) {
+  const [isPending, startTransition] = useTransition();
+  const [avatar, setAvatar] = useState(profile.avatar_url);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+
+  const handleMetadataUpdate = async (formData: FormData) => {
+    startTransition(async () => {
+      const res = await updateProfileMetadata(formData);
+      if (res.success) {
+        toast.success('Profil berhasil diperbarui!');
+      } else {
+        toast.error(res.error);
+      }
+    });
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Ukuran foto maksimal 2MB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result as string;
+      const loading = toast.loading('Mengunggah foto...');
+      
+      startTransition(async () => {
+        const res = await updateProfileAvatar(base64);
+        toast.dismiss(loading);
+        if (res.success) {
+          setAvatar(res.data);
+          toast.success('Foto profil diperbarui!');
+        } else {
+          toast.error(res.error);
+        }
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCameraCapture = async (base64: string) => {
+    setIsCameraOpen(false);
+    const loading = toast.loading('Memproses foto...');
+    
+    startTransition(async () => {
+      const res = await updateProfileAvatar(base64);
+      toast.dismiss(loading);
+      if (res.success) {
+        setAvatar(res.data);
+        toast.success('Foto profil berhasil diperbarui!');
+      } else {
+        toast.error(res.error);
+      }
+    });
+  };
+
+  return (
+    <div className="space-y-8 animate-fade-in pb-20">
+      {isCameraOpen && (
+        <FaceCamera 
+          mode="capture"
+          onVerified={handleCameraCapture}
+          onCancel={() => setIsCameraOpen(false)}
+        />
+      )}
+      {/* Header Profile */}
+      <div className="relative group">
+        <div className="h-48 rounded-[2.5rem] bg-gradient-to-r from-primary to-primary-dim shadow-xl relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20 mask-pattern-dots"></div>
+          <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="px-8 -mt-16 relative flex flex-col md:flex-row items-end gap-6">
+          <div className="relative group/avatar">
+            <div className="w-32 h-32 rounded-[2rem] bg-white p-1.5 shadow-2xl relative overflow-hidden ring-4 ring-white">
+              {avatar ? (
+                <Image src={avatar} alt={profile.full_name} width={128} height={128} className="w-full h-full object-cover rounded-[1.75rem]" />
+              ) : (
+                <div className="w-full h-full bg-primary-container text-primary flex items-center justify-center text-4xl font-black rounded-[1.75rem]">
+                  {profile.full_name.charAt(0).toUpperCase()}
+                </div>
+              )}
+              
+              <label className="absolute inset-0 bg-black/40 opacity-0 group-hover/avatar:opacity-100 transition-opacity flex items-center justify-center cursor-pointer backdrop-blur-[2px]">
+                <Camera className="text-white" size={32} />
+                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} disabled={isPending} />
+              </label>
+            </div>
+            {isPending && (
+              <div className="absolute inset-x-0 bottom-0 py-1 bg-primary text-white text-[8px] font-black uppercase tracking-widest text-center rounded-b-[2rem] animate-pulse">
+                Uploading...
+              </div>
+            )}
+          </div>
+
+          <div className="flex-1 mb-2">
+            <h1 className="text-3xl font-black text-on-surface tracking-tight">{profile.full_name}</h1>
+            <div className="flex flex-wrap gap-3 mt-2">
+              <span className="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
+                <Briefcase size={12} />
+                {profile.position || 'Staff'}
+              </span>
+              <span className="px-3 py-1 bg-surface-container-high rounded-full text-[10px] font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-1.5">
+                <UserCircle size={12} />
+                {profile.role.toUpperCase()}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Info Form */}
+        <div className="lg:col-span-2">
+          <div className="bg-surface-container-lowest rounded-[2.5rem] p-10 border border-outline-variant/10 shadow-sm">
+            <h3 className="text-xl font-black text-on-surface flex items-center gap-3 mb-8">
+              <User className="text-primary" size={24} />
+              Informasi Personal
+            </h3>
+
+            <form action={handleMetadataUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest px-1 flex items-center gap-2">
+                   <UserCircle size={14} className="text-primary" />
+                   Nama Lengkap
+                </label>
+                <input 
+                  name="full_name"
+                  defaultValue={profile.full_name}
+                  required
+                  placeholder="Masukkan nama lengkap"
+                  className="w-full bg-surface-container px-6 py-4 rounded-2xl border border-outline-variant/10 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-bold text-on-surface"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest px-1 flex items-center gap-2">
+                   <Briefcase size={14} className="text-primary" />
+                   Jabatan / Posisi
+                </label>
+                <input 
+                  name="position"
+                  defaultValue={profile.position || ''}
+                  placeholder="Contoh: Guru Matematika"
+                  className="w-full bg-surface-container px-6 py-4 rounded-2xl border border-outline-variant/10 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-bold text-on-surface"
+                />
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <label className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest px-1 flex items-center gap-2">
+                   <Phone size={14} className="text-primary" />
+                   Nomor Telepon
+                </label>
+                <input 
+                  name="phone"
+                  defaultValue={profile.phone || ''}
+                  placeholder="0812..."
+                  className="w-full bg-surface-container px-6 py-4 rounded-2xl border border-outline-variant/10 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-bold text-on-surface"
+                />
+              </div>
+
+              <div className="md:col-span-2 pt-4 flex justify-end">
+                <button 
+                  type="submit"
+                  disabled={isPending}
+                  className="px-10 py-4 bg-primary text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 transition-all hover:translate-y-[-2px] hover:shadow-xl active:translate-y-0 disabled:opacity-50 disabled:translate-y-0 flex items-center gap-2"
+                >
+                  {isPending ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
+                  Simpan Perubahan
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* AI Face Reference Note */}
+        <div className="lg:col-span-1 space-y-6">
+          <div className={cn(
+             "rounded-[2.5rem] p-8 border transition-all",
+             profile.avatar_url ? "bg-primary/5 border-primary/20" : "bg-amber-50 border-amber-200"
+          )}>
+            <div className="flex items-center gap-4 mb-4">
+               <div className={cn(
+                  "w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner",
+                  profile.avatar_url ? "bg-primary/10 text-primary" : "bg-amber-100 text-amber-600"
+               )}>
+                  <Camera size={24} />
+               </div>
+               <h4 className="text-sm font-black text-on-surface tracking-tight uppercase">AI Face ID</h4>
+            </div>
+            
+            <p className="text-xs font-bold leading-relaxed opacity-70">
+              {profile.avatar_url 
+                ? "Foto profil Anda sudah terdaftar. Sistem AI akan menggunakan foto ini untuk verifikasi kehadiran setiap hari."
+                : "Foto profil Anda belum terdaftar. Harap unggah foto wajah yang jelas agar sistem AI dapat memverifikasi kehadiran Anda."
+              }
+            </p>
+
+            <div className="mt-6 flex flex-col gap-3">
+               <button 
+                  onClick={() => setIsCameraOpen(true)}
+                  className="w-full py-3 bg-primary text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-primary/10 hover:translate-y-[-2px] transition-all"
+               >
+                  <Webcam size={16} />
+                  Ambil Foto Langsung
+               </button>
+               <label className="w-full py-3 bg-surface-container-high text-on-surface-variant rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer hover:bg-surface-container-highest transition-all">
+                  <Camera size={16} />
+                  Unggah dari Berkas
+                  <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
+               </label>
+            </div>
+            
+            <ul className="mt-6 space-y-3">
+               {[
+                 "Wajah harus terlihat jelas",
+                 "Tidak menggunakan masker",
+                 "Pencahayaan yang cukup"
+               ].map((tip, i) => (
+                 <li key={i} className="flex items-center gap-2 text-[10px] font-bold opacity-60">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    {tip}
+                 </li>
+               ))}
+            </ul>
+          </div>
+
+          <div className="bg-surface-container rounded-[2.5rem] p-8 border border-outline-variant/10 text-center">
+             <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-2">Keamanan Akun</p>
+             <p className="text-[11px] font-bold text-on-surface-variant mb-6 leading-relaxed">Hubungi IT Support jika Anda mengalami kendala pada verifikasi AI.</p>
+             <div className="px-6 py-2 bg-white/80 rounded-xl text-[9px] font-black uppercase tracking-widest border border-outline-variant/10 inline-block">
+                v1.2.4 SECURE
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

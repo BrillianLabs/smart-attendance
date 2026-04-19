@@ -58,10 +58,12 @@ Proyek ini telah dikonfigurasi untuk dideploy ke Netlify (Site Name: `brillian-s
 - **Environment Variables**: Variabel Supabase (`NEXT_PUBLIC_SUPABASE_URL`, dll) sudah diset secara otomatis via Netlify CLI.
 - **Build Settings**: Menggunakan `@netlify/plugin-nextjs` v5 untuk performa maksimal pada App Router.
 
-### Langkah-langkah Update:
-1. Push perubahan terbaru ke main branch.
-2. Netlify akan mendeteksi perubahan dan melakukan build otomatis.
-3. Jika build lokal di Windows bermasalah, gunakan **Git-based deployment** melalui dashboard Netlify untuk stabilitas lebih baik.
+### Langkah-langkah Update Kode:
+Jika kamu melakukan perubahan kode di lokal, cukup jalankan perintah berikut untuk mengupdate website live:
+1. `git add .`
+2. `git commit -m "Deskripsi perubahan kamu"`
+3. `git push origin main`
+Netlify akan mendeteksi *push* tersebut dan melakukan *re-deploy* secara otomatis.
 
 ### ✅ Catatan Perbaikan (Terakhir):
 - Memperbaiki `profile.ts` action (missing `data` return).

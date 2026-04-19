@@ -58,6 +58,13 @@ Proyek ini telah dikonfigurasi untuk dideploy ke Netlify (Site Name: `brillian-s
 - **Environment Variables**: Variabel Supabase (`NEXT_PUBLIC_SUPABASE_URL`, dll) sudah diset secara otomatis via Netlify CLI.
 - **Build Settings**: Menggunakan `@netlify/plugin-nextjs` v5 untuk performa maksimal pada App Router.
 
+## 📖 Panduan Penggunaan (Usage Guide)
+
+Untuk panduan lengkap mengenai cara penggunaan aplikasi sebagai Staff maupun Administrator, silakan baca:
+👉 **[PANDUAN PENGGUNAAN (USAGE.md)](./USAGE.md)**
+
+---
+
 ### Langkah-langkah Update Kode:
 Jika kamu melakukan perubahan kode di lokal, cukup jalankan perintah berikut untuk mengupdate website live:
 1. `git add .`

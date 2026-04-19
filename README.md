@@ -51,17 +51,22 @@ Gunakan akun berikut untuk menguji coba fitur dalam lingkungan pengembangan:
 
 ## 🌐 Deployment (Netlify)
 
-Proyek ini siap untuk di-deploy ke Netlify menggunakan **Essential Next.js Plugin**.
+Proyek ini telah dikonfigurasi untuk dideploy ke Netlify (Site Name: `brillian-sis-smart`).
 
-### Langkah-langkah Deployment:
-1. Hubungkan GitHub repository Anda ke Netlify Dashboard.
-2. Atur **Build Command**: `npm run build`.
-3. Atur **Publish Directory**: `.next`.
-4. Masukkan **Environment Variables** berikut di Netlify:
-    - `NEXT_PUBLIC_SUPABASE_URL`
-    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-    - `SUPABASE_SERVICE_ROLE_KEY`
-    - `DATABASE_URL` (Opsional)
+### Konfigurasi Penting:
+- **Middleware**: Proyek ini menggunakan `src/proxy.ts` (konvensi Next.js 16) untuk menangani autentikasi dan sesi Supabase.
+- **Environment Variables**: Variabel Supabase (`NEXT_PUBLIC_SUPABASE_URL`, dll) sudah diset secara otomatis via Netlify CLI.
+- **Build Settings**: Menggunakan `@netlify/plugin-nextjs` v5 untuk performa maksimal pada App Router.
+
+### Langkah-langkah Update:
+1. Push perubahan terbaru ke main branch.
+2. Netlify akan mendeteksi perubahan dan melakukan build otomatis.
+3. Jika build lokal di Windows bermasalah, gunakan **Git-based deployment** melalui dashboard Netlify untuk stabilitas lebih baik.
+
+### ✅ Catatan Perbaikan (Terakhir):
+- Memperbaiki `profile.ts` action (missing `data` return).
+- Memperbaiki `Navbar.tsx` & `Sidebar.tsx` (missing imports + hydration issues).
+- Stabilisasi `proxy.ts` (Next.js 16 deprecated `middleware.ts`).
 
 ---
 © 2026 **Atelier Academy**. Designed for Academic Excellence.

@@ -149,7 +149,7 @@ export default async function DashboardPage() {
                         {format(parseISO(att.date), 'EEEE, d MMMM yyyy', { locale: idLocale })}
                       </p>
                       <p className="text-xs text-on-surface-variant font-medium opacity-60">
-                        {att.check_in ? format(parseISO(att.check_in), 'HH:mm WIB') : '--:--'} • {att.check_in_lat ? 'GPS Office' : 'Remote'}
+                        {att.check_in ? format(parseISO(att.check_in), "HH:mm 'WIB'") : '--:--'} • {att.check_in_lat ? 'GPS Office' : 'Remote'}
                       </p>
                     </div>
                   </div>

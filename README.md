@@ -49,5 +49,19 @@ Gunakan akun berikut untuk menguji coba fitur dalam lingkungan pengembangan:
    npm run dev
    ```
 
+## 🌐 Deployment (Netlify)
+
+Proyek ini siap untuk di-deploy ke Netlify menggunakan **Essential Next.js Plugin**.
+
+### Langkah-langkah Deployment:
+1. Hubungkan GitHub repository Anda ke Netlify Dashboard.
+2. Atur **Build Command**: `npm run build`.
+3. Atur **Publish Directory**: `.next`.
+4. Masukkan **Environment Variables** berikut di Netlify:
+    - `NEXT_PUBLIC_SUPABASE_URL`
+    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+    - `SUPABASE_SERVICE_ROLE_KEY`
+    - `DATABASE_URL` (Opsional)
+
 ---
 © 2026 **Atelier Academy**. Designed for Academic Excellence.

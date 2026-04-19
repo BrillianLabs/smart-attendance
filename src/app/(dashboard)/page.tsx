@@ -70,7 +70,7 @@ export default async function DashboardPage() {
               </button>
             </div>
             
-            <AttendanceClient initial={todayAtt} settings={settings} />
+            <AttendanceClient initial={todayAtt} settings={settings} profile={profile} />
           </div>
         </div>
 

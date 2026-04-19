@@ -9,14 +9,15 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ================================================
 -- CLEAN RESET: Jalankan bagian ini jika ingin hapus SEMUA DATA (Hapus tanda --)
 -- ================================================
--- DROP TABLE IF EXISTS attendance CASCADE;
--- DROP TABLE IF EXISTS leave_requests CASCADE;
--- DROP TABLE IF EXISTS profiles CASCADE;
--- DROP TABLE IF EXISTS settings CASCADE;
--- DROP TYPE IF EXISTS user_role CASCADE;
--- DROP TYPE IF EXISTS attendance_status CASCADE;
--- DROP TYPE IF EXISTS leave_status CASCADE;
--- DROP TYPE IF EXISTS leave_type CASCADE;
+DROP TABLE IF EXISTS attendance CASCADE;
+DROP TABLE IF EXISTS leave_requests CASCADE;
+DROP TABLE IF EXISTS profiles CASCADE;
+DROP TABLE IF EXISTS settings CASCADE;
+DROP TABLE IF EXISTS attendance_photos CASCADE;
+DROP TYPE IF EXISTS user_role CASCADE;
+DROP TYPE IF EXISTS attendance_status CASCADE;
+DROP TYPE IF EXISTS leave_status CASCADE;
+DROP TYPE IF EXISTS leave_type CASCADE;
 
 -- ========================
 -- ENUMS
@@ -77,6 +78,8 @@ CREATE TABLE IF NOT EXISTS attendance (
   check_out_lng  FLOAT8,
   status         attendance_status NOT NULL DEFAULT 'hadir',
   note           TEXT,
+  check_in_photo_url  TEXT,
+  check_out_photo_url TEXT,
   created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
   UNIQUE (user_id, date)

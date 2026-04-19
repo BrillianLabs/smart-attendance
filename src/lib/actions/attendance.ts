@@ -8,7 +8,8 @@ import { isAdmin } from './auth';
 
 export async function checkIn(
   lat: number,
-  lng: number
+  lng: number,
+  photoBase64?: string
 ): Promise<ActionResult<Attendance>> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -49,9 +50,21 @@ export async function checkIn(
 
   if (existing) {
     // Update existing record (created by leave system or alpha)
+    // Handle photo upload if provided
+    let photo_url = existing.check_in_photo_url;
+    if (photoBase64) {
+      photo_url = await uploadVerificationPhoto(user.id, 'check_in', photoBase64);
+    }
+
     const { data, error } = await supabase
       .from('attendance')
-      .update({ check_in: checkInTime, check_in_lat: lat, check_in_lng: lng, status })
+      .update({ 
+        check_in: checkInTime, 
+        check_in_lat: lat, 
+        check_in_lng: lng, 
+        status,
+        check_in_photo_url: photo_url 
+      })
       .eq('id', existing.id)
       .select()
       .single();
@@ -62,18 +75,25 @@ export async function checkIn(
     return { success: true, data };
   }
 
-  const { data, error } = await supabase
-    .from('attendance')
-    .insert({
-      user_id: user.id,
-      date: today,
-      check_in: checkInTime,
-      check_in_lat: lat,
-      check_in_lng: lng,
-      status,
-    })
-    .select()
-    .single();
+    // Handle photo upload
+    let photo_url = null;
+    if (photoBase64) {
+      photo_url = await uploadVerificationPhoto(user.id, 'check_in', photoBase64);
+    }
+
+    const { data, error } = await supabase
+      .from('attendance')
+      .insert({
+        user_id: user.id,
+        date: today,
+        check_in: checkInTime,
+        check_in_lat: lat,
+        check_in_lng: lng,
+        status,
+        check_in_photo_url: photo_url,
+      })
+      .select()
+      .single();
 
   if (error) return { success: false, error: error.message };
   revalidatePath('/');
@@ -83,7 +103,8 @@ export async function checkIn(
 
 export async function checkOut(
   lat: number,
-  lng: number
+  lng: number,
+  photoBase64?: string
 ): Promise<ActionResult<Attendance>> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -105,16 +126,22 @@ export async function checkOut(
     return { success: false, error: 'Anda sudah melakukan absen pulang hari ini.' };
   }
 
-  const { data, error } = await supabase
-    .from('attendance')
-    .update({
-      check_out: new Date().toISOString(),
-      check_out_lat: lat,
-      check_out_lng: lng,
-    })
-    .eq('id', existing.id)
-    .select()
-    .single();
+    let photo_url = existing.check_out_photo_url;
+    if (photoBase64) {
+      photo_url = await uploadVerificationPhoto(user.id, 'check_out', photoBase64);
+    }
+
+    const { data, error } = await supabase
+      .from('attendance')
+      .update({
+        check_out: new Date().toISOString(),
+        check_out_lat: lat,
+        check_out_lng: lng,
+        check_out_photo_url: photo_url,
+      })
+      .eq('id', existing.id)
+      .select()
+      .single();
 
   if (error) return { success: false, error: error.message };
   revalidatePath('/');
@@ -200,4 +227,37 @@ export async function getMonthlyStats(month: string) {
   return Object.entries(grouped)
     .map(([date, counts]) => ({ date, ...counts }))
     .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+async function uploadVerificationPhoto(userId: string, type: 'check_in' | 'check_out', base64: string): Promise<string | null> {
+  try {
+    const supabase = await createClient();
+    const today = format(new Date(), 'yyyy-MM-dd');
+    const path = `${userId}/${today}-${type}.jpg`;
+    
+    // Convert base64 to buffer
+    const base64Data = base64.replace(/^data:image\/\w+;base64,/, '');
+    const buffer = Buffer.from(base64Data, 'base64');
+
+    const { error } = await supabase.storage
+      .from('attendance-photos')
+      .upload(path, buffer, {
+        contentType: 'image/jpeg',
+        upsert: true
+      });
+
+    if (error) {
+      console.error('Photo upload failed:', error);
+      return null;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('attendance-photos')
+      .getPublicUrl(path);
+
+    return publicUrl;
+  } catch (err) {
+    console.error('Upload process error:', err);
+    return null;
+  }
 }

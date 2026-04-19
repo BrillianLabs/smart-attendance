@@ -28,6 +28,8 @@ export interface Attendance {
   check_out_lng: number | null;
   status: AttendanceStatus;
   note: string | null;
+  check_in_photo_url?: string | null;
+  check_out_photo_url?: string | null;
   created_at: string;
   // joined
   profiles?: Pick<Profile, 'full_name' | 'position' | 'avatar_url'>;

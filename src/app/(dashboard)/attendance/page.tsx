@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getTodayAttendance, getMyAttendanceHistory } from '@/lib/actions/attendance';
 import { getSettings } from '@/lib/actions/admin';
+import { getProfile } from '@/lib/actions/auth';
 import { AttendanceClient } from '@/components/attendance/AttendanceClient';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
 import { format, parseISO } from 'date-fns';
@@ -10,11 +11,14 @@ import { cn } from '@/lib/utils/cn';
 export const metadata: Metadata = { title: 'Attendance Logs | Atelier Academy' };
 
 export default async function AttendancePage() {
-  const [todayAtt, settings, history] = await Promise.all([
+  const [todayAtt, settings, history, profile] = await Promise.all([
     getTodayAttendance(),
     getSettings(),
     getMyAttendanceHistory(30),
+    getProfile(),
   ]);
+
+  if (!profile) return null;
 
   const todayStr = format(new Date(), 'EEEE, d MMMM yyyy', { locale: idLocale });
 
@@ -30,7 +34,7 @@ export default async function AttendancePage() {
       {/* Main Digital Presence Widget */}
       <div className="bg-surface-container-lowest rounded-[2rem] p-8 lg:p-10 shadow-sm shadow-primary/5 border border-outline-variant/10">
         <h2 className="text-lg font-bold text-on-surface mb-6">Digital Verification</h2>
-        <AttendanceClient initial={todayAtt} settings={settings} />
+        <AttendanceClient initial={todayAtt} settings={settings} profile={profile} />
       </div>
 
       {/* Detailed History Table */}

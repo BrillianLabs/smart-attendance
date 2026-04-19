@@ -4,20 +4,24 @@ import { useState, useTransition } from 'react';
 import { useGeolocation } from '@/lib/hooks/useGeolocation';
 import { haversineDistance, formatDistance } from '@/lib/utils/distance';
 import { checkIn, checkOut } from '@/lib/actions/attendance';
-import { Attendance, Settings } from '@/lib/types';
+import { Attendance, Settings, Profile } from '@/lib/types';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils/cn';
 import toast from 'react-hot-toast';
 import { format, parseISO } from 'date-fns';
+import { FaceCamera } from './FaceCamera';
 
 interface AttendanceButtonProps {
   initial: Attendance | null;
   settings: Settings | null;
+  profile: Profile;
 }
 
-export function AttendanceClient({ initial, settings }: AttendanceButtonProps) {
+export function AttendanceClient({ initial, settings, profile }: AttendanceButtonProps) {
   const [attendance, setAttendance] = useState<Attendance | null>(initial);
   const [isPending, startTransition] = useTransition();
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<'check_in' | 'check_out' | null>(null);
   const geo = useGeolocation();
 
   const schoolLat = settings?.school_lat ?? -6.2088;
@@ -33,44 +37,58 @@ export function AttendanceClient({ initial, settings }: AttendanceButtonProps) {
   const canCheckIn  = !attendance?.check_in  && withinRadius && !geo.loading;
   const canCheckOut = !!attendance?.check_in && !attendance?.check_out && withinRadius && !geo.loading;
 
-  const handleCheckIn = () => {
-    if (!geo.lat || !geo.lng) return;
-    startTransition(async () => {
-      const res = await checkIn(geo.lat!, geo.lng!);
-      if (res.success) {
-        setAttendance(res.data);
-        toast.success('Pintu masuk dibuka! Selamat bekerja. ✅');
-      } else {
-        toast.error(res.error);
-      }
-    });
+  const openFaceVerification = (action: 'check_in' | 'check_out') => {
+    if (!geo.lat || !geo.lng) {
+      toast.error('Gagal mendapatkan lokasi GPS. Harap refresh halaman.');
+      return;
+    }
+    setPendingAction(action);
+    setIsCameraOpen(true);
   };
 
-  const handleCheckOut = () => {
-    if (!geo.lat || !geo.lng) return;
+  const handleVerified = (photoBase64: string) => {
+    setIsCameraOpen(false);
+    if (!pendingAction) return;
+
     startTransition(async () => {
-      const res = await checkOut(geo.lat!, geo.lng!);
+      const res = pendingAction === 'check_in' 
+        ? await checkIn(geo.lat!, geo.lng!, photoBase64)
+        : await checkOut(geo.lat!, geo.lng!, photoBase64);
+
       if (res.success) {
         setAttendance(res.data);
-        toast.success('Absen pulang berhasil! Istirahat yang cukup. 🏠');
+        toast.success(pendingAction === 'check_in' 
+          ? 'Pintu masuk dibuka! Identitas terverifikasi AI. ✅' 
+          : 'Absen pulang berhasil! Identitas terverifikasi AI. 🏠');
       } else {
         toast.error(res.error);
       }
+      setPendingAction(null);
     });
   };
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Map Placeholder Widget - Matching Template High-Fidelity Look */}
+      {/* AI Camera Overlay */}
+      {isCameraOpen && (
+        <FaceCamera 
+          referenceImageUrl={profile.avatar_url}
+          onVerified={handleVerified}
+          onCancel={() => {
+            setIsCameraOpen(false);
+            setPendingAction(null);
+          }}
+        />
+      )}
+
+      {/* Map Placeholder Widget */}
       <div className="relative h-64 rounded-[2rem] overflow-hidden bg-surface-container shadow-inner border border-outline-variant/10 group">
         <div className="absolute inset-0 bg-geometric opacity-15"></div>
         
-        {/* Mock Map Texture */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
            <span className="material-symbols-outlined text-9xl text-primary/40">map</span>
         </div>
         
-        {/* Pulse Marker - The "GPS Pulse" */}
         {!geo.loading && !geo.error && geo.lat && (
            <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative">
@@ -89,7 +107,7 @@ export function AttendanceClient({ initial, settings }: AttendanceButtonProps) {
               geo.loading ? "bg-amber-400 animate-pulse" : withinRadius ? "bg-primary animate-pulse" : "bg-rose-500"
             )}></div>
             <span className="text-[10px] font-black uppercase tracking-widest text-on-surface">
-               {geo.loading ? 'Mencari Sinyal...' : withinRadius ? 'Atelier Academy • 12m radius' : 'Luar Jangkauan'}
+               {geo.loading ? 'Mencari Sinyal...' : withinRadius ? 'Radius Aman • Terdeteksi' : 'Luar Jangkauan'}
             </span>
           </div>
 
@@ -113,11 +131,11 @@ export function AttendanceClient({ initial, settings }: AttendanceButtonProps) {
         )}
       </div>
 
-      {/* Action Buttons - Matching Template Gradient & Flat Style */}
+      {/* Action Buttons */}
       <div className="grid grid-cols-2 gap-4">
         <button 
           disabled={!canCheckIn || isPending}
-          onClick={handleCheckIn}
+          onClick={() => openFaceVerification('check_in')}
           className={cn(
             "py-5 rounded-2xl font-bold text-lg transition-all duration-300 shadow-lg flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed",
             canCheckIn 
@@ -125,12 +143,16 @@ export function AttendanceClient({ initial, settings }: AttendanceButtonProps) {
               : "bg-surface-container-low text-on-surface-variant/40 shadow-none border border-outline-variant/10"
           )}
         >
-          <span>Absen Masuk</span>
+          {isPending && pendingAction === 'check_in' ? (
+             <Loader2Icon className="animate-spin" size={20} />
+          ) : (
+            <span>Absen Masuk</span>
+          )}
         </button>
 
         <button 
           disabled={!canCheckOut || isPending}
-          onClick={handleCheckOut}
+          onClick={() => openFaceVerification('check_out')}
           className={cn(
             "py-5 rounded-2xl font-bold text-lg transition-all duration-300 border-2 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed",
             canCheckOut
@@ -138,11 +160,15 @@ export function AttendanceClient({ initial, settings }: AttendanceButtonProps) {
               : "border-outline-variant/20 text-on-surface-variant/30 shadow-none"
           )}
         >
-          <span>Absen Pulang</span>
+          {isPending && pendingAction === 'check_out' ? (
+             <Loader2Icon className="animate-spin" size={20} />
+          ) : (
+            <span>Absen Pulang</span>
+          )}
         </button>
       </div>
 
-      {/* Today Result Tonal Widget */}
+      {/* Today Result Log */}
       {attendance && (
         <section className="bg-surface-container-low p-6 rounded-[2rem] border border-outline-variant/10 animate-fade-in">
           <div className="flex justify-between items-center">
@@ -153,7 +179,7 @@ export function AttendanceClient({ initial, settings }: AttendanceButtonProps) {
                  </span>
                </div>
                <div>
-                 <p className="text-[10px] font-black text-on-surface-variant opacity-60 uppercase tracking-[0.2em] leading-none mb-1.5">Verification Log</p>
+                 <p className="text-[10px] font-black text-on-surface-variant opacity-60 uppercase tracking-[0.2em] leading-none mb-1.5">Identity Secured</p>
                  <Badge variant={statusVariant(attendance.status)} className="px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all">
                     {statusLabel(attendance.status)}
                  </Badge>
@@ -163,11 +189,30 @@ export function AttendanceClient({ initial, settings }: AttendanceButtonProps) {
                <span className="text-2xl font-black text-on-surface tracking-tighter">
                 {attendance.check_in ? format(parseISO(attendance.check_in), 'HH:mm') : '--:--'}
                </span>
-               <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.1em] opacity-40">UTC+07:00</span>
+               <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.1em] opacity-40">Verified AI</span>
             </div>
           </div>
         </section>
       )}
     </div>
+  );
+}
+
+function Loader2Icon({ className, size }: { className?: string, size?: number }) {
+  return (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      width={size ?? 24} 
+      height={size ?? 24} 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      className={className}
+    >
+      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    </svg>
   );
 }

@@ -40,6 +40,21 @@ export async function updateSettings(formData: FormData): Promise<ActionResult> 
   return { success: true, data: undefined };
 }
 
+export async function updateSchoolLocation(lat: number, lng: number): Promise<ActionResult> {
+  if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from('settings')
+    .update({ school_lat: lat, school_lng: lng, updated_at: new Date().toISOString() })
+    .eq('id', 1);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath('/', 'layout');
+  return { success: true, data: undefined };
+}
+
 export async function uploadLogo(formData: FormData): Promise<ActionResult<string>> {
   if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
   const supabase = await createClient();

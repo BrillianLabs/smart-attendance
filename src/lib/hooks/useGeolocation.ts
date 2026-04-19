@@ -20,8 +20,8 @@ export function useGeolocation() {
   });
 
   const request = useCallback(() => {
-    if (!navigator.geolocation) {
-      setState(s => ({ ...s, error: 'Perangkat tidak mendukung GPS.' }));
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      setState(s => ({ ...s, error: 'Perangkat tidak mendukung GPS.', loading: false }));
       return;
     }
 
@@ -39,12 +39,12 @@ export function useGeolocation() {
       },
       (err) => {
         let msg = 'Gagal mendapatkan lokasi.';
-        if (err.code === err.PERMISSION_DENIED)    msg = 'Izin lokasi ditolak. Aktifkan GPS di pengaturan browser.';
-        if (err.code === err.POSITION_UNAVAILABLE) msg = 'Informasi lokasi tidak tersedia.';
-        if (err.code === err.TIMEOUT)              msg = 'Permintaan lokasi timeout.';
+        if (err.code === err.PERMISSION_DENIED)    msg = 'Izin lokasi ditolak. Silakan aktifkan GPS di pengaturan browser dan refresh.';
+        if (err.code === err.POSITION_UNAVAILABLE) msg = 'Informasi lokasi tidak tersedia (Signal Lemah).';
+        if (err.code === err.TIMEOUT)              msg = 'Permintaan lokasi timeout. Coba lagi.';
         setState(s => ({ ...s, error: msg, loading: false }));
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   }, []);
 

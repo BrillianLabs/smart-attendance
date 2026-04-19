@@ -5,15 +5,10 @@ import { useGeolocation } from '@/lib/hooks/useGeolocation';
 import { haversineDistance, formatDistance } from '@/lib/utils/distance';
 import { checkIn, checkOut } from '@/lib/actions/attendance';
 import { Attendance, Settings } from '@/lib/types';
-import { Button } from '@/components/ui/Button';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
-import {
-  MapPin, Navigation, CheckCircle2, Clock, AlertCircle,
-  RefreshCw, Loader2, LogIn, LogOut
-} from 'lucide-react';
+import { cn } from '@/lib/utils/cn';
 import toast from 'react-hot-toast';
 import { format, parseISO } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
 
 interface AttendanceButtonProps {
   initial: Attendance | null;
@@ -44,7 +39,7 @@ export function AttendanceClient({ initial, settings }: AttendanceButtonProps) {
       const res = await checkIn(geo.lat!, geo.lng!);
       if (res.success) {
         setAttendance(res.data);
-        toast.success('Absen masuk berhasil! ✅');
+        toast.success('Pintu masuk dibuka! Selamat bekerja. ✅');
       } else {
         toast.error(res.error);
       }
@@ -57,175 +52,121 @@ export function AttendanceClient({ initial, settings }: AttendanceButtonProps) {
       const res = await checkOut(geo.lat!, geo.lng!);
       if (res.success) {
         setAttendance(res.data);
-        toast.success('Absen pulang berhasil! 🏠');
+        toast.success('Absen pulang berhasil! Istirahat yang cukup. 🏠');
       } else {
         toast.error(res.error);
       }
     });
   };
 
-  const locationColor = geo.loading
-    ? 'text-[var(--text-muted)]'
-    : geo.error
-    ? 'text-[var(--danger)]'
-    : withinRadius
-    ? 'text-[var(--success)]'
-    : 'text-[var(--warning)]';
-
-  const locationBg = geo.loading
-    ? 'bg-[var(--surface-2)]'
-    : geo.error
-    ? 'bg-[var(--danger-light)]'
-    : withinRadius
-    ? 'bg-[var(--success-light)]'
-    : 'bg-[var(--warning-light)]';
-
   return (
-    <div className="space-y-6">
-      {/* GPS Status Card */}
-      <div className={`card p-5 ${locationBg} border-0`}>
-        <div className="flex items-start gap-4">
-          <div className="relative">
-            <div className={`w-11 h-11 rounded-full flex items-center justify-center ${
-              withinRadius && !geo.loading ? 'relative' : ''
-            }`}>
-              {geo.loading ? (
-                <Loader2 size={24} className="animate-spin text-[var(--text-muted)]" />
-              ) : geo.error ? (
-                <AlertCircle size={24} className="text-[var(--danger)]" />
-              ) : withinRadius ? (
-                <div className="relative">
-                  <div className="w-3 h-3 rounded-full bg-[var(--success)]" />
-                  <div className="absolute inset-0 rounded-full bg-[var(--success)] animate-ping opacity-50" />
-                </div>
-              ) : (
-                <Navigation size={24} className="text-[var(--warning)]" />
-              )}
-            </div>
+    <div className="flex flex-col gap-6">
+      {/* Map Placeholder Widget - Matching Template High-Fidelity Look */}
+      <div className="relative h-64 rounded-[2rem] overflow-hidden bg-surface-container shadow-inner border border-outline-variant/10 group">
+        <div className="absolute inset-0 bg-geometric opacity-15"></div>
+        
+        {/* Mock Map Texture */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+           <span className="material-symbols-outlined text-9xl text-primary/40">map</span>
+        </div>
+        
+        {/* Pulse Marker - The "GPS Pulse" */}
+        {!geo.loading && !geo.error && geo.lat && (
+           <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative">
+                <div className="w-5 h-5 rounded-full bg-primary z-10 relative border-2 border-white shadow-lg"></div>
+                <div className="absolute inset-0 w-5 h-5 rounded-full bg-primary animate-ping opacity-60"></div>
+              </div>
+           </div>
+        )}
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+        
+        <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between">
+          <div className="bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-lg border border-white/50 ring-1 ring-black/5">
+            <div className={cn(
+              "w-2.5 h-2.5 rounded-full",
+              geo.loading ? "bg-amber-400 animate-pulse" : withinRadius ? "bg-primary animate-pulse" : "bg-rose-500"
+            )}></div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-on-surface">
+               {geo.loading ? 'Mencari Sinyal...' : withinRadius ? 'Atelier Academy • 12m radius' : 'Luar Jangkauan'}
+            </span>
           </div>
 
-          <div className="flex-1 min-w-0">
-            <p className={`font-semibold text-sm ${locationColor}`}>
-              {geo.loading ? 'Mendeteksi lokasi...' :
-               geo.error   ? 'Lokasi tidak tersedia' :
-               withinRadius ? `Anda di dalam area sekolah` :
-               `Di luar area sekolah`}
-            </p>
-            {!geo.loading && !geo.error && distanceM !== null && (
-              <p className="text-xs mt-0.5 text-[var(--text-secondary)]">
-                Jarak: <strong>{formatDistance(distanceM)}</strong> dari sekolah
-                {' '}(radius {radius}m)
-              </p>
-            )}
-            {!geo.loading && !geo.error && geo.accuracy && (
-              <p className="text-xs text-[var(--text-muted)]">
-                Akurasi GPS: ±{Math.round(geo.accuracy)}m
-              </p>
-            )}
-            {geo.error && (
-              <p className="text-xs mt-0.5 text-[var(--danger)]">{geo.error}</p>
-            )}
-          </div>
-
-          <button
-            onClick={geo.request}
-            disabled={geo.loading}
-            className="p-2 rounded-lg hover:bg-white/50 transition-colors text-[var(--text-muted)]"
-            title="Refresh lokasi"
+          <button 
+            onClick={geo.request} 
+            className="w-10 h-10 rounded-full bg-white/95 backdrop-blur-md flex items-center justify-center text-on-surface shadow-lg hover:rotate-180 transition-transform duration-700 active:scale-90 border border-white/50"
           >
-            <RefreshCw size={16} className={geo.loading ? 'animate-spin' : ''} />
+            <span className={cn(
+              "material-symbols-outlined text-[20px]",
+              geo.loading ? "animate-spin" : ""
+            )}>
+              {geo.loading ? 'progress_activity' : 'refresh'}
+            </span>
           </button>
         </div>
+
+        {geo.error && (
+          <div className="absolute inset-x-0 top-0 p-3 bg-error-container/90 backdrop-blur-sm border-b border-error/20 text-on-error-container text-[11px] font-bold text-center uppercase tracking-widest animate-fade-in">
+            Lokasi: {geo.error}
+          </div>
+        )}
       </div>
 
-      {/* Today attendance status */}
+      {/* Action Buttons - Matching Template Gradient & Flat Style */}
+      <div className="grid grid-cols-2 gap-4">
+        <button 
+          disabled={!canCheckIn || isPending}
+          onClick={handleCheckIn}
+          className={cn(
+            "py-5 rounded-2xl font-bold text-lg transition-all duration-300 shadow-lg flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed",
+            canCheckIn 
+              ? "bg-gradient-to-br from-primary to-primary-dim text-white shadow-primary/20 hover:scale-[1.01] active:scale-[0.98]" 
+              : "bg-surface-container-low text-on-surface-variant/40 shadow-none border border-outline-variant/10"
+          )}
+        >
+          <span>Absen Masuk</span>
+        </button>
+
+        <button 
+          disabled={!canCheckOut || isPending}
+          onClick={handleCheckOut}
+          className={cn(
+            "py-5 rounded-2xl font-bold text-lg transition-all duration-300 border-2 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed",
+            canCheckOut
+              ? "border-outline-variant text-on-surface hover:bg-surface-container-low active:scale-[0.98]"
+              : "border-outline-variant/20 text-on-surface-variant/30 shadow-none"
+          )}
+        >
+          <span>Absen Pulang</span>
+        </button>
+      </div>
+
+      {/* Today Result Tonal Widget */}
       {attendance && (
-        <div className="card p-5">
-          <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-3">
-            Status Hari Ini
-          </p>
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-[var(--text-primary)]">
-              {format(new Date(), 'EEEE, d MMMM yyyy', { locale: idLocale })}
-            </span>
-            <Badge variant={statusVariant(attendance.status)}>
-              {statusLabel(attendance.status)}
-            </Badge>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 rounded-lg bg-[var(--success-light)] flex items-center gap-2.5">
-              <LogIn size={18} className="text-[var(--success)]" />
-              <div>
-                <p className="text-xs text-[var(--text-muted)]">Masuk</p>
-                <p className="font-bold text-[var(--text-primary)]">
-                  {attendance.check_in ? format(parseISO(attendance.check_in), 'HH:mm') : '-'}
-                </p>
-              </div>
+        <section className="bg-surface-container-low p-6 rounded-[2rem] border border-outline-variant/10 animate-fade-in">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-4">
+               <div className="w-11 h-11 rounded-xl bg-white flex items-center justify-center shadow-sm border border-outline-variant/5">
+                 <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+                   {attendance.status === 'hadir' ? 'check_circle' : 'schedule'}
+                 </span>
+               </div>
+               <div>
+                 <p className="text-[10px] font-black text-on-surface-variant opacity-60 uppercase tracking-[0.2em] leading-none mb-1.5">Verification Log</p>
+                 <Badge variant={statusVariant(attendance.status)} className="px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all">
+                    {statusLabel(attendance.status)}
+                 </Badge>
+               </div>
             </div>
-            <div className={`p-3 rounded-lg flex items-center gap-2.5 ${
-              attendance.check_out ? 'bg-[var(--info-light)]' : 'bg-[var(--surface-2)]'
-            }`}>
-              <LogOut size={18} className={attendance.check_out ? 'text-[var(--info)]' : 'text-[var(--text-muted)]'} />
-              <div>
-                <p className="text-xs text-[var(--text-muted)]">Pulang</p>
-                <p className="font-bold text-[var(--text-primary)]">
-                  {attendance.check_out ? format(parseISO(attendance.check_out), 'HH:mm') : 'Belum'}
-                </p>
-              </div>
+            <div className="flex flex-col items-end">
+               <span className="text-2xl font-black text-on-surface tracking-tighter">
+                {attendance.check_in ? format(parseISO(attendance.check_in), 'HH:mm') : '--:--'}
+               </span>
+               <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.1em] opacity-40">UTC+07:00</span>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Action buttons */}
-      <div className="grid grid-cols-1 gap-4">
-        {!attendance?.check_in && (
-          <Button
-            size="xl"
-            onClick={handleCheckIn}
-            disabled={!canCheckIn || isPending}
-            loading={isPending}
-            className="w-full justify-center gap-3 py-5 text-lg rounded-2xl shadow-lg"
-            style={canCheckIn ? { background: 'var(--success)', boxShadow: '0 8px 24px rgba(16,185,129,0.3)' } : {}}
-          >
-            <LogIn size={24} />
-            Absen Masuk
-          </Button>
-        )}
-
-        {attendance?.check_in && !attendance?.check_out && (
-          <Button
-            size="xl"
-            variant="secondary"
-            onClick={handleCheckOut}
-            disabled={!canCheckOut || isPending}
-            loading={isPending}
-            className="w-full justify-center gap-3 py-5 text-lg rounded-2xl border-2"
-            style={canCheckOut ? { borderColor: 'var(--danger)', color: 'var(--danger)', background: 'var(--danger-light)' } : {}}
-          >
-            <LogOut size={24} />
-            Absen Pulang
-          </Button>
-        )}
-
-        {attendance?.check_out && (
-          <div className="text-center py-6">
-            <CheckCircle2 size={48} className="mx-auto mb-3 text-[var(--success)]" />
-            <p className="font-semibold text-[var(--text-primary)]">Absensi hari ini selesai</p>
-            <p className="text-sm text-[var(--text-muted)] mt-1">Sampai jumpa besok! 👋</p>
-          </div>
-        )}
-      </div>
-
-      {/* Out-of-range hint */}
-      {!withinRadius && !geo.loading && !geo.error && (
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-[var(--warning-light)] border border-[var(--warning)] border-opacity-40">
-          <MapPin size={18} className="text-[var(--warning)] mt-0.5 flex-shrink-0" />
-          <p className="text-sm text-[#92400e]">
-            Anda harus berada dalam radius <strong>{radius} meter</strong> dari sekolah untuk dapat melakukan absensi.
-            Pastikan GPS aktif dan Anda berada di lokasi yang benar.
-          </p>
-        </div>
+        </section>
       )}
     </div>
   );

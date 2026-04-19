@@ -10,23 +10,22 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   if (!profile) redirect('/login');
 
-  // Apply custom primary color as CSS var
-  const color = settings?.primary_color ?? '#2563EB';
-
   return (
     <div className="flex min-h-screen bg-[var(--background)]">
-      {/* Inject custom primary color */}
-      <style>{`:root { --primary: ${color}; }`}</style>
-
-      {/* Desktop sidebar */}
+      {/* Sidebar for Desktop */}
       <Sidebar profile={profile} settings={settings} />
 
-      {/* Main content */}
+      {/* Main content wrapper */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile navbar */}
+        {/* Navbar (Fixed/Sticky handled inside Navbar component) */}
         <Navbar profile={profile} settings={settings} />
 
-        <main className="flex-1 p-4 lg:p-8 pb-24 lg:pb-8 w-full max-w-full min-w-0 overflow-x-hidden">
+        {/* 
+            Content area 
+            pt-16 to clear the fixed navbar 
+            lg:p-12 to match high-end padding from template 
+        */}
+        <main className="flex-1 pt-24 px-4 sm:px-8 lg:px-12 pb-24 lg:pb-12 w-full max-w-full min-w-0 overflow-x-hidden">
           <div className="max-w-full w-full min-w-0">
             {children}
           </div>

@@ -13,16 +13,23 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, hint, className, id, ...props }, ref) => {
     const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
     return (
-      <div className="flex flex-col gap-1.5">
-        {label && <label htmlFor={inputId}>{label}</label>}
+      <div className="flex flex-col gap-2">
+        {label && (
+          <label 
+            htmlFor={inputId} 
+            className="text-[11px] font-bold uppercase tracking-[0.05rem] text-on-surface-variant ml-1 opacity-70"
+          >
+            {label}
+          </label>
+        )}
         <input
           ref={ref}
           id={inputId}
           className={cn('input-field', error && 'error', className)}
           {...props}
         />
-        {error && <p className="text-xs text-[var(--danger)]">{error}</p>}
-        {hint  && !error && <p className="text-xs text-[var(--text-muted)]">{hint}</p>}
+        {error && <p className="text-[10px] font-bold text-error mt-0.5 ml-1">{error}</p>}
+        {hint  && !error && <p className="text-[10px] font-bold text-on-surface-variant opacity-50 mt-0.5 ml-1">{hint}</p>}
       </div>
     );
   }
@@ -39,8 +46,15 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, error, className, id, children, ...props }, ref) => {
     const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
     return (
-      <div className="flex flex-col gap-1.5">
-        {label && <label htmlFor={inputId}>{label}</label>}
+      <div className="flex flex-col gap-2">
+        {label && (
+          <label 
+            htmlFor={inputId} 
+            className="text-[11px] font-bold uppercase tracking-[0.05rem] text-on-surface-variant ml-1 opacity-70"
+          >
+            {label}
+          </label>
+        )}
         <select
           ref={ref}
           id={inputId}
@@ -49,7 +63,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         >
           {children}
         </select>
-        {error && <p className="text-xs text-[var(--danger)]">{error}</p>}
+        {error && <p className="text-[10px] font-bold text-error mt-0.5 ml-1">{error}</p>}
       </div>
     );
   }
@@ -65,8 +79,15 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ label, error, className, id, ...props }, ref) => {
     const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
     return (
-      <div className="flex flex-col gap-1.5">
-        {label && <label htmlFor={inputId}>{label}</label>}
+      <div className="flex flex-col gap-2">
+        {label && (
+          <label 
+            htmlFor={inputId} 
+            className="text-[11px] font-bold uppercase tracking-[0.05rem] text-on-surface-variant ml-1 opacity-70"
+          >
+            {label}
+          </label>
+        )}
         <textarea
           ref={ref}
           id={inputId}

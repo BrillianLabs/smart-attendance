@@ -10,8 +10,8 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- 1. Setup Data Sekolah (Pengaturan)
 UPDATE settings SET
-  school_name      = 'SMA Negeri 1 Contoh',
-  primary_color    = '#2563EB',
+  school_name      = 'Atelier Academy',
+  primary_color    = '#006a61',
   school_lat       = -6.2088,
   school_lng       = 106.8456,
   allowed_radius_m = 100,

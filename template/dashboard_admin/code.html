@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Atelier Academy - Admin Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#fe8983",
+                    "tertiary-dim": "#005980",
+                    "primary": "#006a61",
+                    "error": "#9f403d",
+                    "primary-fixed": "#89f5e7",
+                    "surface-variant": "#d9e4ea",
+                    "error-dim": "#4e0309",
+                    "on-secondary-fixed": "#314055",
+                    "secondary-container": "#d3e4fe",
+                    "on-surface-variant": "#566166",
+                    "on-error": "#fff7f6",
+                    "outline": "#717c82",
+                    "surface-container-low": "#f0f4f7",
+                    "on-primary": "#dcfff8",
+                    "surface-tint": "#006a61",
+                    "secondary": "#506076",
+                    "on-primary-fixed": "#004841",
+                    "surface-container-highest": "#d9e4ea",
+                    "on-secondary-container": "#435368",
+                    "on-tertiary-fixed-variant": "#003954",
+                    "secondary-dim": "#44546a",
+                    "surface-container": "#e8eff3",
+                    "surface-container-high": "#e1e9ee",
+                    "on-secondary-fixed-variant": "#4d5d73",
+                    "inverse-on-surface": "#9a9d9f",
+                    "tertiary": "#006592",
+                    "surface": "#f7f9fb",
+                    "on-primary-container": "#005c54",
+                    "tertiary-fixed-dim": "#17a8ec",
+                    "on-primary-fixed-variant": "#00675e",
+                    "primary-fixed-dim": "#7ae7d8",
+                    "on-secondary": "#f7f9ff",
+                    "on-error-container": "#752121",
+                    "on-tertiary-container": "#003047",
+                    "outline-variant": "#a9b4b9",
+                    "on-tertiary-fixed": "#00121e",
+                    "surface-dim": "#cfdce3",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#34b5fa",
+                    "on-tertiary": "#f5f9ff",
+                    "primary-container": "#89f5e7",
+                    "surface-bright": "#f7f9fb",
+                    "primary-dim": "#005d55",
+                    "secondary-fixed-dim": "#c5d6f0",
+                    "inverse-primary": "#91feef",
+                    "tertiary-container": "#34b5fa",
+                    "secondary-fixed": "#d3e4fe",
+                    "background": "#f7f9fb",
+                    "on-background": "#2a3439",
+                    "inverse-surface": "#0b0f10",
+                    "on-surface": "#2a3439"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex">
+<!-- SideNavBar Component -->
+<aside class="h-screen w-72 flex flex-col sticky left-0 top-0 bg-slate-50 border-r border-slate-100 p-6 gap-2">
+<div class="mb-10 px-2">
+<h1 class="text-lg font-black tracking-widest uppercase text-teal-800">Admin Portal</h1>
+<p class="text-[0.875rem] text-slate-500">Academic Atelier</p>
+</div>
+<nav class="flex flex-col gap-2 flex-grow">
+<!-- Active: Overview -->
+<a class="bg-white text-teal-700 font-semibold rounded-xl shadow-sm shadow-teal-900/5 flex items-center gap-3 px-4 py-3 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="text-slate-500 hover:translate-x-1 hover:bg-teal-50/50 transition-all flex items-center gap-3 px-4 py-3 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Student Registry</span>
+</a>
+<a class="text-slate-500 hover:translate-x-1 hover:bg-teal-50/50 transition-all flex items-center gap-3 px-4 py-3 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="event_busy">event_busy</span>
+<span>Leave Requests</span>
+</a>
+<a class="text-slate-500 hover:translate-x-1 hover:bg-teal-50/50 transition-all flex items-center gap-3 px-4 py-3 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span>Academic Calendar</span>
+</a>
+<a class="text-slate-500 hover:translate-x-1 hover:bg-teal-50/50 transition-all flex items-center gap-3 px-4 py-3 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span>Audit Logs</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-slate-200 flex flex-col gap-2">
+<a class="text-slate-500 hover:translate-x-1 transition-transform flex items-center gap-3 px-4 py-2" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Help Center</span>
+</a>
+<a class="text-slate-500 hover:translate-x-1 transition-transform flex items-center gap-3 px-4 py-2" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-1 flex flex-col overflow-x-hidden">
+<!-- TopNavBar Component -->
+<header class="fixed top-0 right-0 left-72 z-50 bg-white/80 backdrop-blur-[24px] shadow-sm shadow-teal-900/5 h-16 flex justify-between items-center px-8">
+<div class="flex items-center gap-8">
+<div class="flex gap-6">
+<a class="text-teal-700 font-bold border-b-2 border-teal-600 pb-1 text-sm tracking-tight" href="#">Dashboard</a>
+<a class="text-slate-500 hover:text-teal-600 transition-all text-sm font-medium tracking-tight" href="#">Attendance</a>
+<a class="text-slate-500 hover:text-teal-600 transition-all text-sm font-medium tracking-tight" href="#">Reports</a>
+<a class="text-slate-500 hover:text-teal-600 transition-all text-sm font-medium tracking-tight" href="#">Staff</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 text-lg">search</span>
+<input class="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm w-64 focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all" placeholder="Search data..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform text-slate-500">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="active:scale-95 transition-transform text-slate-500">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="portrait of a professional administrator with a warm smile in a brightly lit office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0EssQ9xLkIMBgBrAtEtMidV84h3xmlFN617VXvC6RrTphWJ3r7sgnh81uWM3P2a8XddqNtp2iEQcWZgHqTRraeIssA6z7JulLqhTkj4fmr7d5exEUXr-uJXioiRvu_b7P0ZIwqINUB86Mkdu9ebq19uvd40ItSTV67QO5xUuUcmvFJQtETPsgwv1-HtIpHQG9BPOE6odAiBD1CFdeGYJaDD3QD6ErDJeqtb1Jzl9NbouvqDM-b3lQRie-dJ6IemylNaD9B_f-lU26"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="pt-24 px-12 pb-12 w-full max-w-7xl mx-auto space-y-12">
+<!-- Header Section -->
+<section class="flex justify-between items-end">
+<div>
+<span class="text-xs font-bold uppercase tracking-widest text-primary mb-2 block">Academy Analytics</span>
+<h2 class="text-[1.5rem] font-bold text-on-surface leading-tight">Daily Attendance Overview</h2>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2.5 rounded-full text-sm font-semibold bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high transition-colors">
+                        View History
+                    </button>
+<button class="px-6 py-2.5 rounded-full text-sm font-semibold bg-gradient-to-br from-primary to-primary-dim text-on-primary shadow-lg shadow-primary/10 active:scale-95 transition-all">
+                        New Registration
+                    </button>
+</div>
+</section>
+<!-- Metrics Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Card 1: Total Hadir -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-[0px_12px_32px_rgba(42,52,57,0.04)] flex flex-col gap-4 relative overflow-hidden">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-primary-container rounded-xl text-on-primary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<span class="text-xs font-bold text-primary">+12% from avg</span>
+</div>
+<div>
+<p class="text-sm font-medium text-on-surface-variant">Total Hadir</p>
+<h3 class="text-[3.5rem] font-bold text-on-background tracking-tighter leading-none">1,284</h3>
+</div>
+<div class="h-1 w-full bg-surface-container-low rounded-full">
+<div class="h-full bg-primary w-[85%] rounded-full"></div>
+</div>
+</div>
+<!-- Card 2: Telat -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-[0px_12px_32px_rgba(42,52,57,0.04)] flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-secondary-container rounded-xl text-on-secondary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">schedule</span>
+</div>
+<span class="text-xs font-bold text-secondary">-4% from avg</span>
+</div>
+<div>
+<p class="text-sm font-medium text-on-surface-variant">Terlambat</p>
+<h3 class="text-[3.5rem] font-bold text-on-background tracking-tighter leading-none">42</h3>
+</div>
+<div class="h-1 w-full bg-surface-container-low rounded-full">
+<div class="h-full bg-secondary w-[15%] rounded-full"></div>
+</div>
+</div>
+<!-- Card 3: Izin -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-[0px_12px_32px_rgba(42,52,57,0.04)] flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-error-container/20 rounded-xl text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">event_note</span>
+</div>
+<span class="text-xs font-bold text-error">+2 today</span>
+</div>
+<div>
+<p class="text-sm font-medium text-on-surface-variant">Izin / Sakit</p>
+<h3 class="text-[3.5rem] font-bold text-on-background tracking-tighter leading-none">18</h3>
+</div>
+<div class="h-1 w-full bg-surface-container-low rounded-full">
+<div class="h-full bg-error w-[8%] rounded-full"></div>
+</div>
+</div>
+</section>
+<!-- Table Data Section -->
+<section class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(42,52,57,0.04)]">
+<div class="px-8 py-6 flex justify-between items-center bg-white border-b border-slate-50">
+<h3 class="text-lg font-bold text-on-surface">Rekap Kehadiran Hari Ini</h3>
+<div class="flex items-center gap-4">
+<div class="flex bg-surface-container-low rounded-lg p-1">
+<button class="px-4 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-primary">All Students</button>
+<button class="px-4 py-1.5 text-xs font-bold rounded-md text-on-surface-variant">Staff Only</button>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant/30 rounded-full text-xs font-bold text-on-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+                            Export CSV
+                        </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-8 py-4 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant">Nama Mahasiswa</th>
+<th class="px-8 py-4 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant">Jam Masuk</th>
+<th class="px-8 py-4 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant">Jam Pulang</th>
+<th class="px-8 py-4 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant">Status</th>
+<th class="px-8 py-4 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 overflow-hidden">
+<img alt="Student Avatar" class="w-full h-full object-cover" data-alt="portrait of a young student with glasses and a friendly expression, soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIoKT_F66w2rgCFQz3NVN7ClXGAkVBjMeZC7e__7OM5fs7uPNRD7IceNrjzaPT_b1aR0YCE-Nnep64fYTn95fNvIpBDwCdrbHc5bKwCtPZ2kWRBVqVyhb_zeFmmOSO9STyzuVvcjkI248IU86QyaR4LLWf2siTxvj8ZS2Qgvt9e1V9EoajSLP5YtnLzXC7kyl6yiYfQSekwUG54U6nhHVfiRM5uIIjZeONML3IZnl-VLokTqiACZM3UayHPK0TtNcg-hYtCTiLJlOa"/>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Adrian Wijaya</p>
+<p class="text-xs text-on-surface-variant">ID: 2024001</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant">07:55 AM</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant">04:30 PM</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 text-[10px] uppercase tracking-widest font-bold bg-primary-container text-on-primary-container rounded-full">Hadir</span>
+</td>
+<td class="px-8 py-5">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 overflow-hidden">
+<img alt="Student Avatar" class="w-full h-full object-cover" data-alt="portrait of a confident female student in a denim jacket with blurred library background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgX5cSjTJ4aFn2XeIG-yuBYOuwVZnkqFN0-bXYN9skDHw4VO0I7PZ8J55I8ALSucFjTK5gR-euV22meiSZ_GWsVAXETKMtDq_ElcXluxyqQPtIjq4sr-INLptuf17ROmCas5SgEVOMB41vPwqQzVfX0NCcUdMwRr0iM81CmxqSJGDd9QTJIpbJzqCxAQff344kaJWZK-rEqv7W8lqGvKts9nxfwhG98GNH8SQBpFHXad4L1nRfgSyWiSQCeAqFyYIb_uWmxoPAiVSP"/>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Siti Rahmawati</p>
+<p class="text-xs text-on-surface-variant">ID: 2024002</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant">08:15 AM</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant">--:--</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 text-[10px] uppercase tracking-widest font-bold bg-secondary-container text-on-secondary-container rounded-full">Telat</span>
+</td>
+<td class="px-8 py-5">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 overflow-hidden">
+<img alt="Student Avatar" class="w-full h-full object-cover" data-alt="portrait of a male student looking thoughtful, clean composition, studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMgZK3YGl-7WzZaJFaJyQNudAWhvGQjRMh2Pmyz7Es0s_2bkTE6TV8AJe6pp9Z4dJsEaPmvscM1wVAaIhOtUnrawcoSGlcUTk8_XJ9aPLdrpx4GjwaByQl_PJg_1a88WUC5DXB11PBQhnjEJs1TWqDm8dpxyOL_8BqXQIxxR1pQnYpNsHrk8hhpg-3H32V3F5glNUK5muvvN36krhbCw4p_z8uvdZH4zRzB1BdpUROXcHkSwnEetlR2vwNi7mstAE6xjZ2mWigfK0N"/>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Budi Santoso</p>
+<p class="text-xs text-on-surface-variant">ID: 2024003</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant">--:--</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant">--:--</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 text-[10px] uppercase tracking-widest font-bold bg-error-container text-on-error-container rounded-full">Sakit</span>
+</td>
+<td class="px-8 py-5">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/30 transition-colors group">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 overflow-hidden">
+<img alt="Student Avatar" class="w-full h-full object-cover" data-alt="portrait of a young woman smiling outdoors with soft sunlight filtering through trees" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmTg4t7M1WypKfNtJ34a6RMc7R4TvdIsq7Ij4htp3pafQkCz9-VFQLLMFFTh1NIYJlFHMg81rekHBApCuZq_6UCH59eMeDnUKHS1eyBQi6ox9trVSovsBPamH-BZGoUx9cf210vV5uWJHD9bEBSrXztMSZJrmQlRFPxKwKyoeXUDrllXhrqZdJmygSVeCu-vMriJH2X-Sxp7b749kjZHLHPujjLXZp4Uo-s9ZY8JhFwYWJaEjYZbFvPgPI85qvtk0dJ-pPsiVN7jV-"/>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Linda Permata</p>
+<p class="text-xs text-on-surface-variant">ID: 2024004</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant">07:45 AM</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant">04:35 PM</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 text-[10px] uppercase tracking-widest font-bold bg-primary-container text-on-primary-container rounded-full">Hadir</span>
+</td>
+<td class="px-8 py-5">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-8 py-6 flex items-center justify-between border-t border-slate-50 bg-white">
+<p class="text-xs text-on-surface-variant font-medium">Showing 4 of 1,344 students</p>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-lg border border-outline-variant/20 text-slate-400 hover:text-primary disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-primary text-on-primary text-xs font-bold">1</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container-low text-xs font-bold">2</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container-low text-xs font-bold">3</button>
+<button class="p-2 rounded-lg border border-outline-variant/20 text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Attendance Ribbon (Bespoke Component) -->
+<div class="fixed bottom-8 right-12 left-84 bg-white/40 backdrop-blur-md px-6 py-4 rounded-full border border-white/50 shadow-lg flex items-center gap-6 max-w-2xl mx-auto z-40">
+<span class="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant shrink-0">Real-time Feed</span>
+<div class="flex-1 h-1.5 bg-surface-container-highest rounded-full relative overflow-hidden">
+<div class="absolute left-0 top-0 h-full w-[65%] bg-primary"></div>
+</div>
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-300"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-400"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-200"></div>
+</div>
+<span class="text-[10px] font-bold text-primary">Live Activity</span>
+</div>
+</main>
+</body></html>

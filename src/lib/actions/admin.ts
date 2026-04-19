@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { ActionResult, Profile, Settings } from '@/lib/types';
+import { isAdmin } from './auth';
 
 // ========================
 // SETTINGS
@@ -18,6 +19,7 @@ export async function getSettings(): Promise<Settings | null> {
 }
 
 export async function updateSettings(formData: FormData): Promise<ActionResult> {
+  if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
   const supabase = await createClient();
 
   const updates: Partial<Settings> = {
@@ -39,6 +41,7 @@ export async function updateSettings(formData: FormData): Promise<ActionResult> 
 }
 
 export async function uploadLogo(formData: FormData): Promise<ActionResult<string>> {
+  if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
   const supabase = await createClient();
   const file = formData.get('logo') as File;
   if (!file) return { success: false, error: 'File tidak ditemukan.' };
@@ -65,6 +68,7 @@ export async function uploadLogo(formData: FormData): Promise<ActionResult<strin
 // USER MANAGEMENT (Admin)
 // ========================
 export async function getAllProfiles(): Promise<Profile[]> {
+  if (!await isAdmin()) return [];
   const supabase = await createClient();
   const { data } = await supabase
     .from('profiles')
@@ -77,6 +81,7 @@ export async function updateProfile(
   id: string,
   updates: Partial<Pick<Profile, 'full_name' | 'role' | 'position' | 'phone' | 'is_active'>>
 ): Promise<ActionResult> {
+  if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
   const supabase = await createClient();
   const { error } = await supabase.from('profiles').update(updates).eq('id', id);
   if (error) return { success: false, error: error.message };
@@ -91,6 +96,7 @@ export async function createStaffUser(
   role: 'admin' | 'staff',
   position?: string
 ): Promise<ActionResult> {
+  if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
   const supabase = await createClient();
 
   // Use admin API to create user (requires service role key OR invite URL)
@@ -113,6 +119,7 @@ export async function createStaffUser(
 }
 
 export async function deleteProfile(id: string): Promise<ActionResult> {
+  if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
   const supabase = await createClient();
   // Soft delete — set is_active = false
   const { error } = await supabase.from('profiles').update({ is_active: false }).eq('id', id);
@@ -123,6 +130,7 @@ export async function deleteProfile(id: string): Promise<ActionResult> {
 
 // Dashboard stats
 export async function getAdminStats(date: string) {
+  if (!await isAdmin()) return { hadir: 0, telat: 0, izin: 0, alpha: 0, total_staff: 0 };
   const supabase = await createClient();
 
   const [{ count: totalStaff }, { data: todayAttendance }] = await Promise.all([

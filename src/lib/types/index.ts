@@ -30,7 +30,7 @@ export interface Attendance {
   note: string | null;
   created_at: string;
   // joined
-  profiles?: Pick<Profile, 'full_name' | 'position'>;
+  profiles?: Pick<Profile, 'full_name' | 'position' | 'avatar_url'>;
 }
 
 export interface LeaveRequest {
@@ -47,7 +47,7 @@ export interface LeaveRequest {
   admin_note: string | null;
   created_at: string;
   // joined
-  profiles?: Pick<Profile, 'full_name' | 'position'>;
+  profiles?: Pick<Profile, 'full_name' | 'position' | 'avatar_url'>;
 }
 
 export interface Settings {

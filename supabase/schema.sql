@@ -6,6 +6,18 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- ================================================
+-- CLEAN RESET: Jalankan bagian ini jika ingin hapus SEMUA DATA (Hapus tanda --)
+-- ================================================
+-- DROP TABLE IF EXISTS attendance CASCADE;
+-- DROP TABLE IF EXISTS leave_requests CASCADE;
+-- DROP TABLE IF EXISTS profiles CASCADE;
+-- DROP TABLE IF EXISTS settings CASCADE;
+-- DROP TYPE IF EXISTS user_role CASCADE;
+-- DROP TYPE IF EXISTS attendance_status CASCADE;
+-- DROP TYPE IF EXISTS leave_status CASCADE;
+-- DROP TYPE IF EXISTS leave_type CASCADE;
+
 -- ========================
 -- ENUMS
 -- ========================
@@ -101,9 +113,9 @@ CREATE INDEX IF NOT EXISTS idx_leave_status ON leave_requests(status);
 
 CREATE TABLE IF NOT EXISTS settings (
   id               INT PRIMARY KEY DEFAULT 1,
-  school_name      TEXT NOT NULL DEFAULT 'SMA Negeri 1 Contoh',
+  school_name      TEXT NOT NULL DEFAULT 'Atelier Academy',
   school_logo_url  TEXT,
-  primary_color    TEXT NOT NULL DEFAULT '#2563EB',
+  primary_color    TEXT NOT NULL DEFAULT '#006a61',
   school_lat       FLOAT8 NOT NULL DEFAULT -6.2088,   -- Jakarta Pusat (placeholder)
   school_lng       FLOAT8 NOT NULL DEFAULT 106.8456,
   allowed_radius_m INT NOT NULL DEFAULT 100,
@@ -141,18 +153,33 @@ CREATE POLICY "profiles_delete_admin" ON profiles FOR DELETE USING (get_my_role(
 -- ATTENDANCE policies
 CREATE POLICY "attendance_select" ON attendance FOR SELECT
   USING (auth.uid() = user_id OR get_my_role() = 'admin');
+
+-- Staff can insert their own attendance
 CREATE POLICY "attendance_insert" ON attendance FOR INSERT
   WITH CHECK (auth.uid() = user_id);
+
+-- Staff can ONLY update their OWN attendance IF they haven't checked out yet (prevent editing history)
+-- Admin can update anything
 CREATE POLICY "attendance_update" ON attendance FOR UPDATE
-  USING (auth.uid() = user_id OR get_my_role() = 'admin');
+  USING (
+    (auth.uid() = user_id AND check_out IS NULL) 
+    OR get_my_role() = 'admin'
+  );
 
 -- LEAVE REQUESTS policies
 CREATE POLICY "leave_select" ON leave_requests FOR SELECT
   USING (auth.uid() = user_id OR get_my_role() = 'admin');
+
 CREATE POLICY "leave_insert" ON leave_requests FOR INSERT
   WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "leave_update_admin" ON leave_requests FOR UPDATE
-  USING (auth.uid() = user_id OR get_my_role() = 'admin');
+
+-- Staff can ONLY update (cancel/edit) IF it is still pending
+-- Admin can update anything
+CREATE POLICY "leave_update" ON leave_requests FOR UPDATE
+  USING (
+    (auth.uid() = user_id AND status = 'pending')
+    OR get_my_role() = 'admin'
+  );
 
 -- SETTINGS policies
 CREATE POLICY "settings_select_all"   ON settings FOR SELECT USING (auth.uid() IS NOT NULL);
@@ -168,9 +195,14 @@ VALUES ('school-assets', 'school-assets', true)
 ON CONFLICT (id) DO NOTHING;
 
 -- Allow admin to upload, everyone to view
+DROP POLICY IF EXISTS "school_assets_upload" ON storage.objects;
 CREATE POLICY "school_assets_upload" ON storage.objects
   FOR INSERT WITH CHECK (bucket_id = 'school-assets' AND get_my_role() = 'admin');
+
+DROP POLICY IF EXISTS "school_assets_view" ON storage.objects;
 CREATE POLICY "school_assets_view" ON storage.objects
   FOR SELECT USING (bucket_id = 'school-assets');
+
+DROP POLICY IF EXISTS "school_assets_delete" ON storage.objects;
 CREATE POLICY "school_assets_delete" ON storage.objects
   FOR DELETE USING (bucket_id = 'school-assets' AND get_my_role() = 'admin');

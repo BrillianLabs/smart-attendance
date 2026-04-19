@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { ActionResult, LeaveRequest, LeaveStatus, LeaveType } from '@/lib/types';
+import { isAdmin } from './auth';
 
 export async function submitLeave(formData: FormData): Promise<ActionResult> {
   const supabase = await createClient();
@@ -50,10 +51,11 @@ export async function getMyLeaveRequests(): Promise<LeaveRequest[]> {
 
 // Admin actions
 export async function getAllLeaveRequests(status?: LeaveStatus): Promise<LeaveRequest[]> {
+  if (!await isAdmin()) return [];
   const supabase = await createClient();
   let query = supabase
     .from('leave_requests')
-    .select('*, profiles(full_name, position)')
+    .select('*, profiles(full_name, position, avatar_url)')
     .order('created_at', { ascending: false });
 
   if (status) query = query.eq('status', status);
@@ -67,6 +69,7 @@ export async function reviewLeave(
   status: 'approved' | 'rejected',
   adminNote?: string
 ): Promise<ActionResult> {
+  if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Tidak terautentikasi.' };

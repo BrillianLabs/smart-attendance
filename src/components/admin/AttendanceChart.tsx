@@ -61,10 +61,10 @@ export function AttendanceChart({ data }: { data: ChartData[] }) {
           }}
         />
         <Legend wrapperStyle={{ fontSize: 12 }} />
-        <Bar dataKey="hadir" name="Hadir"      fill="#10b981" radius={[4,4,0,0]} />
-        <Bar dataKey="telat" name="Terlambat"  fill="#f59e0b" radius={[4,4,0,0]} />
-        <Bar dataKey="izin"  name="Izin"       fill="#3b82f6" radius={[4,4,0,0]} />
-        <Bar dataKey="alpha" name="Alpha"      fill="#ef4444" radius={[4,4,0,0]} />
+        <Bar dataKey="hadir" name="Hadir"      fill="var(--primary)" radius={[4,4,0,0]} />
+        <Bar dataKey="telat" name="Terlambat"  fill="var(--warning)" radius={[4,4,0,0]} />
+        <Bar dataKey="izin"  name="Izin"       fill="var(--info)"    radius={[4,4,0,0]} />
+        <Bar dataKey="alpha" name="Alpha"      fill="var(--danger)"  radius={[4,4,0,0]} />
       </BarChart>
     </ResponsiveContainer>
   );

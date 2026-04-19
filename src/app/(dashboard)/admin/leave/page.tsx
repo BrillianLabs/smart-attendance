@@ -2,13 +2,15 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getProfile } from '@/lib/actions/auth';
 import { getAllLeaveRequests } from '@/lib/actions/leave';
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
 import { LeaveReviewButtons } from '@/components/admin/LeaveReviewButtons';
 import { format, parseISO } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
+import Image from 'next/image';
+import Link from 'next/link';
+import { cn } from '@/lib/utils/cn';
 
-export const metadata: Metadata = { title: 'Persetujuan Izin' };
+export const metadata: Metadata = { title: 'Approvals | Atelier Academy' };
 
 interface Props {
   searchParams: Promise<{ status?: string }>;
@@ -23,72 +25,95 @@ export default async function AdminLeavePage({ searchParams }: Props) {
   const leaves = await getAllLeaveRequests(status);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Persetujuan Izin</h1>
-        <p className="text-[var(--text-muted)] mt-1">{leaves.length} pengajuan</p>
-      </div>
+    <div className="space-y-10 animate-fade-in pb-24">
+      {/* Page Header */}
+      <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 px-1">
+        <div className="space-y-1">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Decision Center</span>
+          <h1 className="text-4xl font-black text-on-surface tracking-tight">Leave <span className="text-primary italic">Approvals</span></h1>
+          <p className="text-sm font-medium text-on-surface-variant opacity-60">Managing {leaves.length} pending and archival requests.</p>
+        </div>
+      </section>
 
-      {/* Filter tabs */}
-      <div className="flex gap-2 flex-wrap">
-        {['', 'pending', 'approved', 'rejected'].map(s => (
-          <a
-            key={s}
-            href={s ? `/admin/leave?status=${s}` : '/admin/leave'}
-            className={`btn btn-sm ${(status ?? '') === s ? 'btn-primary' : 'btn-secondary'}`}
+      {/* Filter Tabs - Tonal Pill Design */}
+      <div className="flex gap-2 flex-wrap bg-surface-container-low p-2 rounded-2xl w-fit border border-outline-variant/10">
+        {[
+          { key: '', label: 'All Indices' },
+          { key: 'pending', label: 'Pending' },
+          { key: 'approved', label: 'Approved' },
+          { key: 'rejected', label: 'Rejected' }
+        ].map(s => (
+          <Link
+            key={s.key}
+            href={s.key ? `/admin/leave?status=${s.key}` : '/admin/leave'}
+            className={cn(
+               "px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+               (status ?? '') === s.key 
+                 ? "bg-white text-primary shadow-sm" 
+                 : "text-on-surface-variant opacity-60 hover:opacity-100 hover:bg-white/50"
+            )}
           >
-            {s === '' ? 'Semua' : statusLabel(s)}
-          </a>
+            {s.label}
+          </Link>
         ))}
       </div>
 
-      <Card padding="none">
+      {/* Requests List */}
+      <div className="bg-surface-container-lowest rounded-[2.5rem] shadow-sm shadow-primary/5 border border-outline-variant/10 overflow-hidden">
         {leaves.length === 0 ? (
-          <p className="text-center text-sm text-[var(--text-muted)] py-12">
-            Tidak ada pengajuan izin.
-          </p>
+          <div className="text-center py-20">
+             <span className="material-symbols-outlined text-4xl text-outline/20 mb-3 block">mark_email_read</span>
+             <p className="text-xs font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">No requests matching this filter</p>
+          </div>
         ) : (
-          <div className="divide-y divide-[var(--border)]">
+          <div className="divide-y divide-surface-container-low">
             {leaves.map(leave => (
-              <div key={leave.id} className="p-5">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[var(--primary-light)] flex items-center justify-center text-sm font-bold flex-shrink-0"
-                         style={{ color: 'var(--primary)' }}>
-                      {(leave.profiles?.full_name ?? 'U').charAt(0)}
+              <div key={leave.id} className="p-8 lg:p-10 hover:bg-surface-container-low/30 transition-all group">
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
+                  <div className="flex items-start gap-6">
+                    <div className="w-14 h-14 rounded-full bg-surface-container-low overflow-hidden flex-shrink-0 flex items-center justify-center font-black text-primary border border-outline-variant/5">
+                      {leave.profiles?.avatar_url ? (
+                        <Image src={leave.profiles.avatar_url} alt="Profile" width={56} height={56} className="object-cover" />
+                      ) : (
+                        (leave.profiles?.full_name ?? 'U').charAt(0).toUpperCase()
+                      )}
                     </div>
-                    <div>
-                      <p className="font-semibold text-[var(--text-primary)]">
-                        {leave.profiles?.full_name ?? '-'}
-                      </p>
-                      <p className="text-xs text-[var(--text-muted)]">
-                        {leave.profiles?.position ?? 'Staf'}
-                      </p>
-                      <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                        <Badge variant="gray" className="text-xs capitalize">{leave.leave_type}</Badge>
-                        <span className="text-xs text-[var(--text-muted)]">
-                          {format(parseISO(leave.start_date), 'd MMM', { locale: idLocale })}
+                    <div className="space-y-1.5 min-w-0">
+                       <div className="flex items-center gap-3">
+                          <p className="text-lg font-bold text-on-surface">{leave.profiles?.full_name ?? 'Unknown Member'}</p>
+                          <Badge variant="gray" className="px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest opacity-60">
+                            {leave.leave_type}
+                          </Badge>
+                       </div>
+                       <p className="text-[10px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">
+                          {leave.profiles?.position ?? 'Academy Member'} • {format(parseISO(leave.start_date), 'd MMM', { locale: idLocale })}
                           {leave.start_date !== leave.end_date && (
                             <> – {format(parseISO(leave.end_date), 'd MMM yyyy', { locale: idLocale })}</>
                           )}
                           {leave.start_date === leave.end_date && (
                             <>, {format(parseISO(leave.start_date), 'yyyy')}</>
                           )}
-                        </span>
-                      </div>
-                      <p className="text-sm text-[var(--text-secondary)] mt-2">{leave.reason}</p>
-                      {leave.admin_note && (
-                        <p className="text-xs italic text-[var(--text-muted)] mt-1">
-                          Catatan: {leave.admin_note}
+                       </p>
+                       <div className="mt-4 p-5 bg-surface rounded-2xl border border-outline-variant/10 italic text-sm text-on-surface-variant leading-relaxed max-w-2xl">
+                          "{leave.reason}"
+                       </div>
+                       {leave.admin_note && (
+                        <p className="text-[11px] font-medium text-primary mt-3 flex items-center gap-2">
+                          <span className="material-symbols-outlined text-sm">sticky_note_2</span>
+                          Official Note: {leave.admin_note}
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-end gap-2 sm:flex-shrink-0">
-                    <Badge variant={statusVariant(leave.status)}>{statusLabel(leave.status)}</Badge>
+                  <div className="flex lg:flex-col items-center lg:items-end gap-4 shrink-0">
+                    <Badge variant={statusVariant(leave.status)} className="px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
+                      {statusLabel(leave.status)}
+                    </Badge>
                     {leave.status === 'pending' && (
-                      <LeaveReviewButtons leaveId={leave.id} />
+                      <div className="mt-2 animate-slide-in">
+                        <LeaveReviewButtons leaveId={leave.id} />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -96,7 +121,7 @@ export default async function AdminLeavePage({ searchParams }: Props) {
             ))}
           </div>
         )}
-      </Card>
+      </div>
     </div>
   );
 }

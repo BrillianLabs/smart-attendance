@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getSettings } from '@/lib/actions/admin';
-import { LoginForm } from '@/components/auth/LoginForm';
+import LoginForm from '@/components/auth/LoginForm';
 
 export const metadata: Metadata = { title: 'Masuk' };
 
@@ -9,9 +9,8 @@ export default async function LoginPage() {
 
   return (
     <LoginForm
-      schoolName={settings?.school_name ?? 'SisAbsen'}
+      schoolName={settings?.school_name ?? 'Atelier Academy'}
       logoUrl={settings?.school_logo_url ?? null}
-      primaryColor={settings?.primary_color ?? '#2563EB'}
     />
   );
 }

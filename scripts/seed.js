@@ -116,11 +116,14 @@ async function runSeed() {
     // 3. SEED SETTINGS AWAL
     // --------------------------------------------------------------------------------
     console.log("\n➡️ Mereset Template Settings...");
-    await supabase.from('settings').update({
-      school_name: 'SMA Negeri 1 Contoh',
-      primary_color: '#2563EB',
-      allowed_radius_m: 100
-    }).eq('id', 1);
+    const { error: settingsError } = await supabase
+      .from('settings')
+      .upsert({
+        id: 1,
+        school_name: 'Atelier Academy',
+        primary_color: '#2563EB',
+        allowed_radius_m: 100
+      });
 
     // --------------------------------------------------------------------------------
     // 4. MEMBUAT HISTORI ABSENSI PALSU (30 HARI KE BELAKANG)

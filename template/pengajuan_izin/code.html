@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Atelier Academy - Pengajuan Izin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#fe8983",
+                        "tertiary-dim": "#005980",
+                        "primary": "#006a61",
+                        "error": "#9f403d",
+                        "primary-fixed": "#89f5e7",
+                        "surface-variant": "#d9e4ea",
+                        "error-dim": "#4e0309",
+                        "on-secondary-fixed": "#314055",
+                        "secondary-container": "#d3e4fe",
+                        "on-surface-variant": "#566166",
+                        "on-error": "#fff7f6",
+                        "outline": "#717c82",
+                        "surface-container-low": "#f0f4f7",
+                        "on-primary": "#dcfff8",
+                        "surface-tint": "#006a61",
+                        "secondary": "#506076",
+                        "on-primary-fixed": "#004841",
+                        "surface-container-highest": "#d9e4ea",
+                        "on-secondary-container": "#435368",
+                        "on-tertiary-fixed-variant": "#003954",
+                        "secondary-dim": "#44546a",
+                        "surface-container": "#e8eff3",
+                        "surface-container-high": "#e1e9ee",
+                        "on-secondary-fixed-variant": "#4d5d73",
+                        "inverse-on-surface": "#9a9d9f",
+                        "tertiary": "#006592",
+                        "surface": "#f7f9fb",
+                        "on-primary-container": "#005c54",
+                        "tertiary-fixed-dim": "#17a8ec",
+                        "on-primary-fixed-variant": "#00675e",
+                        "primary-fixed-dim": "#7ae7d8",
+                        "on-secondary": "#f7f9ff",
+                        "on-error-container": "#752121",
+                        "on-tertiary-container": "#003047",
+                        "outline-variant": "#a9b4b9",
+                        "on-tertiary-fixed": "#00121e",
+                        "surface-dim": "#cfdce3",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#34b5fa",
+                        "on-tertiary": "#f5f9ff",
+                        "primary-container": "#89f5e7",
+                        "surface-bright": "#f7f9fb",
+                        "primary-dim": "#005d55",
+                        "secondary-fixed-dim": "#c5d6f0",
+                        "inverse-primary": "#91feef",
+                        "tertiary-container": "#34b5fa",
+                        "secondary-fixed": "#d3e4fe",
+                        "background": "#f7f9fb",
+                        "on-background": "#2a3439",
+                        "inverse-surface": "#0b0f10",
+                        "on-surface": "#2a3439"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-teal-950/80 backdrop-blur-[24px] shadow-sm shadow-teal-900/5">
+<div class="flex justify-between items-center px-8 h-16 w-full font-['Inter'] antialiased text-sm font-medium tracking-tight">
+<div class="text-xl font-bold tracking-tighter text-teal-700 dark:text-teal-300">Atelier Academy</div>
+<nav class="hidden md:flex gap-8">
+<a class="text-slate-500 dark:text-slate-400 hover:text-teal-600 transition-all duration-300" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-teal-600 transition-all duration-300" href="#">Attendance</a>
+<a class="text-teal-700 dark:text-teal-300 font-bold border-b-2 border-teal-600 pb-1" href="#">Reports</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-teal-600 transition-all duration-300" href="#">Staff</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-slate-500 hover:bg-slate-50/50 p-2 rounded-full transition-all">notifications</button>
+<button class="material-symbols-outlined text-slate-500 hover:bg-slate-50/50 p-2 rounded-full transition-all">settings</button>
+<img alt="User profile avatar" class="w-8 h-8 rounded-full border border-outline-variant/20" data-alt="Close-up portrait of a professional woman with a friendly expression in a bright modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_pzOKveU_m6vtyr1SbONXNZTiE_pSWwLHmV7a2fC36EootQyFO6CuXZjjNMfxb5Nw3Ewh6lkcvnf51yRMBiRIAM1Gc0oqEjrorgMUMfgPptYKmO-VRw4ld6aVKrxAwPO_B6JIkh2RwrY0rWl7Fd8GjOqAKvEwYpCMMZ3uk_fNCSTU0ihnb3PpJY0L-6dvJDXq1_rJyWVVYtn6iEWTrFqSA0-TL6S4Z1tiITNjclwRUCbZuNf2UJ7lgtgoVIToF0Huq0E2vys29N1q"/>
+</div>
+</div>
+</header>
+<!-- Content Stage (Blurred Background Content) -->
+<main class="pt-24 px-8 max-w-7xl mx-auto opacity-40 select-none">
+<h1 class="text-3xl font-black text-on-background mb-8 tracking-tight">Academic Overview</h1>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm h-32"></div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm h-32"></div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm h-32"></div>
+</div>
+<div class="mt-8 bg-surface-container-lowest p-8 rounded-3xl h-96"></div>
+</main>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-on-background/20 backdrop-blur-md">
+<!-- Modal Content -->
+<div class="bg-surface-container-lowest w-full max-w-2xl rounded-[2rem] shadow-[0px_12px_32px_rgba(42,52,57,0.06)] overflow-hidden flex flex-col md:flex-row">
+<!-- Left Branding/Status Column (Asymmetrical Design) -->
+<div class="md:w-1/3 bg-surface-container-low p-8 flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-on-primary" data-icon="event_busy">event_busy</span>
+</div>
+<h2 class="text-2xl font-bold text-on-background leading-tight mb-2">Pengajuan Izin</h2>
+<p class="text-on-surface-variant text-sm leading-relaxed">Silakan lengkapi formulir untuk mengajukan izin akademik atau administratif.</p>
+</div>
+<div class="mt-12">
+<span class="text-[10px] uppercase tracking-widest font-bold text-outline mb-4 block">Status Tracking</span>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-xs font-semibold text-primary">Menunggu</span>
+</div>
+<div class="flex items-center gap-3 opacity-40">
+<div class="w-2 h-2 rounded-full bg-slate-400"></div>
+<span class="text-xs font-semibold text-on-surface-variant">Disetujui/Ditolak</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Form Section -->
+<div class="md:w-2/3 p-8 md:p-12">
+<form class="space-y-6">
+<!-- Dropdown -->
+<div>
+<label class="block text-[11px] uppercase tracking-wider font-bold text-on-surface-variant mb-2 ml-1">Tipe Izin</label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-low border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all">
+<option>Pilih tipe izin...</option>
+<option>Sakit (Medical Leave)</option>
+<option>Cuti (Annual Leave)</option>
+<option>Dinas (Duty Travel)</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Date Picker -->
+<div>
+<label class="block text-[11px] uppercase tracking-wider font-bold text-on-surface-variant mb-2 ml-1">Tanggal Mulai &amp; Berakhir</label>
+<div class="flex flex-col sm:flex-row gap-3">
+<div class="relative flex-1">
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all" type="date"/>
+</div>
+<div class="relative flex-1">
+<input class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all" type="date"/>
+</div>
+</div>
+</div>
+<!-- Text Area -->
+<div>
+<label class="block text-[11px] uppercase tracking-wider font-bold text-on-surface-variant mb-2 ml-1">Catatan Keperluan</label>
+<textarea class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all resize-none" placeholder="Jelaskan alasan pengajuan Anda secara detail..." rows="4"></textarea>
+</div>
+<!-- Actions -->
+<div class="pt-4 flex items-center justify-end gap-4">
+<button class="px-6 py-2.5 text-sm font-semibold text-primary hover:bg-primary/5 rounded-xl transition-all active:scale-95" type="button">Batal</button>
+<button class="px-8 py-2.5 bg-gradient-to-br from-primary to-primary-dim text-on-primary text-sm font-bold rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-all" type="submit">Kirim Pengajuan</button>
+</div>
+</form>
+<!-- Soft Badge Visualization -->
+<div class="mt-12 pt-8 border-t border-outline-variant/10">
+<div class="flex items-center justify-between">
+<h4 class="text-sm font-bold text-on-background">Pengajuan Terakhir</h4>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded-full uppercase tracking-tighter">Dalam Proses</span>
+</div>
+<div class="mt-4 flex items-center gap-4 bg-surface p-4 rounded-2xl">
+<div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-teal-600">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-on-surface">Izin Sakit - 12 Mar 2024</p>
+<p class="text-[11px] text-on-surface-variant">Menunggu verifikasi Kaprodi</p>
+</div>
+<div class="px-3 py-1 bg-primary-container text-on-primary-container text-[10px] font-bold rounded-lg">TERKIRIM</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pt-3 pb-8 bg-white/90 dark:bg-slate-950/90 backdrop-blur-lg border-t border-slate-100 dark:border-slate-800 z-50 rounded-t-3xl shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 transition-all opacity-80 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 transition-all opacity-80 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="checklist_rtl">checklist_rtl</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Mark</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-2xl px-5 py-2 transition-all opacity-80 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="mail" style="font-variation-settings: 'FILL' 1;">mail</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 transition-all opacity-80 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

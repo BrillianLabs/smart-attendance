@@ -1,241 +1,205 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getProfile } from '@/lib/actions/auth';
-import { getAdminStats } from '@/lib/actions/admin';
+import { getAdminStats, getSettings } from '@/lib/actions/admin';
 import { getAdminAttendance, getMonthlyStats } from '@/lib/actions/attendance';
 import { getAllLeaveRequests } from '@/lib/actions/leave';
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
-import { AttendanceChart } from '@/components/admin/AttendanceChart';
-import { Users, CheckCircle2, Clock, XCircle, AlertOctagon, FileText, ShieldCheck, Settings2, CalendarCheck } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import Link from 'next/link';
+import Image from 'next/image';
 
-export const metadata: Metadata = { title: 'Dashboard Admin' };
+export const metadata: Metadata = { title: 'Admin Overview | Atelier Academy' };
 
-function StatCard({ icon: Icon, label, value, color, bg, delay }: {
-  icon: React.ElementType; label: string; value: number; color: string; bg: string; delay: string;
+function MetricCard({ icon, label, value, trend, colorClass, barWidth, barColor }: {
+  icon: string; label: string; value: number | string; trend: string; colorClass: string; barWidth: string; barColor: string;
 }) {
   return (
-    <div className={`card p-6 flex flex-col justify-between relative overflow-hidden group animate-fade-in ${delay}`}>
-      {/* Decorative background glow */}
-      <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full blur-3xl opacity-20 transition-opacity group-hover:opacity-40 ${bg}`}></div>
-      
-      <div className="flex items-center justify-between mb-4 relative z-10">
-        <div className={`w-12 h-12 rounded-2xl ${bg} flex items-center justify-center transition-transform group-hover:scale-110 duration-300`}>
-          <Icon size={24} className={color} />
+    <div className="bg-surface-container-lowest p-8 rounded-2xl shadow-[0px_12px_32px_rgba(42,52,57,0.04)] flex flex-col gap-4 relative overflow-hidden group border border-outline-variant/10">
+      <div className="flex justify-between items-start">
+        <div className={cn("p-3 rounded-xl", colorClass)}>
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>{icon}</span>
         </div>
-        <div className="text-right">
-          <p className="text-3xl font-bold tracking-tight text-[var(--text-primary)]">{value}</p>
-        </div>
+        <span className={cn("text-[11px] font-bold uppercase tracking-wider", barColor.replace('bg-', 'text-'))}>{trend}</span>
       </div>
-      
-      <div className="relative z-10">
-        <p className="text-sm font-semibold text-[var(--text-secondary)] mb-1 uppercase tracking-wider">{label}</p>
-        <div className="flex items-center gap-1.5 h-1">
-          <div className={`h-full rounded-full transition-all duration-700 w-full ${bg.replace('bg-', 'bg-')}`}></div>
-        </div>
+      <div>
+        <p className="text-sm font-medium text-on-surface-variant opacity-70 mb-1">{label}</p>
+        <h3 className="text-[3.5rem] font-bold text-on-background tracking-tighter leading-none">{value}</h3>
+      </div>
+      <div className="h-1.5 w-full bg-surface-container-low rounded-full mt-2">
+        <div className={cn("h-full rounded-full transition-all duration-1000", barColor)} style={{ width: barWidth }}></div>
       </div>
     </div>
   );
 }
 
+import { cn } from '@/lib/utils/cn';
+
 export default async function AdminDashboard() {
   const profile = await getProfile();
   if (!profile || profile.role !== 'admin') redirect('/');
 
-  const today       = format(new Date(), 'yyyy-MM-dd');
-  const currentMonth = format(new Date(), 'yyyy-MM');
-
-  const [stats, todayAttendance, chartData, pendingLeaves] = await Promise.all([
+  const today = format(new Date(), 'yyyy-MM-dd');
+  const [stats, todayAttendance, settings] = await Promise.all([
     getAdminStats(today),
     getAdminAttendance({ date: today, limit: 10 }),
-    getMonthlyStats(currentMonth),
-    getAllLeaveRequests('pending'),
+    getSettings(),
   ]);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
-      {/* Header section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="space-y-12 animate-fade-in pb-24">
+      {/* Header Section */}
+      <section className="flex justify-between items-end px-1">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-4xl">
-            Dashboard Admin
-          </h1>
-          <div className="flex items-center gap-2 mt-2">
-            <span className="flex h-2 w-2 rounded-full bg-[var(--primary)]"></span>
-            <p className="text-[var(--text-secondary)] font-medium capitalize">
-              {format(new Date(), 'EEEE, d MMMM yyyy', { locale: idLocale })}
-            </p>
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Academy Analytics</span>
+          <h2 className="text-[2rem] font-bold text-on-surface leading-tight tracking-tight">Daily Attendance Overview</h2>
+        </div>
+        <div className="hidden sm:flex gap-3">
+          <button className="px-6 py-2.5 rounded-full text-xs font-bold bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high transition-colors">
+            View History
+          </button>
+          <button className="px-6 py-2.5 rounded-full text-xs font-bold bg-gradient-to-br from-primary to-primary-dim text-white shadow-lg shadow-primary/10 active:scale-95 transition-all">
+            New Registration
+          </button>
+        </div>
+      </section>
+
+      {/* Metrics Bento Grid - Matching Template */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <MetricCard 
+          icon="check_circle" 
+          label="Total Hadir" 
+          value={stats.hadir} 
+          trend="+12% from avg" 
+          colorClass="bg-primary-container text-on-primary-container"
+          barWidth="85%"
+          barColor="bg-primary"
+        />
+        <MetricCard 
+          icon="schedule" 
+          label="Terlambat" 
+          value={stats.telat} 
+          trend="-4% from avg" 
+          colorClass="bg-secondary-container text-on-secondary-container"
+          barWidth="15%"
+          barColor="bg-secondary"
+        />
+        <MetricCard 
+          icon="event_note" 
+          label="Izin / Sakit" 
+          value={stats.izin} 
+          trend="+2 today" 
+          colorClass="bg-error-container/20 text-error"
+          barWidth="8%"
+          barColor="bg-error"
+        />
+      </section>
+
+      {/* Table Data Section - Matching Admin Template */}
+      <section className="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(42,52,57,0.04)] border border-outline-variant/10">
+        <div className="px-8 py-6 flex justify-between items-center border-b border-surface-container-low">
+          <h3 className="text-lg font-bold text-on-surface">Rekap Kehadiran Hari Ini</h3>
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex bg-surface-container-low rounded-lg p-1">
+              <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md bg-white shadow-sm text-primary">All Students</button>
+              <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md text-on-surface-variant opacity-60">Staff Only</button>
+            </div>
+            <button className="flex items-center gap-2 px-4 py-2 border border-outline-variant/30 rounded-full text-[10px] font-bold uppercase tracking-widest text-on-surface hover:bg-surface-container-low transition-colors">
+              <span className="material-symbols-outlined text-sm">download</span>
+              Export CSV
+            </button>
           </div>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:flex flex-col items-end mr-2">
-            <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest">Status Sistem</p>
-            <p className="text-sm font-semibold text-[var(--success)] flex items-center gap-1.5">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--success)] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--success)]"></span>
-              </span>
-              Aktif
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-        <StatCard icon={Users} label="Total Staf" value={stats.total_staff} color="text-indigo-600" bg="bg-indigo-50" delay="[animation-delay:100ms]" />
-        <StatCard icon={CheckCircle2} label="Hadir" value={stats.hadir} color="text-emerald-600" bg="bg-emerald-50" delay="[animation-delay:200ms]" />
-        <StatCard icon={Clock} label="Terlambat" value={stats.telat} color="text-amber-600" bg="bg-amber-50" delay="[animation-delay:300ms]" />
-        <StatCard icon={FileText} label="Izin" value={stats.izin} color="text-sky-600" bg="bg-sky-50" delay="[animation-delay:400ms]" />
-        <StatCard icon={AlertOctagon} label="Tanpa Keterangan" value={stats.alpha} color="text-rose-600" bg="bg-rose-50" delay="[animation-delay:500ms]" />
-      </div>
-
-      {/* Main Content Grid */}
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Chart Column */}
-        <div className="lg:col-span-2 space-y-8">
-          <Card className="overflow-hidden border-none shadow-xl bg-gradient-to-tr from-white to-slate-50">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-bold text-[var(--text-primary)]">Rekap Kehadiran</h3>
-                <p className="text-sm text-[var(--text-muted)]">{format(new Date(), 'MMMM yyyy', { locale: idLocale })}</p>
-              </div>
-              <div className="flex items-center gap-2 px-3 py-1 bg-white rounded-lg border border-slate-200 shadow-sm">
-                <div className="w-2 h-2 rounded-full bg-[var(--primary)]"></div>
-                <span className="text-xs font-bold text-slate-600">Presensi Bulanan</span>
-              </div>
-            </div>
-            <div className="p-6">
-              <AttendanceChart data={chartData} />
-            </div>
-          </Card>
-          
-          <Card className="hoverable shadow-lg">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
-                  <Clock size={20} />
-                </div>
-                <CardTitle>Absensi Hari Ini</CardTitle>
-              </div>
-              <Link href="/admin/attendance" className="btn btn-sm btn-ghost text-[var(--primary)] hover:bg-[var(--primary-light)]">
-                Lihat Semua
-              </Link>
-            </CardHeader>
-            <div className="px-6 pb-6">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-surface-container-low/50">
+                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Nama Mahasiswa</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Jam Masuk</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Jam Pulang</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Status</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Aksi</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-surface-container-low">
               {todayAttendance.length === 0 ? (
-                <div className="py-12 text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 mb-4">
-                    <Users size={32} className="text-slate-300" />
-                  </div>
-                  <p className="text-sm font-medium text-slate-400">Belum ada aktivitas absensi hari ini.</p>
-                </div>
+                <tr>
+                  <td colSpan={5} className="px-8 py-12 text-center text-outline/60 text-sm font-medium">No activity recorded today</td>
+                </tr>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr>
-                        <th className="text-left py-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Nama Staf</th>
-                        <th className="text-left py-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Waktu</th>
-                        <th className="text-right py-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {todayAttendance.map((att) => (
-                        <tr key={att.id} className="group hover:bg-slate-50 transition-colors">
-                          <td className="py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs">
-                                {(att.profiles?.full_name ?? 'U').charAt(0)}
-                              </div>
-                              <span className="text-sm font-semibold text-slate-700">{att.profiles?.full_name ?? 'Unknown'}</span>
-                            </div>
-                          </td>
-                          <td className="py-4">
-                            <div className="flex flex-col">
-                              <span className="text-sm font-bold text-slate-600">
-                                {att.check_in ? format(parseISO(att.check_in), 'HH:mm') : '--:--'}
-                              </span>
-                              <span className="text-xs text-slate-400">Check-in</span>
-                            </div>
-                          </td>
-                          <td className="py-4 text-right">
-                            <Badge variant={statusVariant(att.status)}>{statusLabel(att.status)}</Badge>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          </Card>
-        </div>
-
-        {/* Sidebar Column */}
-        <div className="space-y-8">
-          <Card className="shadow-xl border-none bg-[var(--primary)] text-white overflow-hidden relative">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-              <ShieldCheck size={120} />
-            </div>
-            <CardHeader className="relative z-10 border-none mb-2">
-              <CardTitle className="text-white flex items-center gap-2">
-                <FileText size={18} />
-                Izin Menunggu
-              </CardTitle>
-              {pendingLeaves.length > 0 && (
-                <span className="px-2 py-0.5 rounded-full bg-white text-[var(--primary)] text-[10px] font-black uppercase">
-                  {pendingLeaves.length} Baru
-                </span>
-              )}
-            </CardHeader>
-            <div className="px-6 pb-6 relative z-10">
-              {pendingLeaves.length === 0 ? (
-                <div className="py-8 text-center bg-white/10 rounded-2xl backdrop-blur-sm border border-white/10">
-                  <CheckCircle2 size={32} className="mx-auto mb-2 opacity-50" />
-                  <p className="text-sm font-medium opacity-80">Semua permintaan telah diproses.</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {pendingLeaves.slice(0, 4).map((leave) => (
-                    <div key={leave.id} className="p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 hover:bg-white/20 transition-colors cursor-pointer group">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-bold truncate pr-2">{leave.profiles?.full_name ?? leave.user_id}</span>
-                        <span className="text-[10px] font-black uppercase bg-white/20 px-2 py-0.5 rounded-md">{leave.leave_type}</span>
+                todayAttendance.map((att) => (
+                  <tr key={att.id} className="hover:bg-surface-container-low/30 transition-colors group">
+                    <td className="px-8 py-5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-surface-container-low overflow-hidden flex-shrink-0 flex items-center justify-center font-bold text-primary shadow-inner">
+                          {att.profiles?.avatar_url ? (
+                            <Image src={att.profiles.avatar_url} alt="Profile" width={40} height={40} className="object-cover" />
+                          ) : (
+                            att.profiles?.full_name?.charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-on-surface">{att.profiles?.full_name}</p>
+                          <p className="text-[10px] font-bold text-on-surface-variant opacity-50 uppercase tracking-wider">ID: {att.id.slice(0, 8)}</p>
+                        </div>
                       </div>
-                      <p className="text-xs opacity-70 flex items-center gap-1.5 font-medium">
-                        <CalendarCheck size={12} />
-                        {format(parseISO(leave.start_date), 'd MMM', { locale: idLocale })}
-                        {leave.start_date !== leave.end_date && ` – ${format(parseISO(leave.end_date), 'd MMM', { locale: idLocale })}`}
-                      </p>
-                    </div>
-                  ))}
-                  <Link href="/admin/leave" className="flex items-center justify-center w-full py-3 rounded-xl bg-white text-[var(--primary)] text-sm font-bold hover:bg-indigo-50 transition-colors">
-                    Kelola Semua Izin
-                  </Link>
-                </div>
+                    </td>
+                    <td className="px-8 py-5 text-sm text-on-surface-variant font-medium">
+                      {att.check_in ? format(parseISO(att.check_in), 'hh:mm a') : '--:--'}
+                    </td>
+                    <td className="px-8 py-5 text-sm text-on-surface-variant font-medium">
+                      {att.check_out ? format(parseISO(att.check_out), 'hh:mm a') : '--:--'}
+                    </td>
+                    <td className="px-8 py-5">
+                      <Badge variant={statusVariant(att.status)} className="px-3 py-1 text-[10px] uppercase tracking-widest font-black rounded-full">
+                        {statusLabel(att.status)}
+                      </Badge>
+                    </td>
+                    <td className="px-8 py-5">
+                      <button className="text-outline hover:text-primary transition-colors">
+                        <span className="material-symbols-outlined">more_horiz</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))
               )}
-            </div>
-          </Card>
-          
-          <Card className="p-6 bg-slate-50 border-dashed border-2 border-slate-200">
-            <h4 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Quick Links</h4>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { label: 'User Baru', icon: Users, href: '/admin/users' },
-                { label: 'Setting', icon: Settings2, href: '/admin/settings' },
-              ].map((item) => (
-                <Link key={item.label} href={item.href} className="flex flex-col items-center justify-center p-4 bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[var(--primary)] transition-all group">
-                  <item.icon size={20} className="text-slate-400 group-hover:text-[var(--primary)] transition-colors mb-2" />
-                  <span className="text-xs font-bold text-slate-600">{item.label}</span>
-                </Link>
-              ))}
-            </div>
-          </Card>
+            </tbody>
+          </table>
+        </div>
+        <div className="px-8 py-6 border-t border-surface-container-low bg-white flex items-center justify-between">
+          <p className="text-[11px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">
+            Showing {todayAttendance.length} records
+          </p>
+          <div className="flex items-center gap-2">
+            <button className="p-2 rounded-lg border border-outline-variant/20 text-outline disabled:opacity-30" disabled>
+              <span className="material-symbols-outlined text-sm">chevron_left</span>
+            </button>
+            <button className="w-8 h-8 rounded-lg bg-primary text-white text-xs font-bold shadow-lg shadow-primary/20">1</button>
+            <button className="p-2 rounded-lg border border-outline-variant/20 text-outline hover:text-primary transition-colors">
+              <span className="material-symbols-outlined text-sm">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Attendance Ribbon (Bespoke Component from Template) */}
+      <div className="fixed bottom-10 right-12 left-auto bg-white/60 backdrop-blur-xl px-7 py-5 rounded-full border border-white shadow-[0_12px_40px_rgba(0,0,0,0.08)] flex items-center gap-8 max-w-2xl z-40 animate-fade-in translate-y-0 group hover:-translate-y-1 transition-all duration-300">
+        <div className="flex flex-col">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-1">Real-time Feed</span>
+          <span className="text-xs font-bold text-on-surface-variant">Live system activity</span>
+        </div>
+        <div className="w-[180px] h-2 bg-surface-container-highest rounded-full relative overflow-hidden hidden sm:block">
+          <div className="absolute left-0 top-0 h-full w-[65%] bg-primary animate-pulse"></div>
+        </div>
+        <div className="flex -space-x-3">
+          {[1,2,3].map(i => (
+            <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-surface-container-high shadow-sm ring-1 ring-black/5" />
+          ))}
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+          <span className="text-[10px] font-black text-primary uppercase tracking-widest">Live</span>
         </div>
       </div>
     </div>

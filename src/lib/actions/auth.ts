@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { ActionResult } from '@/lib/types';
+import { ActionResult, Profile } from '@/lib/types';
 
 export async function login(formData: FormData): Promise<ActionResult> {
   const email    = formData.get('email')    as string;
@@ -45,5 +45,10 @@ export async function getProfile() {
     .eq('id', user.id)
     .single();
 
-  return data;
+  return data as Profile;
+}
+
+export async function isAdmin() {
+  const profile = await getProfile();
+  return profile?.role === 'admin';
 }

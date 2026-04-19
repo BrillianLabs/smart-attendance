@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Atelier Academy - Dashboard Guru</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#fe8983",
+                    "tertiary-dim": "#005980",
+                    "primary": "#006a61",
+                    "error": "#9f403d",
+                    "primary-fixed": "#89f5e7",
+                    "surface-variant": "#d9e4ea",
+                    "error-dim": "#4e0309",
+                    "on-secondary-fixed": "#314055",
+                    "secondary-container": "#d3e4fe",
+                    "on-surface-variant": "#566166",
+                    "on-error": "#fff7f6",
+                    "outline": "#717c82",
+                    "surface-container-low": "#f0f4f7",
+                    "on-primary": "#dcfff8",
+                    "surface-tint": "#006a61",
+                    "secondary": "#506076",
+                    "on-primary-fixed": "#004841",
+                    "surface-container-highest": "#d9e4ea",
+                    "on-secondary-container": "#435368",
+                    "on-tertiary-fixed-variant": "#003954",
+                    "secondary-dim": "#44546a",
+                    "surface-container": "#e8eff3",
+                    "surface-container-high": "#e1e9ee",
+                    "on-secondary-fixed-variant": "#4d5d73",
+                    "inverse-on-surface": "#9a9d9f",
+                    "tertiary": "#006592",
+                    "surface": "#f7f9fb",
+                    "on-primary-container": "#005c54",
+                    "tertiary-fixed-dim": "#17a8ec",
+                    "on-primary-fixed-variant": "#00675e",
+                    "primary-fixed-dim": "#7ae7d8",
+                    "on-secondary": "#f7f9ff",
+                    "on-error-container": "#752121",
+                    "on-tertiary-container": "#003047",
+                    "outline-variant": "#a9b4b9",
+                    "on-tertiary-fixed": "#00121e",
+                    "surface-dim": "#cfdce3",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#34b5fa",
+                    "on-tertiary": "#f5f9ff",
+                    "primary-container": "#89f5e7",
+                    "surface-bright": "#f7f9fb",
+                    "primary-dim": "#005d55",
+                    "secondary-fixed-dim": "#c5d6f0",
+                    "inverse-primary": "#91feef",
+                    "tertiary-container": "#34b5fa",
+                    "secondary-fixed": "#d3e4fe",
+                    "background": "#f7f9fb",
+                    "on-background": "#2a3439",
+                    "inverse-surface": "#0b0f10",
+                    "on-surface": "#2a3439"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .attendance-gradient {
+            background: linear-gradient(135deg, #006a61 0%, #005d55 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body antialiased">
+<!-- TopNavBar (Shared Component) -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-[24px] shadow-sm shadow-teal-900/5 flex justify-between items-center px-8 h-16 w-full">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-teal-700">Atelier Academy</span>
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-teal-700 font-bold border-b-2 border-teal-600 pb-1 font-['Inter'] antialiased text-sm tracking-tight" href="#">Dashboard</a>
+<a class="text-slate-500 hover:text-teal-600 font-['Inter'] antialiased text-sm font-medium tracking-tight transition-all duration-300" href="#">Attendance</a>
+<a class="text-slate-500 hover:text-teal-600 font-['Inter'] antialiased text-sm font-medium tracking-tight transition-all duration-300" href="#">Reports</a>
+<a class="text-slate-500 hover:text-teal-600 font-['Inter'] antialiased text-sm font-medium tracking-tight transition-all duration-300" href="#">Staff</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-slate-50/50 transition-all rounded-full active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-50/50 transition-all rounded-full active:scale-95">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant/20">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="Close up portrait of a professional male teacher with friendly expression in a modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1VAX3qdF2fBImxGycV8GUc_C5aa-rw0eh8s4xYtQw0LvqUTdziKOrPNvnH_mO77izXBRhZXTECuPvvu2x0sjCV7vC8pXdulwFKBJVMyV9sLuXfYd_GexQc9xc67PV9jduVh4zvqpYbpFNNAQv6nWULZw_VEetH-Gqj21Fx640utIFxoWneYc4J7XFA_7SejEl_nDDmV3SP28WhqAK0-QgPcZkE_sWDKy3gN3s-d5jGqix_II_ivGbG4lPsKOaKiBLc7UiqEiOXVnD"/>
+</div>
+</div>
+</nav>
+<main class="pt-24 pb-32 px-6 max-w-7xl mx-auto">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+<div>
+<p class="text-on-surface-variant text-sm font-medium tracking-wide mb-1 uppercase opacity-70">Senin, 22 Mei 2024</p>
+<h1 class="text-4xl md:text-5xl font-black tracking-tight text-on-background">Selamat Pagi, <span class="text-primary">Setiawan007</span></h1>
+</div>
+<div class="flex items-center gap-3 bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm font-semibold">Tahun Ajaran 2023/2024</span>
+</div>
+</header>
+<!-- Main Content Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Absence Widget (GPS & Map) -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded-[2rem] overflow-hidden shadow-sm shadow-teal-900/5 flex flex-col">
+<div class="p-8 pb-4">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="text-2xl font-bold tracking-tight mb-1">Presensi Digital</h2>
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-[18px]" data-icon="location_on" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<span class="text-sm font-bold uppercase tracking-wider">Radius Aman</span>
+</div>
+</div>
+<button class="bg-surface-container-low p-4 rounded-2xl hover:bg-surface-container-high transition-colors active:scale-95 group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform" data-icon="photo_camera">photo_camera</span>
+<span class="block text-[10px] font-bold mt-1 uppercase text-primary">Verifikasi</span>
+</button>
+</div>
+<div class="relative h-64 rounded-3xl overflow-hidden mb-8 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Stylized minimalist map interface showing current location in a clean teal and gray color palette with a pulse animation marker" data-location="Jakarta, Indonesia" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpH9spuD_sGZh7N7VcmXT2vJSqL1TdKv5_b8a9QVKwHkip8F0Fe2UqGrUHE8uHkqRHhK9wIwdSG2wwihvbK4u20kX_NAGvhRhJmFvMB-GOHua62dvuAQf8H9gHR9K1IamRggaV2Y6BEBneS0gtfuaTgHLSZ0qplZTGpBonFnS_SbJqTLwyrKe0Hzx4QOdRdFdmK0n8bHz-roAr9zgmyyStUIkByzANiT7_ulRkSNkI4PdZHF0fQ5aTy5MDUy_OFch-nPFlUZzLBuE-"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+<div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-xs font-bold">SMK Atelier Academy • 12m dari lokasi</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-4">
+<button class="attendance-gradient text-on-primary py-5 rounded-2xl font-bold text-lg shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all">
+                            Absen Masuk
+                        </button>
+<button class="border-2 border-outline-variant text-outline py-5 rounded-2xl font-bold text-lg hover:bg-surface-container-low active:scale-[0.98] transition-all">
+                            Absen Pulang
+                        </button>
+</div>
+</div>
+</div>
+<!-- Side Widgets / Summary -->
+<div class="lg:col-span-5 flex flex-col gap-8">
+<!-- Status Card -->
+<div class="bg-primary-container p-8 rounded-[2rem] relative overflow-hidden group">
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-primary/10 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+<div class="relative z-10">
+<p class="text-on-primary-container font-bold text-sm uppercase tracking-widest mb-2">Status Hari Ini</p>
+<h3 class="text-3xl font-black text-on-primary-container mb-6 italic">Belum Presensi</h3>
+<div class="flex items-center gap-2 text-on-primary-container/80">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<p class="text-sm font-medium tracking-tight italic">Shift Pagi: 07:00 - 15:00</p>
+</div>
+</div>
+</div>
+<!-- Quick Stats -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-6 rounded-[2rem]">
+<span class="material-symbols-outlined text-primary mb-3" data-icon="trending_up">trending_up</span>
+<p class="text-2xl font-black tracking-tighter">98%</p>
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Kehadiran</p>
+</div>
+<div class="bg-surface-container-low p-6 rounded-[2rem]">
+<span class="material-symbols-outlined text-secondary mb-3" data-icon="pending_actions">pending_actions</span>
+<p class="text-2xl font-black tracking-tighter">2</p>
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Izin Pending</p>
+</div>
+</div>
+</div>
+</div>
+<!-- History Section -->
+<section class="mt-16">
+<div class="flex justify-between items-center mb-8">
+<h2 class="text-2xl font-bold tracking-tight">Riwayat Kehadiran Minggu Ini</h2>
+<button class="text-primary font-bold text-sm hover:underline">Lihat Semua</button>
+</div>
+<div class="bg-surface-container-lowest rounded-[2rem] p-4 overflow-hidden shadow-sm shadow-teal-900/5">
+<div class="flex flex-col divide-y divide-surface-container">
+<!-- List Item: Hadir -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors rounded-2xl group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="font-bold tracking-tight">Jumat, 19 Mei 2024</p>
+<p class="text-xs text-on-surface-variant font-medium">06:55 WIB • Fingerprint Office</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="hidden md:block text-sm font-medium text-on-surface-variant">Pulang 15:05</span>
+<span class="bg-primary-container text-on-primary-container px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest">Hadir</span>
+</div>
+</div>
+<!-- List Item: Telat -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors rounded-2xl group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="error" style="font-variation-settings: 'FILL' 1;">error</span>
+</div>
+<div>
+<p class="font-bold tracking-tight">Kamis, 18 Mei 2024</p>
+<p class="text-xs text-on-surface-variant font-medium">07:15 WIB • Mobile App (GPS)</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="hidden md:block text-sm font-medium text-on-surface-variant">Pulang 15:00</span>
+<span class="bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest">Telat</span>
+</div>
+</div>
+<!-- List Item: Izin -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors rounded-2xl group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-outline" data-icon="event_busy" style="font-variation-settings: 'FILL' 1;">event_busy</span>
+</div>
+<div>
+<p class="font-bold tracking-tight">Rabu, 17 Mei 2024</p>
+<p class="text-xs text-on-surface-variant font-medium">Cuti Tahunan • Disetujui Admin</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="hidden md:block text-sm font-medium text-on-surface-variant">-</span>
+<span class="bg-surface-container-high text-outline px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest">Izin</span>
+</div>
+</div>
+<!-- List Item: Hadir -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors rounded-2xl group border-none">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="font-bold tracking-tight">Selasa, 16 Mei 2024</p>
+<p class="text-xs text-on-surface-variant font-medium">06:42 WIB • Face Verification</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="hidden md:block text-sm font-medium text-on-surface-variant">Pulang 15:10</span>
+<span class="bg-primary-container text-on-primary-container px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest">Hadir</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Shared Component - Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pt-3 pb-8 bg-white/90 backdrop-blur-lg border-t border-slate-100 z-50 rounded-t-3xl shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+<button class="flex flex-col items-center justify-center bg-teal-50 text-teal-700 rounded-2xl px-5 py-2 transition-all active:scale-90 tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 opacity-80 transition-all active:scale-90 tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="checklist_rtl">checklist_rtl</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Mark</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 opacity-80 transition-all active:scale-90 tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Requests</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 opacity-80 transition-all active:scale-90 tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Profile</span>
+</button>
+</nav>
+</body></html>

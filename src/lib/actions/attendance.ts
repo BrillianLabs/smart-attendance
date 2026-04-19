@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { ActionResult, Attendance } from '@/lib/types';
 import { format } from 'date-fns';
+import { isAdmin } from './auth';
 
 export async function checkIn(
   lat: number,
@@ -159,11 +160,12 @@ export async function getAdminAttendance(params: {
   userId?: string;
   limit?: number;
 }): Promise<Attendance[]> {
+  if (!await isAdmin()) return [];
   const supabase = await createClient();
 
   let query = supabase
     .from('attendance')
-    .select('*, profiles(full_name, position)')
+    .select('*, profiles(full_name, position, avatar_url)')
     .order('date', { ascending: false });
 
   if (params.date) {

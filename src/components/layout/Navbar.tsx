@@ -1,10 +1,13 @@
 'use client';
 
-import { Profile, Settings } from '@/lib/types';
-import { cn } from '@/lib/utils/cn';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useState, useRef, useEffect } from 'react';
+import { logout } from '@/lib/actions/auth';
+import { User, LogOut, Shield } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
+import { cn } from '@/lib/utils/cn';
+import { Profile, Settings } from '@/lib/types';
 
 interface NavbarProps {
   profile: Profile;
@@ -14,6 +17,19 @@ interface NavbarProps {
 export function Navbar({ profile, settings }: NavbarProps) {
   const pathname = usePathname();
   const isAdmin = profile.role === 'admin';
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <header className={cn(
@@ -35,10 +51,10 @@ export function Navbar({ profile, settings }: NavbarProps) {
         {!isAdmin && (
           <nav className="hidden md:flex gap-8 font-medium">
             <Link 
-              href="/dashboard" 
+              href="/" 
               className={cn(
                 "text-sm tracking-tight transition-all duration-200",
-                pathname === '/dashboard' ? "text-primary font-bold border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"
+                pathname === '/' ? "text-primary font-bold border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"
               )}
             >
               Dashboard
@@ -109,20 +125,68 @@ export function Navbar({ profile, settings }: NavbarProps) {
           />
         </div>
 
-        <div className="flex items-center gap-2 lg:gap-3">
+        <div className="flex items-center gap-2 lg:gap-3" ref={menuRef}>
           <button className="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all active:scale-95 group">
             <span className="material-symbols-outlined text-[22px] group-hover:scale-110 transition-transform">notifications</span>
           </button>
           
-          <Link href="/profile" className="w-9 h-9 rounded-full bg-surface-container-high border border-outline-variant/10 overflow-hidden shadow-sm flex items-center justify-center hover:ring-2 hover:ring-primary transition-all">
-            {profile.avatar_url ? (
-              <Image src={profile.avatar_url} alt="Profile" width={36} height={36} className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-[0.8125rem] font-bold text-primary">
-                {profile.full_name.charAt(0).toUpperCase()}
-              </span>
+          <div className="relative">
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="w-9 h-9 rounded-full bg-surface-container-high border border-outline-variant/10 overflow-hidden shadow-sm flex items-center justify-center hover:ring-2 hover:ring-primary transition-all active:scale-90"
+            >
+              {profile.avatar_url ? (
+                <Image src={profile.avatar_url} alt="Profile" width={36} height={36} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-[0.8125rem] font-bold text-primary">
+                  {profile.full_name.charAt(0).toUpperCase()}
+                </span>
+              )}
+            </button>
+
+            {/* Dropdown Menu */}
+            {isMenuOpen && (
+              <div className="absolute right-0 mt-3 w-64 bg-white rounded-[1.5rem] shadow-2xl border border-outline-variant/10 py-3 z-[60] animate-fade-in divide-y divide-outline-variant/5">
+                <div className="px-5 py-3">
+                  <p className="text-[0.8125rem] font-black text-on-surface line-clamp-1">{profile.full_name}</p>
+                  <p className="text-[0.625rem] text-on-surface-variant font-bold uppercase tracking-widest opacity-60 mt-0.5">{profile.role}</p>
+                </div>
+                
+                <div className="py-2">
+                  <Link 
+                    href="/profile" 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-3 px-5 py-2.5 text-[0.8125rem] font-bold text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-all"
+                  >
+                    <User size={16} />
+                    Profil Saya
+                  </Link>
+                  {isAdmin && (
+                    <Link 
+                      href="/admin/settings" 
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex items-center gap-3 px-5 py-2.5 text-[0.8125rem] font-bold text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-all"
+                    >
+                      <Shield size={16} />
+                      Admin Settings
+                    </Link>
+                  )}
+                </div>
+
+                <div className="pt-2">
+                  <form action={logout}>
+                    <button 
+                      type="submit"
+                      className="w-full flex items-center gap-3 px-5 py-2.5 text-[0.8125rem] font-bold text-error hover:bg-error/5 transition-all"
+                    >
+                      <LogOut size={16} />
+                      Log Out
+                    </button>
+                  </form>
+                </div>
+              </div>
             )}
-          </Link>
+          </div>
         </div>
       </div>
     </header>

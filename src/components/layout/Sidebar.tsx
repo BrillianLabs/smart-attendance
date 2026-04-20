@@ -15,15 +15,15 @@ interface SidebarProps {
 }
 
 const staffNav = [
-  { href: '/',           icon: 'dashboard', label: 'Dashboard' },
+  { href: '/',           icon: 'dashboard', label: 'Beranda' },
   { href: '/attendance', icon: 'calendar_today',   label: 'Presensi' },
   { href: '/leave',      icon: 'event_busy',        label: 'Izin' },
 ];
 
 const adminNav = [
-  { href: '/admin',          icon: 'admin_panel_settings', label: 'Admin Panel' },
-  { href: '/admin/users',    icon: 'group',          label: 'Data Pengguna' },
-  { href: '/admin/leave',    icon: 'approval_delegation', label: 'Persetujuan' },
+  { href: '/admin',          icon: 'admin_panel_settings', label: 'Panel Admin' },
+  { href: '/admin/users',    icon: 'group',          label: 'Daftar Anggota' },
+  { href: '/admin/leave',    icon: 'approval_delegation', label: 'Persetujuan Izin' },
   { href: '/admin/settings', icon: 'settings',      label: 'Pengaturan' },
 ];
 
@@ -52,11 +52,13 @@ export function Sidebar({ profile, settings }: SidebarProps) {
     >
       {/* Branding Header */}
       <div className="mb-10 px-2 mt-2">
-        <h1 className="text-lg font-black tracking-[0.15em] uppercase text-primary leading-tight">
-          {settings?.school_name ?? 'Atelier Academy'}
+        <h1 className="text-lg font-black tracking-tight uppercase text-primary leading-tight">
+          {settings?.school_name ?? 'SD NEGERI NGUWOK'}
+          <br />
+          <span className="text-[0.8rem]">KECAMATAN MODO</span>
         </h1>
         <p className="text-[0.75rem] text-on-surface-variant font-bold uppercase tracking-widest opacity-60">
-          Academic Atelier
+          Sistem Manajemen Sekolah
         </p>
       </div>
 

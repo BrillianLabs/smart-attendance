@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import * as faceapi from 'face-api.js';
 import { cn } from '@/lib/utils/cn';
-import { Loader2, CheckCircle2, XCircle, Camera } from 'lucide-react';
+import { Loader2, CheckCircle2, XCircle, Camera, ShieldCheck } from 'lucide-react';
 
 interface FaceCameraProps {
   referenceImageUrl?: string | null;
@@ -12,7 +12,7 @@ interface FaceCameraProps {
   mode?: 'verify' | 'capture';
 }
 
-const MODEL_URL = 'https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights';
+const MODEL_URL = '/models';
 
 export function FaceCamera({ referenceImageUrl, onVerified, onCancel, mode = 'verify' }: FaceCameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -27,232 +27,249 @@ export function FaceCamera({ referenceImageUrl, onVerified, onCancel, mode = 've
     const loadModels = async () => {
       try {
         await Promise.all([
-          faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+          faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
           faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
           faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
         ]);
         setIsLoaded(true);
-        setStatus('scanning');
       } catch (err) {
         console.error('Failed to load face-api models', err);
-        setError('Gagal memuat sistem AI. Periksa koneksi internet Anda.');
+        setError('Gagal memuat sistem AI. Periksa koneksi internet atau hubungi admin.');
       }
     };
     loadModels();
   }, []);
 
-  // Start Camera
+  // Start camera after models are loaded
   const startVideo = useCallback(async () => {
     if (!videoRef.current) return;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-          facingMode: 'user' 
-        } 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' }
       });
       videoRef.current.srcObject = stream;
       setIsCameraActive(true);
+      setStatus('scanning');
     } catch (err) {
       console.error('Webcam access error:', err);
-      setError('Kamera tidak dapat diakses. Izinkan akses kamera untuk melanjutkan.');
+      setError('Kamera tidak dapat diakses. Pastikan izin kamera sudah diberikan di browser.');
     }
   }, []);
 
   useEffect(() => {
-    if (isLoaded) {
-      startVideo();
-    }
+    if (isLoaded) startVideo();
     return () => {
       if (videoRef.current?.srcObject) {
-        (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
+        (videoRef.current.srcObject as MediaStream).getTracks().forEach(t => t.stop());
       }
     };
   }, [isLoaded, startVideo]);
 
-  // Main Recognition Loop
+  // Recognition loop with 300ms throttle
   useEffect(() => {
     let animationId: number;
-    let isProcessing = false;
+    let lastDetectionTime = 0;
 
     const handleRecognition = async () => {
-      if (!videoRef.current || !canvasRef.current || !isLoaded || status === 'matched') return;
-
+      if (!videoRef.current || !isLoaded || status === 'matched') return;
       const video = videoRef.current;
-      if (video.paused || video.ended || isProcessing || mode === 'capture') {
+      if (video.paused || video.ended || mode === 'capture') {
         animationId = requestAnimationFrame(handleRecognition);
         return;
       }
 
-      isProcessing = true;
+      const now = Date.now();
+      if (now - lastDetectionTime < 300) {
+        animationId = requestAnimationFrame(handleRecognition);
+        return;
+      }
+      lastDetectionTime = now;
 
       try {
-        const detections = await faceapi.detectSingleFace(video)
+        const detections = await faceapi
+          .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
           .withFaceLandmarks()
           .withFaceDescriptor();
 
         if (detections && referenceImageUrl) {
-          // If we have a reference, attempt matching
           setStatus('verifying');
-          
           const refImg = await faceapi.fetchImage(referenceImageUrl);
-          const refDetection = await faceapi.detectSingleFace(refImg)
+          const refDetection = await faceapi
+            .detectSingleFace(refImg, new faceapi.TinyFaceDetectorOptions())
             .withFaceLandmarks()
             .withFaceDescriptor();
-
           if (refDetection) {
-            const faceMatcher = new faceapi.FaceMatcher(refDetection);
-            const bestMatch = faceMatcher.findBestMatch(detections.descriptor);
-
-            if (bestMatch.label !== 'unknown' && bestMatch.distance < 0.5) {
+            const matcher = new faceapi.FaceMatcher(refDetection);
+            const best = matcher.findBestMatch(detections.descriptor);
+            if (best.label !== 'unknown' && best.distance < 0.6) {
               setStatus('matched');
               captureAndVerify();
-              isProcessing = false;
-              return; // Stop loop on match
+              return;
             }
           }
+          setStatus('scanning');
+        } else if (detections && !referenceImageUrl) {
+          setStatus('scanning');
         }
-      } catch (err) {
-        console.warn('Recognition frame error:', err);
-      }
+      } catch { /* ignore per-frame errors */ }
 
-      isProcessing = false;
       animationId = requestAnimationFrame(handleRecognition);
     };
 
     if (isLoaded && isCameraActive && status !== 'matched') {
       animationId = requestAnimationFrame(handleRecognition);
     }
-
     return () => cancelAnimationFrame(animationId);
-  }, [isLoaded, isCameraActive, referenceImageUrl, status]);
+  }, [isLoaded, isCameraActive, referenceImageUrl, status, mode]);
 
   const captureAndVerify = () => {
     if (!videoRef.current) return;
-    
-    // Stop all tracks immediately to freeze the frame visually
     if (videoRef.current.srcObject) {
-      (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => {
-        track.enabled = false; // Freeze visually
-      });
+      (videoRef.current.srcObject as MediaStream).getTracks().forEach(t => { t.enabled = false; });
     }
-
     const canvas = document.createElement('canvas');
     canvas.width = videoRef.current.videoWidth;
     canvas.height = videoRef.current.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx?.drawImage(videoRef.current, 0, 0);
-    
-    const base64 = canvas.toDataURL('image/jpeg', 0.8);
-    onVerified(base64);
+    canvas.getContext('2d')?.drawImage(videoRef.current, 0, 0);
+    onVerified(canvas.toDataURL('image/jpeg', 0.8));
   };
 
+  const statusLabel = status === 'loading'
+    ? 'Menyiapkan AI...'
+    : mode === 'capture'
+      ? 'Kamera Aktif'
+      : status === 'scanning'
+        ? (referenceImageUrl ? 'Memindai Wajah...' : 'Kamera Siap')
+        : status === 'verifying'
+          ? 'Verifikasi...'
+          : status === 'matched'
+            ? 'Terverifikasi!'
+            : 'Ditolak';
+
   return (
-    <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-surface-container-lowest w-full max-w-xl rounded-[2.5rem] overflow-hidden shadow-2xl animate-scale-in border border-outline-variant/10">
-        
-        {/* Header */}
-        <div className="p-8 border-b border-outline-variant/5 flex justify-between items-center bg-surface-container-low">
-          <div>
-            <h3 className="text-xl font-black text-on-surface tracking-tight">
-              {mode === 'capture' ? 'Update Profile Photo' : 'AI Identity Verification'}
-            </h3>
-            <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest opacity-60">Atelier Academy Security</p>
+    <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6">
+      <div className="bg-white w-full max-w-sm sm:max-w-lg rounded-3xl overflow-hidden shadow-2xl flex flex-col" style={{ maxHeight: '90dvh' }}>
+
+        {/* ── Header ── */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+              <ShieldCheck className="text-primary" size={18} />
+            </div>
+            <div>
+              <p className="text-sm font-black text-slate-800 leading-none">
+                {mode === 'capture' ? 'Update Foto Profil' : 'Verifikasi Identitas AI'}
+              </p>
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-0.5">
+                Sistem Keamanan Sekolah
+              </p>
+            </div>
           </div>
-          <button onClick={onCancel} className="p-2 hover:bg-surface-container-high rounded-full transition-colors">
-            <XCircle className="text-on-surface-variant opacity-50" size={24} />
+          <button
+            onClick={onCancel}
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors"
+          >
+            <XCircle size={20} className="text-slate-400" />
           </button>
         </div>
 
-        {/* Camera Feed Area */}
-        <div className="relative aspect-video bg-black group">
+        {/* ── Camera Feed ── */}
+        <div className="relative w-full bg-slate-900 overflow-hidden" style={{ height: 'min(60vw, 300px)' }} >
           {error ? (
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-10 text-center text-white bg-rose-950/20">
-              <XCircle className="text-rose-500 mb-4 animate-pulse" size={48} />
-              <p className="text-sm font-bold leading-relaxed">{error}</p>
-              <button onClick={() => window.location.reload()} className="mt-6 px-6 py-2 bg-white text-rose-900 rounded-xl text-xs font-black uppercase tracking-widest">Retry Connection</button>
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+              <XCircle className="text-rose-400 mb-3" size={40} />
+              <p className="text-white text-sm font-semibold leading-relaxed">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-5 px-5 py-2 bg-white text-slate-800 rounded-xl text-xs font-black uppercase tracking-wider"
+              >
+                Coba Lagi
+              </button>
             </div>
           ) : (
             <>
-              <video 
-                ref={videoRef} 
-                autoPlay 
-                muted 
-                playsInline 
+              {/* Loading shimmer before camera is ready */}
+              {!isCameraActive && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                  <Loader2 className="text-white animate-spin" size={32} />
+                  <p className="text-white/70 text-xs font-semibold uppercase tracking-widest">
+                    Menyiapkan kamera...
+                  </p>
+                </div>
+              )}
+
+              <video
+                ref={videoRef}
+                autoPlay
+                muted
+                playsInline
                 className={cn(
-                  "w-full h-full object-cover transition-opacity duration-1000",
-                  status === 'loading' ? 'opacity-0' : 'opacity-100'
+                  'w-full h-full object-cover transition-opacity duration-500',
+                  isCameraActive ? 'opacity-100' : 'opacity-0'
                 )}
               />
               <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
-              
-              {/* Overlay HUD */}
-              <div className="absolute inset-0 border-[24px] border-black/40 pointer-events-none flex items-center justify-center">
-                 <div className={cn(
-                   "w-64 h-64 border-2 border-dashed rounded-[3rem] transition-all duration-500 scale-100",
-                   status === 'matched' ? 'border-primary border-4 scale-105 shadow-[0_0_50px_rgba(var(--color-primary),0.3)]' : 'border-white/40 animate-pulse'
-                 )}></div>
+
+              {/* Face guide oval */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                {/* Dark vignette around the oval */}
+                <div className="absolute inset-0 bg-black/40" style={{ maskImage: 'radial-gradient(ellipse 55% 65% at 50% 48%, transparent 95%, black 100%)', WebkitMaskImage: 'radial-gradient(ellipse 55% 65% at 50% 48%, transparent 95%, black 100%)' }} />
+                {/* Oval border */}
+                <div className={cn(
+                  'w-[50%] h-[70%] rounded-[50%] border-2 transition-all duration-500',
+                  status === 'matched'
+                    ? 'border-emerald-400 border-[3px] shadow-[0_0_30px_rgba(52,211,153,0.6)]'
+                    : status === 'verifying'
+                      ? 'border-blue-400 animate-pulse'
+                      : 'border-white/70 border-dashed'
+                )} />
               </div>
 
-              {/* Status Pill */}
-              <div className="absolute top-6 left-6">
+              {/* Status pill — top-center */}
+              <div className="absolute top-3 inset-x-0 flex justify-center">
                 <div className={cn(
-                  "px-4 py-2 rounded-full backdrop-blur-md flex items-center gap-2 shadow-lg border border-white/20 transition-all",
-                  status === 'matched' ? 'bg-primary text-white scale-110' : 'bg-black/60 text-white'
+                  'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md border text-white text-[10px] font-black uppercase tracking-wider transition-all',
+                  status === 'matched'
+                    ? 'bg-emerald-500/80 border-emerald-400/50'
+                    : status === 'verifying'
+                      ? 'bg-blue-500/70 border-blue-400/50'
+                      : 'bg-black/50 border-white/20'
                 )}>
-                  {status === 'loading' && <Loader2 className="animate-spin" size={14} />}
-                  {status === 'scanning' && <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />}
-                  {status === 'verifying' && <Loader2 className="animate-spin text-primary" size={14} />}
-                  {status === 'matched' && <CheckCircle2 size={14} />}
-                  <span className="text-[10px] font-black uppercase tracking-widest">
-                    {status === 'loading' ? 'Booting AI...' : 
-                     mode === 'capture' ? 'Kamera Aktif - Siap Ambil Gambar' :
-                     status === 'scanning' ? (referenceImageUrl ? 'Scanning Face...' : 'Kamera Siap') : 
-                     status === 'verifying' ? 'Verifying Identity...' : 
-                     status === 'matched' ? 'Identity Confirmed' : 'Identity Denied'}
-                  </span>
+                  {(status === 'loading' || status === 'verifying') && <Loader2 size={10} className="animate-spin" />}
+                  {status === 'scanning' && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />}
+                  {status === 'matched' && <CheckCircle2 size={10} />}
+                  {statusLabel}
                 </div>
               </div>
 
-              {/* Manual Capture for Missing Profile OR Capture Mode */}
+              {/* Manual capture button */}
               {(mode === 'capture' || (!referenceImageUrl && status === 'scanning')) && isCameraActive && status !== 'matched' && (
-                <div className="absolute inset-x-0 bottom-10 flex flex-col items-center animate-fade-in">
-                   <div className="bg-black/60 backdrop-blur-md p-6 rounded-[2rem] border border-white/10 flex flex-col items-center gap-4 shadow-2xl">
-                      {mode === 'verify' && (
-                        <div className="text-center">
-                          <p className="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-1">Peringatan Keamanan</p>
-                          <p className="text-xs font-bold text-white leading-tight">Foto Profil Belum Diatur Admin</p>
-                        </div>
-                      )}
-                      <button 
-                        onClick={() => {
-                          if (mode === 'verify') setStatus('matched');
-                          captureAndVerify();
-                        }}
-                        className="px-8 py-3 bg-primary hover:bg-primary-dim text-white rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl flex items-center gap-2"
-                      >
-                        <Camera size={16} />
-                        {mode === 'capture' ? 'Ambil Foto Sekarang' : 'Ambil Foto & Lanjut'}
-                      </button>
-                   </div>
+                <div className="absolute inset-x-0 bottom-5 flex justify-center">
+                  <div className="bg-black/60 backdrop-blur-md px-5 py-4 rounded-2xl border border-white/10 flex flex-col items-center gap-3">
+                    {mode === 'verify' && (
+                      <p className="text-[10px] font-bold text-amber-300 uppercase tracking-widest">
+                        Foto profil belum diatur admin
+                      </p>
+                    )}
+                    <button
+                      onClick={() => { if (mode === 'verify') setStatus('matched'); captureAndVerify(); }}
+                      className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all hover:scale-105 active:scale-95 shadow-lg"
+                    >
+                      <Camera size={14} />
+                      {mode === 'capture' ? 'Ambil Foto' : 'Ambil & Lanjut'}
+                    </button>
+                  </div>
                 </div>
               )}
             </>
           )}
         </div>
 
-        {/* Footer info */}
-        <div className="p-8 bg-surface-container-low">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
-               <Camera size={20} />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-on-surface leading-tight">Pastikan wajah berada di dalam bingkai.</p>
-              <p className="text-[10px] font-bold text-on-surface-variant opacity-50 uppercase tracking-wider mt-1">Sistem AI membandingkan landmarker wajah secara real-time.</p>
-            </div>
-          </div>
+        {/* ── Footer hint ── */}
+        <div className="px-5 py-4 bg-slate-50 border-t border-slate-100">
+          <p className="text-xs text-slate-500 font-medium text-center leading-relaxed">
+            Posisikan wajah Anda di dalam bingkai oval dan pastikan pencahayaan cukup.
+          </p>
         </div>
       </div>
     </div>

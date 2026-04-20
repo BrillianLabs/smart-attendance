@@ -14,10 +14,10 @@ export function MobileNav({ profile }: MobileNavProps) {
   const isAdmin = profile.role === 'admin';
 
   const navItems = [
-    { href: isAdmin ? '/admin' : '/', icon: 'home', label: 'Home' },
-    { href: '/attendance', icon: 'checklist_rtl', label: 'Mark' },
-    { href: '/leave', icon: 'mail', label: 'Requests' },
-    { href: '/profile', icon: 'person', label: 'Profile' },
+    { href: isAdmin ? '/admin' : '/', icon: 'home', label: 'Beranda' },
+    { href: '/attendance', icon: 'checklist_rtl', label: 'Presensi' },
+    { href: '/leave', icon: 'mail', label: 'Izin' },
+    { href: '/profile', icon: 'person', label: 'Profil' },
   ];
 
   return (

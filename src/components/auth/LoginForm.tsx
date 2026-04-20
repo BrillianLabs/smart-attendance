@@ -29,26 +29,21 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
       <main className="w-full max-w-[420px] animate-fade-in">
         {/* Branding Header */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-surface-container-lowest shadow-sm mb-6 overflow-hidden ring-4 ring-surface-container-low mx-auto">
-            {logoUrl ? (
-              <Image 
-                src={logoUrl} 
-                alt={schoolName} 
-                width={80} 
-                height={80} 
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-primary text-on-primary">
-                <span className="material-symbols-outlined text-4xl">school</span>
-              </div>
-            )}
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-surface-container-lowest shadow-sm mb-6 overflow-hidden ring-4 ring-surface-container-low mx-auto">
+            <Image 
+              src={logoUrl || "/logo.png"} 
+              alt={schoolName} 
+              width={64} 
+              height={64} 
+              priority
+              className="w-full h-full object-cover"
+            />
           </div>
-          <h1 className="font-headline text-[1.5rem] font-bold tracking-tight text-on-surface mb-1">
-            {schoolName || 'Atelier Academy'}
+          <h1 className="font-headline text-[1.25rem] font-bold tracking-tight text-on-surface mb-1">
+            {schoolName || 'SD NEGERI NGUWOK KECAMATAN MODO'}
           </h1>
           <p className="text-on-surface-variant text-sm tracking-wide opacity-80">
-            Welcome back to the atelier.
+            Selamat datang di sistem presensi digital.
           </p>
         </div>
 
@@ -61,7 +56,7 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
                 className="block text-[11px] font-bold uppercase tracking-[0.05rem] text-on-surface-variant ml-1" 
                 htmlFor="email"
               >
-                Email Address
+                Alamat Email
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline opacity-60">
@@ -85,10 +80,10 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
                   className="block text-[11px] font-bold uppercase tracking-[0.05rem] text-on-surface-variant" 
                   htmlFor="password"
                 >
-                  Password
+                  Kata Sandi
                 </label>
                 <a className="text-[11px] font-bold text-primary hover:text-primary-dim transition-colors" href="#">
-                  Forgot?
+                  Lupa?
                 </a>
               </div>
               <div className="relative group">
@@ -128,7 +123,7 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
               className="w-full py-4 bg-gradient-to-br from-primary to-primary-dim text-white font-bold rounded-xl shadow-lg shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.01] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group disabled:opacity-70" 
               type="submit"
             >
-              <span className="text-[0.9375rem]">{isPending ? 'Signing in...' : 'Sign In'}</span>
+              <span className="text-[0.9375rem]">{isPending ? 'Memproses...' : 'Masuk'}</span>
               {!isPending && (
                 <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">
                   arrow_forward
@@ -140,9 +135,9 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
           {/* Secondary Action */}
           <div className="mt-8 text-center border-t border-outline-variant/10 pt-8">
             <p className="text-[0.8125rem] text-on-surface-variant">
-              Don't have an account? 
+              Belum punya akun? 
               <a className="text-primary font-bold hover:underline underline-offset-4 decoration-primary/30 ml-1" href="#">
-                Contact Administrator
+                Hubungi Administrator
               </a>
             </p>
           </div>
@@ -150,11 +145,11 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
 
         {/* Footer Meta */}
         <footer className="mt-12 text-center text-outline/50 text-[0.6875rem] font-bold uppercase tracking-[0.1em] flex flex-wrap items-center justify-center gap-4">
-          <span>© {new Date().getFullYear()} {schoolName || 'Atelier Academy'}</span>
+          <span>© {new Date().getFullYear()} {schoolName || 'SD NEGERI NGUWOK KECAMATAN MODO'}</span>
           <span className="w-1 h-1 rounded-full bg-outline/20 hidden sm:block"></span>
-          <a className="hover:text-on-surface transition-colors" href="#">Privacy Policy</a>
+          <a className="hover:text-on-surface transition-colors" href="#">Kebijakan Privasi</a>
           <span className="w-1 h-1 rounded-full bg-outline/20 hidden sm:block"></span>
-          <a className="hover:text-on-surface transition-colors" href="#">Terms of Service</a>
+          <a className="hover:text-on-surface transition-colors" href="#">Syarat & Ketentuan</a>
         </footer>
       </main>
 

@@ -42,8 +42,8 @@ export function Navbar({ profile, settings }: NavbarProps) {
           "flex items-center gap-3",
           isAdmin ? "lg:hidden" : "flex"
         )}>
-           <span className="text-xl font-bold tracking-tighter text-primary">
-            {settings?.school_name ?? 'Atelier Academy'}
+           <span className="text-lg font-bold tracking-tighter text-primary leading-tight">
+            {settings?.school_name ?? 'SD NEGERI NGUWOK MODO'}
           </span>
         </div>
 
@@ -57,7 +57,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
                 pathname === '/' ? "text-primary font-bold border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"
               )}
             >
-              Dashboard
+              Beranda
             </Link>
             <Link 
               href="/attendance" 
@@ -66,7 +66,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
                 pathname === '/attendance' ? "text-primary font-bold border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"
               )}
             >
-              Attendance
+              Presensi
             </Link>
             <Link 
               href="/leave" 
@@ -75,7 +75,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
                 pathname === '/leave' ? "text-primary font-bold border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"
               )}
             >
-              Leave Requests
+              Pengajuan Izin
             </Link>
           </nav>
         )}
@@ -90,7 +90,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
                 pathname === '/admin' ? "text-primary font-bold border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"
               )}
             >
-              Overview
+              Ringkasan
             </Link>
             <Link 
               href="/admin/users" 
@@ -99,7 +99,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
                 pathname === '/admin/users' ? "text-primary font-bold border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"
               )}
             >
-              Directory
+              Direktori
             </Link>
             <Link 
               href="/admin/leave" 
@@ -108,7 +108,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
                 pathname === '/admin/leave' ? "text-primary font-bold border-b-2 border-primary pb-1" : "text-on-surface-variant hover:text-primary"
               )}
             >
-              Approvals
+              Persetujuan
             </Link>
           </nav>
         )}
@@ -120,7 +120,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
           <span className="material-symbols-outlined text-outline absolute left-3 top-1/2 -translate-y-1/2 text-[18px]">search</span>
           <input 
             className="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-[0.8125rem] w-48 lg:w-64 focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all placeholder:text-outline/50" 
-            placeholder="Search data..." 
+            placeholder="Cari data..." 
             type="text"
           />
         </div>
@@ -159,7 +159,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
                     className="flex items-center gap-3 px-5 py-2.5 text-[0.8125rem] font-bold text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-all"
                   >
                     <User size={16} />
-                    Profil Saya
+                    Profil
                   </Link>
                   {isAdmin && (
                     <Link 
@@ -168,7 +168,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
                       className="flex items-center gap-3 px-5 py-2.5 text-[0.8125rem] font-bold text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-all"
                     >
                       <Shield size={16} />
-                      Admin Settings
+                      Pengaturan Admin
                     </Link>
                   )}
                 </div>
@@ -180,7 +180,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
                       className="w-full flex items-center gap-3 px-5 py-2.5 text-[0.8125rem] font-bold text-error hover:bg-error/5 transition-all"
                     >
                       <LogOut size={16} />
-                      Log Out
+                      Keluar
                     </button>
                   </form>
                 </div>

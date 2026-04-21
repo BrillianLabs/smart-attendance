@@ -13,6 +13,7 @@ export interface Profile {
   phone: string | null;
   avatar_url: string | null;
   is_active: boolean;
+  nip?: string | null;
   created_at: string;
 }
 

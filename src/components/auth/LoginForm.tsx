@@ -68,20 +68,20 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
                 className="block text-[11px] font-bold uppercase tracking-[0.05rem] text-on-surface-variant ml-1" 
                 htmlFor="email"
               >
-                Alamat Email
+                Username / NIP
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline opacity-60">
-                  <span className="material-symbols-outlined text-[20px]">mail</span>
+                  <span className="material-symbols-outlined text-[20px]">person</span>
                 </div>
                 <input 
                   className="w-full pl-12 pr-4 py-3.5 bg-surface-container-low border-none rounded-xl text-on-surface text-[0.875rem] focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all duration-200 placeholder:text-outline/40" 
                   id="email" 
                   name="email" 
-                  placeholder="name@school.edu" 
+                  placeholder="Contoh: 19850504..." 
                   autoComplete="username"
                   required 
-                  type="email" 
+                  type="text" 
                 />
               </div>
             </div>

@@ -5,18 +5,23 @@ import { redirect } from 'next/navigation';
 import { ActionResult, Profile } from '@/lib/types';
 
 export async function login(formData: FormData): Promise<ActionResult> {
-  const email    = formData.get('email')    as string;
+  let email      = formData.get('email')    as string;
   const password = formData.get('password') as string;
 
   if (!email || !password) {
-    return { success: false, error: 'Email dan password wajib diisi.' };
+    return { success: false, error: 'Username/NIP dan password wajib diisi.' };
+  }
+
+  // Pre-process email: if it's just a username/nip (no @), append our internal suffix
+  if (!email.includes('@')) {
+    email = `${email.trim().replace(/\s/g, '')}@absen.smart`;
   }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    return { success: false, error: 'Email atau password salah.' };
+    return { success: false, error: 'Username atau password salah.' };
   }
 
   return { success: true, data: undefined };

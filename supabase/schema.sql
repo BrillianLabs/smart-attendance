@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   phone       TEXT,
   avatar_url  TEXT,
   is_active   BOOLEAN NOT NULL DEFAULT TRUE,
+  nip         TEXT,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 

@@ -94,7 +94,7 @@ export async function getAllProfiles(): Promise<Profile[]> {
 
 export async function updateProfile(
   id: string,
-  updates: Partial<Pick<Profile, 'full_name' | 'role' | 'position' | 'phone' | 'is_active'>>
+  updates: Partial<Pick<Profile, 'full_name' | 'role' | 'position' | 'phone' | 'is_active' | 'nip'>>
 ): Promise<ActionResult> {
   if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
   const supabase = await createClient();
@@ -105,17 +105,20 @@ export async function updateProfile(
 }
 
 export async function createStaffUser(
-  email: string,
+  username: string,
   password: string,
   fullName: string,
   role: 'admin' | 'staff',
-  position?: string
+  position?: string,
+  nip?: string
 ): Promise<ActionResult> {
   if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
   const supabase = await createClient();
 
-  // Use admin API to create user (requires service role key OR invite URL)
-  // With anon key, we use signUp which auto-triggers the profile trigger
+  // If username doesn't have @, it's a NIP/Username
+  const email = username.includes('@') ? username : `${username.trim().replace(/\s/g, '')}@absen.smart`;
+
+  // Use admin API to create user
   const { data, error } = await supabase.auth.admin.createUser({
     email,
     password,
@@ -125,8 +128,14 @@ export async function createStaffUser(
 
   if (error) return { success: false, error: error.message };
 
-  if (position && data.user) {
-    await supabase.from('profiles').update({ position }).eq('id', data.user.id);
+  if (data.user) {
+    const updates: any = {};
+    if (position) updates.position = position;
+    if (nip) updates.nip = nip;
+    
+    if (Object.keys(updates).length > 0) {
+      await supabase.from('profiles').update(updates).eq('id', data.user.id);
+    }
   }
 
   revalidatePath('/admin/users');

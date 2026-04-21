@@ -54,7 +54,7 @@ export default async function AdminUsersPage() {
               <tr className="bg-surface-container-low/50">
                 <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">Profil Pengguna</th>
                 <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">Jabatan / Posisi</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">Akses Portal</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">NIP / Username</th>
                 <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60 text-center">Status</th>
                 <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60 text-right">Aksi</th>
               </tr>
@@ -94,9 +94,14 @@ export default async function AdminUsersPage() {
                       </span>
                     </td>
                     <td className="px-8 py-5">
-                      <Badge variant={user.role === 'admin' ? 'info' : 'gray'} className="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
-                        {user.role === 'admin' ? 'Administrator' : 'Staf / Guru'}
-                      </Badge>
+                      <div className="flex flex-col gap-1">
+                        <Badge variant={user.role === 'admin' ? 'info' : 'gray'} className="w-fit px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+                          {user.role === 'admin' ? 'Administrator' : 'Staf / Guru'}
+                        </Badge>
+                        <span className="text-[11px] font-bold text-on-surface-variant/60 ml-1">
+                          {user.nip || '-'}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-8 py-5 text-center">
                       <Badge variant={user.is_active ? 'success' : 'danger'} className="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">

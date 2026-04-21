@@ -19,6 +19,7 @@ export function AddUserModal() {
     full_name: '',
     role:      'staff' as 'admin' | 'staff',
     position:  '',
+    nip:       '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -29,12 +30,13 @@ export function AddUserModal() {
         form.password,
         form.full_name,
         form.role,
-        form.position || undefined
+        form.position || undefined,
+        form.nip || undefined
       );
       if (res.success) {
         toast.success('Pengguna berhasil ditambahkan!');
         setOpen(false);
-        setForm({ email: '', password: '', full_name: '', role: 'staff', position: '' });
+        setForm({ email: '', password: '', full_name: '', role: 'staff', position: '', nip: '' });
         router.refresh();
       } else {
         toast.error(res.error);
@@ -59,12 +61,11 @@ export function AddUserModal() {
             placeholder="Nama lengkap pengguna"
           />
           <Input
-            type="email"
-            label="Email"
+            label="Username / NIP"
             value={form.email}
             onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
             required
-            placeholder="email@sekolah.sch.id"
+            placeholder="Contoh: 19850504..."
           />
           <Input
             type="password"
@@ -80,6 +81,12 @@ export function AddUserModal() {
             value={form.position}
             onChange={e => setForm(f => ({ ...f, position: e.target.value }))}
             placeholder="Contoh: Guru Matematika"
+          />
+          <Input
+            label="NIP"
+            value={form.nip}
+            onChange={e => setForm(f => ({ ...f, nip: e.target.value }))}
+            placeholder="Contoh: 19850504..."
           />
           <Select
             label="Role"

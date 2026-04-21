@@ -1,22 +1,32 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, unstable_cache } from 'next/cache';
 import { ActionResult, Profile, Settings } from '@/lib/types';
 import { isAdmin } from './auth';
+import { cache } from 'react';
 
 // ========================
 // SETTINGS
 // ========================
-export async function getSettings(): Promise<Settings | null> {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from('settings')
-    .select('*')
-    .eq('id', 1)
-    .single();
-  return data;
-}
+// Cached across ALL requests for 60 seconds — settings rarely change.
+// When admin updates settings, revalidatePath('/', 'layout') busts this cache.
+const _getSettingsCached = unstable_cache(
+  async (): Promise<Settings | null> => {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from('settings')
+      .select('*')
+      .eq('id', 1)
+      .single();
+    return data;
+  },
+  ['settings-v1'],
+  { revalidate: 60 } // 60 seconds
+);
+
+// Per-request deduplication on top of cross-request cache
+export const getSettings = cache(_getSettingsCached);
 
 export async function updateSettings(formData: FormData): Promise<ActionResult> {
   if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };

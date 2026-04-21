@@ -179,10 +179,10 @@ export function Sidebar({ profile, settings }: SidebarProps) {
                   });
                   if (ok) {
                     setIsUserMenuOpen(false);
-                    const loadingToast = toast.loading('Keluar...');
+                    const loadingToast = toast.loading('Memproses keluar...');
                     await logout();
-                    toast.dismiss(loadingToast);
-                    toast.success('Berhasil keluar. Sampai jumpa! 👋');
+                    toast.success('Berhasil keluar. Sampai jumpa! 👋', { id: loadingToast });
+                    
                     setTimeout(() => {
                       router.push('/login');
                       router.refresh();

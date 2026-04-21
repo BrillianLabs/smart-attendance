@@ -25,7 +25,7 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
         setError(result.error || 'Terjadi kesalahan');
       } else {
         toast.success('Selamat datang kembali! 👋');
-        // Give time for toast to be seen before redirecting
+        // Stay in loading state during redirection timeout
         setTimeout(() => {
           router.push('/');
           router.refresh();

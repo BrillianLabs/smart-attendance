@@ -27,20 +27,20 @@ export default async function AttendancePage() {
       {/* Page Header */}
       <section className="px-1">
         <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Personal Logs</span>
-        <h1 className="text-4xl font-black text-on-surface tracking-tight">Attendance Record</h1>
+        <h1 className="text-3xl sm:text-4xl font-black text-on-surface tracking-tight">Riwayat Presensi</h1>
         <p className="text-sm font-medium text-on-surface-variant opacity-60 mt-1">{todayStr}</p>
       </section>
 
       {/* Main Digital Presence Widget */}
-      <div className="bg-surface-container-lowest rounded-[2rem] p-8 lg:p-10 shadow-sm shadow-primary/5 border border-outline-variant/10">
-        <h2 className="text-lg font-bold text-on-surface mb-6">Digital Verification</h2>
+      <div className="bg-surface-container-lowest rounded-[2rem] p-5 sm:p-8 lg:p-10 shadow-sm shadow-primary/5 border border-outline-variant/10">
+        <h2 className="text-base sm:text-lg font-bold text-on-surface mb-6">Presensi Digital</h2>
         <AttendanceClient initial={todayAtt} settings={settings} profile={profile} />
       </div>
 
       {/* Detailed History Table */}
       <section className="bg-surface-container-lowest rounded-[2rem] overflow-hidden shadow-sm shadow-primary/5 border border-outline-variant/10">
-        <div className="px-8 py-6 border-b border-surface-container-low flex justify-between items-center">
-          <h3 className="text-lg font-bold text-on-surface">30-Day History</h3>
+        <div className="px-4 sm:px-8 py-6 border-b border-surface-container-low flex justify-between items-center">
+          <h3 className="text-base sm:text-lg font-bold text-on-surface">Riwayat 30 Hari</h3>
           <div className="flex bg-surface-container-low rounded-lg p-1">
             <button className="px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-md bg-white shadow-sm text-primary">List View</button>
             <button className="px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-md text-on-surface-variant opacity-60">Calendar</button>
@@ -51,10 +51,10 @@ export default async function AttendancePage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface-container-low/50">
-                <th className="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Date</th>
-                <th className="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">In</th>
-                <th className="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Out</th>
-                <th className="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Status</th>
+                <th className="px-4 sm:px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Tanggal</th>
+                <th className="px-4 sm:px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Masuk</th>
+                <th className="px-4 sm:px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Pulang</th>
+                <th className="px-4 sm:px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-surface-container-low">
@@ -65,24 +65,24 @@ export default async function AttendancePage() {
               ) : (
                 history.map((att) => (
                   <tr key={att.id} className="hover:bg-surface-container-low/30 transition-colors group">
-                    <td className="px-8 py-5">
+                    <td className="px-4 sm:px-8 py-4">
                       <p className="text-sm font-bold text-on-surface">
-                        {format(parseISO(att.date), 'EEEE, d MMM', { locale: idLocale })}
+                        {format(parseISO(att.date), 'EEE, d MMM', { locale: idLocale })}
                       </p>
-                      <p className="text-[10px] font-bold text-on-surface-variant opacity-40 uppercase tracking-wider">Academic Year 2024</p>
+                      <p className="text-[10px] font-bold text-on-surface-variant opacity-40 uppercase tracking-wider">TA 2024/2025</p>
                     </td>
-                    <td className="px-8 py-5">
+                    <td className="px-4 sm:px-8 py-4">
                       <span className="text-sm font-medium text-on-surface opacity-80">
                         {att.check_in ? format(parseISO(att.check_in), 'HH:mm') : '--:--'}
                       </span>
                     </td>
-                    <td className="px-8 py-5">
+                    <td className="px-4 sm:px-8 py-4">
                       <span className="text-sm font-medium text-on-surface opacity-80">
                         {att.check_out ? format(parseISO(att.check_out), 'HH:mm') : '--:--'}
                       </span>
                     </td>
-                    <td className="px-8 py-5">
-                      <Badge variant={statusVariant(att.status)} className="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest">
+                    <td className="px-4 sm:px-8 py-4">
+                      <Badge variant={statusVariant(att.status)} className="px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest">
                         {statusLabel(att.status)}
                       </Badge>
                     </td>

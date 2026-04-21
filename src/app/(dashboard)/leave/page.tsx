@@ -25,13 +25,13 @@ export default async function LeavePage() {
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1">
         <div>
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Management Portal</span>
-          <h1 className="text-4xl font-black text-on-surface tracking-tight">Leave <span className="text-primary italic">&amp; History</span></h1>
-          <p className="text-sm font-medium text-on-surface-variant opacity-60 mt-1">Review and track your attendance requests.</p>
+          <h1 className="text-3xl sm:text-4xl font-black text-on-surface tracking-tight">Pengajuan <span className="text-primary italic">Izin</span></h1>
+          <p className="text-sm font-medium text-on-surface-variant opacity-60 mt-1">Kelola dan pantau riwayat pengajuan izin Anda.</p>
         </div>
         <Link href="/leave/new">
-          <button className="bg-primary text-white px-8 py-4 rounded-2xl font-bold text-xs uppercase tracking-[0.2em] shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3">
+          <button className="w-full sm:w-auto bg-primary text-white px-8 py-4 rounded-2xl font-bold text-xs uppercase tracking-[0.2em] shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
             <span className="material-symbols-outlined text-lg">add_circle</span>
-            Submit New Request
+            Ajukan Izin Baru
           </button>
         </Link>
       </section>
@@ -52,7 +52,7 @@ export default async function LeavePage() {
         ) : (
           <div className="flex flex-col divide-y divide-surface-container-low">
             {leaves.map((leave) => (
-              <div key={leave.id} className="p-6 lg:p-10 hover:bg-surface-container-low/30 transition-all rounded-[2.5rem] group border-none">
+              <div key={leave.id} className="p-5 sm:p-6 lg:p-10 hover:bg-surface-container-low/30 transition-all rounded-[2.5rem] group border-none">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                   <div className="flex items-start gap-6">
                     <div className="w-16 h-16 rounded-2xl bg-surface-container-low flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform shadow-inner border border-outline-variant/5">

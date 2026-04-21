@@ -53,7 +53,7 @@ export default async function AdminDashboard() {
       <section className="flex justify-between items-end px-1">
         <div>
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Academy Analytics</span>
-          <h2 className="text-[2rem] font-bold text-on-surface leading-tight tracking-tight">Daily Attendance Overview</h2>
+          <h2 className="text-2xl sm:text-[2rem] font-bold text-on-surface leading-tight tracking-tight">Ringkasan Kehadiran Harian</h2>
         </div>
         <div className="hidden sm:flex gap-3">
           <button className="px-6 py-2.5 rounded-full text-xs font-bold bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high transition-colors">

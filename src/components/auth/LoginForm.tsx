@@ -48,7 +48,7 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
         </div>
 
         {/* Login Form Container - Pill Shape from Template */}
-        <div className="bg-surface-container-lowest rounded-[3rem] p-10 lg:p-12 shadow-[0px_12px_32px_rgba(42,52,57,0.06)] border border-outline-variant/10">
+        <div className="bg-surface-container-lowest rounded-[2.5rem] p-6 sm:p-10 lg:p-12 shadow-[0px_12px_32px_rgba(42,52,57,0.06)] border border-outline-variant/10">
           <form action={handleSubmit} className="space-y-6">
             {/* Email Input Group */}
             <div className="space-y-2">

@@ -41,7 +41,7 @@ export default async function DashboardPage() {
           <p className="text-on-surface-variant text-sm font-medium tracking-wide mb-1 uppercase opacity-70">
             {todayStr}
           </p>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-on-background">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-on-background leading-tight">
             Selamat Pagi, <span className="text-primary">{profile.full_name.split(' ')[0]}</span>
           </h1>
         </div>
@@ -55,7 +55,7 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Absence Widget (GPS & Map) - Matching Template */}
         <div className="lg:col-span-7 bg-surface-container-lowest rounded-[2rem] overflow-hidden shadow-sm shadow-primary/5 flex flex-col border border-outline-variant/10">
-          <div className="p-8 lg:p-10 pb-6">
+          <div className="p-5 sm:p-8 lg:p-10 pb-6">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h2 className="text-2xl font-bold tracking-tight mb-1">Presensi Digital</h2>
@@ -92,16 +92,16 @@ export default async function DashboardPage() {
           </div>
 
           {/* Quick Stats - Matching Template */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-surface-container-low p-8 rounded-[2rem] border border-outline-variant/10 shadow-sm">
-              <span className="material-symbols-outlined text-primary mb-3 text-2xl">trending_up</span>
-              <p className="text-3xl font-black tracking-tighter text-on-background">{presenceRate}%</p>
-              <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mt-1 opacity-70">Kehadiran</p>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            <div className="bg-surface-container-low p-5 sm:p-8 rounded-[2rem] border border-outline-variant/10 shadow-sm">
+              <span className="material-symbols-outlined text-primary mb-2 sm:mb-3 text-xl sm:text-2xl">trending_up</span>
+              <p className="text-2xl sm:text-3xl font-black tracking-tighter text-on-background">{presenceRate}%</p>
+              <p className="text-[9px] sm:text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mt-1 opacity-70">Kehadiran</p>
             </div>
-            <div className="bg-surface-container-low p-8 rounded-[2rem] border border-outline-variant/10 shadow-sm">
-              <span className="material-symbols-outlined text-secondary mb-3 text-2xl">pending_actions</span>
-              <p className="text-3xl font-black tracking-tighter text-on-background">{pendingLeavesCount}</p>
-              <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mt-1 opacity-70">Izin Pending</p>
+            <div className="bg-surface-container-low p-5 sm:p-8 rounded-[2rem] border border-outline-variant/10 shadow-sm">
+              <span className="material-symbols-outlined text-secondary mb-2 sm:mb-3 text-xl sm:text-2xl">pending_actions</span>
+              <p className="text-2xl sm:text-3xl font-black tracking-tighter text-on-background">{pendingLeavesCount}</p>
+              <p className="text-[9px] sm:text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mt-1 opacity-70">Izin Pending</p>
             </div>
           </div>
 

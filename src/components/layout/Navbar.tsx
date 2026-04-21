@@ -39,10 +39,10 @@ export function Navbar({ profile, settings }: NavbarProps) {
       <div className="flex items-center gap-8">
         {/* Brand for Mobile & Teacher/Student Views */}
         <div className={cn(
-          "flex items-center gap-3",
+          "flex items-center gap-3 min-w-0",
           isAdmin ? "lg:hidden" : "flex"
         )}>
-           <span className="text-lg font-bold tracking-tighter text-primary leading-tight">
+           <span className="text-sm sm:text-base font-bold tracking-tighter text-primary leading-tight truncate max-w-[180px] sm:max-w-none">
             {settings?.school_name ?? 'SD NEGERI NGUWOK MODO'}
           </span>
         </div>

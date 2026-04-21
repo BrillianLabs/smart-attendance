@@ -266,8 +266,8 @@ export function FaceCamera({ referenceImageUrl, onVerified, onCancel, mode = 've
         </div>
 
         {/* ── Footer hint ── */}
-        <div className="px-5 py-4 bg-slate-50 border-t border-slate-100">
-          <p className="text-xs text-slate-500 font-medium text-center leading-relaxed">
+        <div className="px-5 py-4 bg-surface-container-low border-t border-outline-variant/10">
+          <p className="text-xs text-on-surface-variant font-medium text-center leading-relaxed">
             Posisikan wajah Anda di dalam bingkai oval dan pastikan pencahayaan cukup.
           </p>
         </div>

@@ -57,13 +57,13 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
               <span className="material-symbols-outlined">apartment</span>
            </div>
-           <h3 className="text-xl font-bold text-on-surface">Institutional Branding</h3>
+            <h3 className="text-xl font-bold text-on-surface">Identitas & Branding</h3>
         </div>
         
         <div className="space-y-8">
           {/* Logo upload Tonal Widget */}
           <div className="p-6 bg-surface-container-low rounded-3xl border border-outline-variant/5">
-            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant opacity-60 ml-1 mb-4 block">Academy Emblem</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant opacity-60 ml-1 mb-4 block">Logo Institusi</label>
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <div className="w-24 h-24 rounded-2xl border border-outline-variant/10 flex items-center justify-center overflow-hidden bg-white shadow-inner p-1">
                 {logoPreview ? (
@@ -77,7 +77,7 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
                   htmlFor="logo-upload"
                   className="btn btn-secondary btn-sm ring-1 ring-outline-variant/10"
                 >
-                  Upload New Emblem
+                  Unggah Logo Baru
                 </label>
                 <input
                   id="logo-upload"
@@ -87,24 +87,24 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
                   onChange={handleLogoUpload}
                   disabled={isPending}
                 />
-                <p className="text-[10px] font-medium text-on-surface-variant opacity-50 italic">PNG, JPG, or SVG. Maximum file size 2MB.</p>
+                <p className="text-[10px] font-medium text-on-surface-variant opacity-50 italic">PNG, JPG, atau SVG. Ukuran maksimal 2MB.</p>
               </div>
             </div>
           </div>
 
           <Input
             name="school_name"
-            label="Academy Name"
+            label="Nama Sekolah / Institusi"
             required
             defaultValue={initial?.school_name ?? 'SD NEGERI NGUWOK KECAMATAN MODO'}
-            placeholder="Official institutional name"
+            placeholder="Masukkan nama resmi sekolah"
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
              <div className="space-y-2">
                 <label className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant opacity-60 ml-1 flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm">palette</span>
-                  Core Interface Color
+                  Warna Identitas Sistem
                 </label>
                 <div className="flex items-center gap-4 bg-surface-container-low p-3 rounded-2xl border border-outline-variant/5">
                   <input
@@ -114,7 +114,7 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
                     className="w-12 h-10 rounded-xl cursor-pointer border-none bg-transparent"
                   />
                   <p className="text-[11px] font-medium text-on-surface-variant opacity-70">
-                    Defines the palette for primary buttons and active indicators.
+                    Warna utama untuk tombol dan indikator aktif di aplikasi.
                   </p>
                 </div>
              </div>
@@ -128,20 +128,20 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
            <div className="w-12 h-12 rounded-xl bg-error-container/20 flex items-center justify-center text-error">
               <span className="material-symbols-outlined">distance</span>
            </div>
-           <h3 className="text-xl font-bold text-on-surface">Precision Geofencing</h3>
+            <h3 className="text-xl font-bold text-on-surface">Radius Verifikasi (Geofencing)</h3>
         </div>
 
         <div className="space-y-8">
           <div className="p-5 bg-surface-container-high/40 rounded-2xl border border-outline-variant/10 shadow-sm text-xs font-medium text-on-surface-variant leading-relaxed">
-            <span className="font-bold text-primary italic mr-2">Digital Boundary:</span>
-            Specify the precise GPS coordinates and radius for student/staff verification. Use Google Maps to verify the exact "Atelier Area".
+            <span className="font-bold text-primary italic mr-2">Batas Digital:</span>
+            Tentukan koordinat GPS dan radius presensi. Gunakan Google Maps untuk mendapatkan titik koordinat lokasi sekolah yang tepat.
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <Input
               type="number"
               name="school_lat"
-              label="Centroid Latitude"
+              label="Latitude Pusat"
               step="any"
               required
               defaultValue={initial?.school_lat ?? -6.2088}
@@ -150,7 +150,7 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
             <Input
               type="number"
               name="school_lng"
-              label="Centroid Longitude"
+              label="Longitude Pusat"
               step="any"
               required
               defaultValue={initial?.school_lng ?? 106.8456}
@@ -160,10 +160,10 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
           <Input
             type="number"
             name="allowed_radius_m"
-            label="Verification Radius (meters)"
+            label="Radius Verifikasi (Meter)"
             required
             defaultValue={initial?.allowed_radius_m ?? 100}
-            hint="Maximum allowable distance from the academy centroid for biometric check-in."
+            hint="Jarak maksimal yang diizinkan untuk melakukan absensi dari titik koordinat."
           />
         </div>
       </section>
@@ -174,22 +174,22 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
            <div className="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container">
               <span className="material-symbols-outlined">schedule</span>
            </div>
-           <h3 className="text-xl font-bold text-on-surface">Standard Working Hours</h3>
+            <h3 className="text-xl font-bold text-on-surface">Jam Kerja Standar</h3>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           <Input
             type="time"
             name="work_start_time"
-            label="Daily Start Time (Check-In)"
+            label="Waktu Masuk (Check-In)"
             required
             defaultValue={initial?.work_start_time ?? '07:30'}
-            hint="Late threshold begins at this index."
+            hint="Batas awal absensi masuk dimulai."
           />
           <Input
             type="time"
             name="work_end_time"
-            label="Daily End Time (Checkout)"
+            label="Waktu Pulang (Check-Out)"
             required
             defaultValue={initial?.work_end_time ?? '15:00'}
           />
@@ -203,7 +203,7 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
           disabled={isPending}
           className="w-full py-5 bg-gradient-to-br from-primary to-primary-dim text-white text-xs font-black uppercase tracking-[0.3em] rounded-2xl shadow-2xl shadow-primary/20 hover:scale-[1.01] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-3 ring-1 ring-white/10"
         >
-          {isPending ? 'Syncing...' : 'Commit Settings'}
+          {isPending ? 'Menyimpan...' : 'Simpan Pengaturan'}
           <span className="material-symbols-outlined text-lg">save</span>
         </button>
       </div>

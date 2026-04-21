@@ -150,7 +150,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
         <button 
           onClick={toggleTheme}
           className="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all active:scale-95 group"
-          title={theme === 'light' ? 'Switch to Dark' : 'Switch to Light'}
+          title={theme === 'light' ? 'Ganti ke Mode Gelap' : 'Ganti ke Mode Terang'}
         >
           <span className="material-symbols-outlined text-[20px] group-hover:rotate-12 transition-transform">
             {theme === 'light' ? 'dark_mode' : 'light_mode'}

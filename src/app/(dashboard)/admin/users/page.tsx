@@ -21,10 +21,10 @@ export default async function AdminUsersPage() {
       {/* Dynamic Header */}
       <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 px-1">
         <div className="space-y-1">
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Management Portal</span>
-          <h1 className="text-4xl font-black text-on-surface tracking-tight">Student & Staff Directory</h1>
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Portal Manajemen</span>
+          <h1 className="text-4xl font-black text-on-surface tracking-tight">Direktori Guru & Staf</h1>
           <p className="text-sm font-medium text-on-surface-variant opacity-60">
-            Managing <span className="text-on-surface font-bold">{users.length}</span> verified academy members.
+            Mengelola <span className="text-on-surface font-bold">{users.length}</span> anggota institusi terverifikasi.
           </p>
         </div>
         <AddUserModal />
@@ -35,12 +35,12 @@ export default async function AdminUsersPage() {
         <div className="px-8 py-6 flex justify-between items-center border-b border-surface-container-low">
           <div className="flex items-center gap-3">
              <div className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></div>
-             <h3 className="text-lg font-bold text-on-surface">Academy Registry</h3>
+             <h3 className="text-lg font-bold text-on-surface">Registrasi Institusi</h3>
           </div>
           <div className="flex items-center gap-3">
              <div className="hidden sm:flex bg-surface-container-low rounded-lg p-1 border border-outline-variant/10">
-                <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md bg-surface-container-lowest shadow-sm text-primary">Active</button>
-                <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md text-on-surface-variant opacity-60">Archived</button>
+                <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md bg-surface-container-lowest shadow-sm text-primary">Aktif</button>
+                <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md text-on-surface-variant opacity-60">Arsip</button>
              </div>
              <button className="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all">
                 <span className="material-symbols-outlined text-[20px]">filter_list</span>
@@ -52,11 +52,11 @@ export default async function AdminUsersPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface-container-low/50">
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Member Profile</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Designation</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Portal Access</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Status</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70 text-right">Operations</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">Profil Pengguna</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">Jabatan / Posisi</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">Akses Portal</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60 text-center">Status</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60 text-right">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-surface-container-low">
@@ -64,7 +64,7 @@ export default async function AdminUsersPage() {
                 <tr>
                   <td colSpan={5} className="px-8 py-16 text-center">
                     <span className="material-symbols-outlined text-5xl text-outline/30 mb-4 block">group_off</span>
-                    <p className="text-sm font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">No members registered in directory</p>
+                    <p className="text-sm font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">Tidak ada anggota terdaftar di direktori</p>
                   </td>
                 </tr>
               ) : (
@@ -84,23 +84,23 @@ export default async function AdminUsersPage() {
                         </div>
                         <div>
                           <p className="text-[0.9375rem] font-bold text-on-surface group-hover:text-primary transition-colors">{user.full_name}</p>
-                          <p className="text-[10px] font-bold text-on-surface-variant opacity-50 uppercase tracking-wider">Joined {new Date().getFullYear()}</p>
+                          <p className="text-[10px] font-bold text-on-surface-variant opacity-50 uppercase tracking-wider">Terdaftar {new Date().getFullYear()}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-8 py-5">
                       <span className="text-sm font-medium text-on-surface-variant">
-                        {user.position || 'Standard Member'}
+                        {user.position || 'Anggota Umum'}
                       </span>
                     </td>
                     <td className="px-8 py-5">
                       <Badge variant={user.role === 'admin' ? 'info' : 'gray'} className="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
-                        {user.role === 'admin' ? 'Administrator' : 'Staff/Guru'}
+                        {user.role === 'admin' ? 'Administrator' : 'Staf / Guru'}
                       </Badge>
                     </td>
-                    <td className="px-8 py-5">
+                    <td className="px-8 py-5 text-center">
                       <Badge variant={user.is_active ? 'success' : 'danger'} className="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
-                        {user.is_active ? 'Active' : 'Deactivated'}
+                        {user.is_active ? 'Aktif' : 'Nonaktif'}
                       </Badge>
                     </td>
                     <td className="px-8 py-5 text-right">
@@ -114,10 +114,10 @@ export default async function AdminUsersPage() {
         </div>
 
         <div className="px-8 py-6 border-t border-surface-container-low bg-surface-container-lowest flex items-center justify-between">
-           <p className="text-[10px] font-black text-on-surface-variant opacity-40 uppercase tracking-[0.2em]">Total Database Index: {users.length}</p>
+           <p className="text-[10px] font-black text-on-surface-variant opacity-40 uppercase tracking-[0.2em]">Total Indeks Database: {users.length}</p>
            <div className="flex items-center gap-2">
-              <button className="btn btn-secondary btn-sm ring-1 ring-outline-variant/10">Bulk Export</button>
-              <button className="btn btn-secondary btn-sm ring-1 ring-outline-variant/10">Archival</button>
+              <button className="btn btn-secondary btn-sm ring-1 ring-outline-variant/10">Ekspor Data</button>
+              <button className="btn btn-secondary btn-sm ring-1 ring-outline-variant/10">Arsipkan</button>
            </div>
         </div>
       </section>

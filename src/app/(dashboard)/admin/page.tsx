@@ -158,11 +158,11 @@ export default async function AdminDashboard() {
           <table className="hidden md:table w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface-container-low/50">
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Nama</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Masuk</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Pulang</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Status</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Aksi</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Nama Lengkap</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70 text-center">Jam Masuk</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70 text-center">Jam Pulang</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70 text-center">Status</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70 text-right">Detil</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-surface-container-low">
@@ -232,7 +232,7 @@ export default async function AdminDashboard() {
       <div className="hidden md:flex fixed bottom-10 right-12 left-auto bg-surface-container-lowest/60 backdrop-blur-xl px-7 py-5 rounded-full border border-outline-variant/10 shadow-[0_12px_40px_rgba(0,0,0,0.08)] items-center gap-8 max-w-2xl z-40 animate-fade-in translate-y-0 group hover:-translate-y-1 transition-all duration-300">
         <div className="flex flex-col">
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-1">Status Sistem</span>
-          <span className="text-xs font-bold text-on-surface-variant">Aktivitas Live</span>
+          <span className="text-xs font-bold text-on-surface-variant">Aktivitas Langsung</span>
         </div>
         <div className="w-[180px] h-2 bg-surface-container-highest rounded-full relative overflow-hidden">
           <div className="absolute left-0 top-0 h-full w-[65%] bg-primary animate-pulse"></div>

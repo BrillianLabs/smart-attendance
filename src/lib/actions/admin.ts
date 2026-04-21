@@ -4,14 +4,11 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { ActionResult, Profile, Settings } from '@/lib/types';
 import { isAdmin } from './auth';
-import { cache } from 'react';
 
 // ========================
 // SETTINGS
 // ========================
-// cache() deduplicates getSettings calls within a single request.
-// i.e. layout + page + isAdmin() all share one DB query per request.
-export const getSettings = cache(async (): Promise<Settings | null> => {
+export async function getSettings(): Promise<Settings | null> {
   const supabase = await createClient();
   const { data } = await supabase
     .from('settings')
@@ -19,7 +16,7 @@ export const getSettings = cache(async (): Promise<Settings | null> => {
     .eq('id', 1)
     .single();
   return data;
-});
+}
 
 export async function updateSettings(formData: FormData): Promise<ActionResult> {
   if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };

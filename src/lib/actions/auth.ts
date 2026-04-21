@@ -3,7 +3,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { ActionResult, Profile } from '@/lib/types';
-import { cache } from 'react';
 
 export async function login(formData: FormData): Promise<ActionResult> {
   const email    = formData.get('email')    as string;
@@ -35,9 +34,7 @@ export async function getSession() {
   return user;
 }
 
-// cache() deduplicates calls within the same request — if getProfile()
-// is called from layout + page + isAdmin(), only ONE DB query is made.
-export const getProfile = cache(async (): Promise<Profile | null> => {
+export async function getProfile(): Promise<Profile | null> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
@@ -49,7 +46,7 @@ export const getProfile = cache(async (): Promise<Profile | null> => {
     .single();
 
   return data as Profile;
-});
+}
 
 export async function isAdmin() {
   const profile = await getProfile();

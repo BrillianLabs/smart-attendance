@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { ActionResult, Profile, Settings } from '@/lib/types';
 import { isAdmin } from './auth';
+import sharp from 'sharp';
 
 // ========================
 // SETTINGS
@@ -61,22 +62,35 @@ export async function uploadLogo(formData: FormData): Promise<ActionResult<strin
   const file = formData.get('logo') as File;
   if (!file) return { success: false, error: 'File tidak ditemukan.' };
 
-  const ext = file.name.split('.').pop();
-  const path = `logo/school-logo.${ext}`;
+  try {
+    // Process image to WebP using Sharp
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const webpBuffer = await sharp(buffer)
+      .webp({ quality: 80 })
+      .toBuffer();
 
-  const { error: uploadError } = await supabase.storage
-    .from('school-assets')
-    .upload(path, file, { upsert: true });
+    const path = `logo/school-logo.webp`;
 
-  if (uploadError) return { success: false, error: uploadError.message };
+    const { error: uploadError } = await supabase.storage
+      .from('school-assets')
+      .upload(path, webpBuffer, { 
+        upsert: true,
+        contentType: 'image/webp'
+      });
 
-  const { data: { publicUrl } } = supabase.storage
-    .from('school-assets')
-    .getPublicUrl(path);
+    if (uploadError) return { success: false, error: uploadError.message };
 
-  await supabase.from('settings').update({ school_logo_url: publicUrl }).eq('id', 1);
-  revalidatePath('/', 'layout');
-  return { success: true, data: publicUrl };
+    const { data: { publicUrl } } = supabase.storage
+      .from('school-assets')
+      .getPublicUrl(path);
+
+    await supabase.from('settings').update({ school_logo_url: publicUrl }).eq('id', 1);
+    revalidatePath('/', 'layout');
+    return { success: true, data: publicUrl };
+  } catch (err) {
+    console.error('Logo conversion error:', err);
+    return { success: false, error: 'Gagal memproses logo. Pastikan format file benar.' };
+  }
 }
 
 // ========================

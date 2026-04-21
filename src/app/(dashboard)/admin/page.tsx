@@ -10,6 +10,7 @@ import { id as idLocale } from 'date-fns/locale';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
+import { ExportButton } from '@/components/admin/ExportButton';
 
 export const metadata: Metadata = { title: 'Panel Admin | e-Absensi' };
 
@@ -104,11 +105,14 @@ export default async function AdminDashboard() {
               <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md bg-surface-container-lowest shadow-sm text-primary">Semua</button>
               <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md text-on-surface-variant opacity-60">Guru/Staff</button>
             </div>
-            <button className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-outline-variant/30 rounded-full text-[10px] font-bold uppercase tracking-widest text-on-surface hover:bg-surface-container-low transition-colors">
+            <ExportButton 
+              date={today} 
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-outline-variant/30 rounded-full text-[10px] font-bold uppercase tracking-widest text-on-surface hover:bg-surface-container-low transition-colors"
+            >
               <span className="material-symbols-outlined text-sm">download</span>
-              <span className="hidden sm:inline">Export CSV</span>
-              <span className="sm:hidden">CSV</span>
-            </button>
+              <span className="hidden sm:inline">Export Excel</span>
+              <span className="sm:hidden">Excel</span>
+            </ExportButton>
           </div>
         </div>
 

@@ -85,8 +85,8 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
            <h3 className="text-lg font-bold text-on-surface">Data Indices</h3>
            <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto scrollbar-hide">
+          <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="bg-surface-container-low/50">
                 <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Academy Member</th>

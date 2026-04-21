@@ -47,8 +47,8 @@ export default async function AttendancePage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto scrollbar-hide">
+          <table className="w-full text-left border-collapse min-w-[600px]">
             <thead>
               <tr className="bg-surface-container-low/50">
                 <th className="px-4 sm:px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Tanggal</th>

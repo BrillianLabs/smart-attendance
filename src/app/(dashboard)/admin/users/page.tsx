@@ -48,8 +48,8 @@ export default async function AdminUsersPage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto scrollbar-hide">
+          <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="bg-surface-container-low/50">
                 <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">Profil Pengguna</th>

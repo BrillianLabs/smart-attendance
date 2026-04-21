@@ -6,6 +6,7 @@ import { ActionResult, Attendance } from '@/lib/types';
 import { format } from 'date-fns';
 import { isAdmin } from './auth';
 import { checkTeleportation, checkAccuracy, checkRoundCoordinates } from '@/lib/utils/fakeGpsDetector';
+import sharp from 'sharp';
 
 export async function checkIn(
   lat: number,
@@ -290,16 +291,21 @@ async function uploadVerificationPhoto(userId: string, type: 'check_in' | 'check
   try {
     const supabase = await createClient();
     const today = format(new Date(), 'yyyy-MM-dd');
-    const path = `${userId}/${today}-${type}.jpg`;
+    const path = `${userId}/${today}-${type}.webp`;
     
     // Convert base64 to buffer
     const base64Data = base64.replace(/^data:image\/\w+;base64,/, '');
     const buffer = Buffer.from(base64Data, 'base64');
 
+    // Convert to WebP using Sharp (Quality 70 for logs)
+    const webpBuffer = await sharp(buffer)
+      .webp({ quality: 70 })
+      .toBuffer();
+
     const { error } = await supabase.storage
       .from('attendance-photos')
-      .upload(path, buffer, {
-        contentType: 'image/jpeg',
+      .upload(path, webpBuffer, {
+        contentType: 'image/webp',
         upsert: true
       });
 

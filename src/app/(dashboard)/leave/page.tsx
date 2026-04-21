@@ -37,7 +37,7 @@ export default async function LeavePage() {
       </section>
 
       {/* Main List Container */}
-      <div className="bg-surface-container-lowest rounded-[2.5rem] p-4 shadow-sm shadow-primary/5 border border-outline-variant/10 overflow-hidden">
+      <div className="bg-surface-container-lowest rounded-[2.5rem] p-4 shadow-sm shadow-primary/5 border border-outline-variant/10 overflow-x-auto scrollbar-hide">
         {leaves.length === 0 ? (
           <div className="text-center py-24 px-6 flex flex-col items-center">
             <div className="w-20 h-20 bg-surface-container-low rounded-[2rem] flex items-center justify-center mb-6">

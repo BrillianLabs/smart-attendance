@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { ActionResult } from '@/lib/types';
+import sharp from 'sharp';
 
 export async function updateProfileMetadata(formData: FormData): Promise<ActionResult> {
   const supabase = await createClient();
@@ -38,15 +39,20 @@ export async function updateProfileAvatar(base64: string): Promise<ActionResult<
   if (!user) return { success: false, error: 'Tidak terautentikasi.' };
 
   try {
-    const path = `${user.id}/profile-avatar.jpg`;
+    const path = `${user.id}/profile-avatar.webp`;
     
     const base64Data = base64.replace(/^data:image\/\w+;base64,/, '');
     const buffer = Buffer.from(base64Data, 'base64');
 
+    // Convert to WebP using Sharp
+    const webpBuffer = await sharp(buffer)
+      .webp({ quality: 80 })
+      .toBuffer();
+
     const { error: uploadError } = await supabase.storage
       .from('school-assets')
-      .upload(path, buffer, {
-        contentType: 'image/jpeg',
+      .upload(path, webpBuffer, {
+        contentType: 'image/webp',
         upsert: true
       });
 

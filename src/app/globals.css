@@ -308,7 +308,14 @@
     background: var(--color-surface-container-low);
     border-radius: 1rem;
     border: 1px solid var(--color-outline-variant);
-    width: fit-content;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .nav-tab-container::-webkit-scrollbar {
+    display: none;
   }
 
   .nav-tab-item {
@@ -330,6 +337,14 @@
     color: var(--color-primary);
     opacity: 1;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
 

@@ -58,7 +58,7 @@ export function LeaveReviewButtons({ leaveId }: { leaveId: string }) {
         title="Setujui Izin"
       >
         <div className="space-y-4">
-          <p className="text-sm text-[var(--text-secondary)]">
+          <p className="text-sm text-on-surface-variant opacity-70">
             Konfirmasi persetujuan izin ini?
           </p>
           <Textarea
@@ -91,7 +91,7 @@ export function LeaveReviewButtons({ leaveId }: { leaveId: string }) {
         title="Tolak Izin"
       >
         <div className="space-y-4">
-          <p className="text-sm text-[var(--text-secondary)]">
+          <p className="text-sm text-on-surface-variant opacity-70">
             Masukkan alasan penolakan izin ini.
           </p>
           <Textarea

@@ -10,6 +10,7 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 export function Badge({ variant = 'gray', className, children, ...props }: BadgeProps) {
   return (
     <span className={cn('badge', `badge-${variant}`, className)} {...props}>
+      <span className="w-1 h-1 rounded-full bg-current opacity-40 mr-1.5" />
       {children}
     </span>
   );

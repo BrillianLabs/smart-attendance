@@ -66,7 +66,7 @@ export default function NewLeavePage() {
               </div>
             </div>
             
-            <div className="p-6 bg-white/40 rounded-3xl border border-white/60 shadow-sm">
+            <div className="p-6 bg-surface-container-high/40 rounded-3xl border border-outline-variant/10 shadow-sm">
                <div className="flex items-center gap-2 mb-2 text-primary">
                   <span className="material-symbols-outlined text-[18px]">info</span>
                   <p className="text-[10px] font-black uppercase tracking-wider">Guidelines</p>

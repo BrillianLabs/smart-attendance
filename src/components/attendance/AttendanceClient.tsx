@@ -145,7 +145,7 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
         
         <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between pointer-events-none">
           <div className="flex flex-col gap-2 pointer-events-auto">
-            <div className="bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-lg border border-white/50 ring-1 ring-black/5">
+            <div className="bg-surface-container-lowest/95 backdrop-blur-md px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-lg border border-outline-variant/10 ring-1 ring-black/5">
               <div className={cn(
                 "w-2.5 h-2.5 rounded-full",
                 geo.loading ? "bg-amber-400 animate-pulse" : withinRadius ? "bg-primary animate-pulse" : "bg-rose-500"
@@ -167,7 +167,7 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
           <button 
             onClick={geo.request} 
             title="Refresh Lokasi"
-            className="w-10 h-10 rounded-full bg-white/95 backdrop-blur-md flex items-center justify-center text-on-surface shadow-lg hover:rotate-180 transition-transform duration-700 active:scale-90 border border-white/50"
+            className="w-10 h-10 rounded-full bg-surface-container-lowest/95 backdrop-blur-md flex items-center justify-center text-on-surface shadow-lg hover:rotate-180 transition-transform duration-700 active:scale-90 border border-outline-variant/10"
           >
             <span className={cn(
               "material-symbols-outlined text-[20px]",
@@ -191,7 +191,7 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
       {!geo.loading && !isCameraOpen && (
         <div className="bg-surface-container-low/50 rounded-2xl p-4 border border-outline-variant/10 flex items-center justify-between">
           <div className="flex items-center gap-3">
-             <div className="w-8 h-8 rounded-lg bg-surface flex items-center justify-center">
+             <div className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center">
                 <span className="material-symbols-outlined text-primary text-[18px]">verified_user</span>
              </div>
              <div>
@@ -201,7 +201,7 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
           </div>
           <button 
             onClick={() => openFaceVerification('test')}
-            className="px-4 py-2 bg-white rounded-xl text-[10px] font-black uppercase tracking-widest border border-outline-variant shadow-sm hover:bg-surface transition-colors"
+            className="px-4 py-2 bg-surface-container-lowest rounded-xl text-[10px] font-black uppercase tracking-widest border border-outline-variant/10 shadow-sm hover:bg-surface-container-low transition-colors text-on-surface"
           >
             Tes Kamera
           </button>
@@ -209,7 +209,7 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
       )}
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 text-on-surface">
         <button 
           disabled={!canCheckIn || isPending}
           onClick={() => openFaceVerification('check_in')}
@@ -247,10 +247,10 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
 
       {/* Help Note if Out of Range */}
       {!geo.loading && !withinRadius && geo.lat && (
-         <div className="relative z-10 p-5 bg-amber-50 rounded-[2rem] border border-amber-200/50 flex flex-col gap-4 animate-fade-in">
+         <div className="relative z-10 p-5 bg-amber-50 dark:bg-amber-950/20 rounded-[2rem] border border-amber-200/50 dark:border-amber-500/20 flex flex-col gap-4 animate-fade-in">
             <div className="flex gap-4">
-              <span className="material-symbols-outlined text-amber-600">info</span>
-              <p className="text-[11px] font-medium text-amber-900 leading-relaxed">
+              <span className="material-symbols-outlined text-amber-600 dark:text-amber-400">info</span>
+              <p className="text-[11px] font-medium text-amber-900 dark:text-amber-200 leading-relaxed">
                 Anda berada di luar radius sekolah ({radius}m). Pastikan berada di lokasi yang ditentukan untuk melakukan presense. 
                 <br/><span className="font-bold opacity-60">Pusat: {schoolLat.toFixed(4)}, {schoolLng.toFixed(4)}</span>
               </p>
@@ -261,7 +261,7 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
                 onClick={handleUpdateLocation}
                 disabled={isPending}
                 className={cn(
-                  "w-full py-4 bg-amber-200/60 hover:bg-amber-300 active:scale-[0.98] text-amber-950 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 border-2 border-amber-900/5 shadow-sm group relative z-50 cursor-pointer",
+                  "w-full py-4 bg-amber-200/60 dark:bg-amber-900/40 hover:bg-amber-300 dark:hover:bg-amber-900/60 active:scale-[0.98] text-amber-950 dark:text-amber-100 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 border-2 border-amber-900/5 dark:border-amber-100/10 shadow-sm group relative z-50 cursor-pointer",
                   isPending && "opacity-50 cursor-wait"
                 )}
               >
@@ -278,10 +278,10 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
 
       {/* Today Result Log */}
       {attendance && (
-        <section className="bg-surface-container-low p-6 rounded-[2rem] border border-outline-variant/10 animate-fade-in">
+        <section className="bg-surface-container-low p-6 rounded-[2rem] border border-outline-variant/10 animate-fade-in shadow-sm shadow-primary/5">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
-               <div className="w-11 h-11 rounded-xl bg-white flex items-center justify-center shadow-sm border border-outline-variant/5">
+               <div className="w-11 h-11 rounded-xl bg-surface-container-lowest flex items-center justify-center shadow-sm border border-outline-variant/5">
                  <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
                    {attendance.status === 'hadir' ? 'check_circle' : 'schedule'}
                  </span>

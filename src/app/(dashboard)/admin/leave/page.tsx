@@ -36,7 +36,7 @@ export default async function AdminLeavePage({ searchParams }: Props) {
       </section>
 
       {/* Filter Tabs - Tonal Pill Design */}
-      <div className="flex gap-2 flex-wrap bg-surface-container-low p-2 rounded-2xl w-fit border border-outline-variant/10">
+      <div className="nav-tab-container">
         {[
           { key: '', label: 'All Indices' },
           { key: 'pending', label: 'Pending' },
@@ -47,10 +47,8 @@ export default async function AdminLeavePage({ searchParams }: Props) {
             key={s.key}
             href={s.key ? `/admin/leave?status=${s.key}` : '/admin/leave'}
             className={cn(
-               "px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-               (status ?? '') === s.key 
-                 ? "bg-white text-primary shadow-sm" 
-                 : "text-on-surface-variant opacity-60 hover:opacity-100 hover:bg-white/50"
+               "nav-tab-item",
+               (status ?? '') === s.key && "nav-tab-item-active"
             )}
           >
             {s.label}

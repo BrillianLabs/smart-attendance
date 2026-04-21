@@ -18,7 +18,27 @@ export function Navbar({ profile, settings }: NavbarProps) {
   const pathname = usePathname();
   const isAdmin = profile.role === 'admin';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const menuRef = useRef<HTMLDivElement>(null);
+
+  // Initialize theme from document class
+  useEffect(() => {
+    if (document.documentElement.classList.contains('dark')) {
+      setTheme('dark');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -33,17 +53,28 @@ export function Navbar({ profile, settings }: NavbarProps) {
 
   return (
     <header className={cn(
-      "fixed top-0 right-0 z-50 bg-white/80 backdrop-blur-[24px] shadow-sm shadow-primary/5 h-16 flex justify-between items-center px-6 lg:px-8 transition-all duration-300 border-b border-outline-variant/10",
+      "fixed top-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-[24px] shadow-sm shadow-primary/5 h-16 flex justify-between items-center px-6 lg:px-8 transition-all duration-300 border-b border-outline-variant/10",
       isAdmin ? "lg:left-[var(--sidebar-width)] left-0" : "left-0"
     )}>
       <div className="flex items-center gap-8">
         {/* Brand for Mobile & Teacher/Student Views */}
         <div className={cn(
-          "flex items-center gap-3 min-w-0",
+          "flex items-center gap-3 min-w-0 border-r border-outline-variant/10 pr-6 mr-2",
           isAdmin ? "lg:hidden" : "flex"
         )}>
-           <span className="text-sm sm:text-base font-bold tracking-tighter text-primary leading-tight truncate max-w-[180px] sm:max-w-none">
-            {settings?.school_name ?? 'SD NEGERI NGUWOK MODO'}
+          {settings?.school_logo_url && (
+            <div className="w-8 h-8 rounded-lg bg-white p-1 shadow-sm border border-outline-variant/5 shrink-0 flex items-center justify-center overflow-hidden">
+               <Image 
+                 src={settings.school_logo_url} 
+                 alt="Logo" 
+                 width={32} 
+                 height={32} 
+                 className="w-full h-full object-contain"
+               />
+            </div>
+          )}
+           <span className="text-xs sm:text-sm font-black tracking-tighter text-primary leading-tight truncate max-w-[150px] sm:max-w-none uppercase">
+            {settings?.school_name ?? 'e-Absensi'}
           </span>
         </div>
 
@@ -115,11 +146,22 @@ export function Navbar({ profile, settings }: NavbarProps) {
       </div>
 
       <div className="flex items-center gap-4 lg:gap-6">
+        {/* Theme Toggle */}
+        <button 
+          onClick={toggleTheme}
+          className="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all active:scale-95 group"
+          title={theme === 'light' ? 'Switch to Dark' : 'Switch to Light'}
+        >
+          <span className="material-symbols-outlined text-[20px] group-hover:rotate-12 transition-transform">
+            {theme === 'light' ? 'dark_mode' : 'light_mode'}
+          </span>
+        </button>
+
         {/* Tonal Search Bar */}
         <div className="hidden sm:relative group sm:block">
           <span className="material-symbols-outlined text-outline absolute left-3 top-1/2 -translate-y-1/2 text-[18px]">search</span>
           <input 
-            className="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-[0.8125rem] w-48 lg:w-64 focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all placeholder:text-outline/50" 
+            className="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-[0.8125rem] w-48 lg:w-64 focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all placeholder:text-outline/50 text-on-surface" 
             placeholder="Cari data..." 
             type="text"
           />
@@ -146,7 +188,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
 
             {/* Dropdown Menu */}
             {isMenuOpen && (
-              <div className="absolute right-0 mt-3 w-64 bg-white rounded-[1.5rem] shadow-2xl border border-outline-variant/10 py-3 z-[60] animate-fade-in divide-y divide-outline-variant/5">
+              <div className="absolute right-0 mt-3 w-64 bg-surface-container-lowest rounded-[1.5rem] shadow-2xl border border-outline-variant/10 py-3 z-[60] animate-fade-in divide-y divide-outline-variant/5">
                 <div className="px-5 py-3">
                   <p className="text-[0.8125rem] font-black text-on-surface line-clamp-1">{profile.full_name}</p>
                   <p className="text-[0.625rem] text-on-surface-variant font-bold uppercase tracking-widest opacity-60 mt-0.5">{profile.role}</p>

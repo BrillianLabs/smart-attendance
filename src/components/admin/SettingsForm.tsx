@@ -65,9 +65,9 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
           <div className="p-6 bg-surface-container-low rounded-3xl border border-outline-variant/5">
             <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant opacity-60 ml-1 mb-4 block">Academy Emblem</label>
             <div className="flex flex-col sm:flex-row items-center gap-6">
-              <div className="w-24 h-24 rounded-2xl border-2 border-dashed border-outline-variant/30 flex items-center justify-center overflow-hidden bg-white shadow-inner">
+              <div className="w-24 h-24 rounded-2xl border border-outline-variant/10 flex items-center justify-center overflow-hidden bg-white shadow-inner p-1">
                 {logoPreview ? (
-                  <Image src={logoPreview} alt="Logo" width={96} height={96} className="w-full h-full object-contain p-2" />
+                  <Image src={logoPreview} alt="Logo" width={96} height={96} className="w-full h-full object-contain" />
                 ) : (
                   <span className="material-symbols-outlined text-outline/30 text-4xl">add_photo_alternate</span>
                 )}
@@ -75,7 +75,7 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
               <div className="flex flex-col gap-3 items-center sm:items-start">
                 <label
                   htmlFor="logo-upload"
-                  className="px-6 py-2.5 bg-white border border-outline-variant/20 rounded-xl text-xs font-bold uppercase tracking-widest text-on-surface hover:bg-primary hover:text-white transition-all cursor-pointer shadow-sm active:scale-95"
+                  className="btn btn-secondary btn-sm ring-1 ring-outline-variant/10"
                 >
                   Upload New Emblem
                 </label>
@@ -132,7 +132,7 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
         </div>
 
         <div className="space-y-8">
-          <div className="p-5 bg-white/40 rounded-2xl border border-white/60 shadow-sm text-xs font-medium text-on-surface-variant leading-relaxed">
+          <div className="p-5 bg-surface-container-high/40 rounded-2xl border border-outline-variant/10 shadow-sm text-xs font-medium text-on-surface-variant leading-relaxed">
             <span className="font-bold text-primary italic mr-2">Digital Boundary:</span>
             Specify the precise GPS coordinates and radius for student/staff verification. Use Google Maps to verify the exact "Atelier Area".
           </div>

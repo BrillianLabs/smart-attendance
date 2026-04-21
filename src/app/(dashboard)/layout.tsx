@@ -11,7 +11,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!profile) redirect('/login');
 
   return (
-    <div className="flex min-h-screen bg-[var(--background)]">
+    <div className="flex min-h-screen bg-surface-container-lowest transition-colors duration-500">
       {/* Sidebar for Desktop */}
       <Sidebar profile={profile} settings={settings} />
 

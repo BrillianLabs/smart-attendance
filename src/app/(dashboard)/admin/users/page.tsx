@@ -38,8 +38,8 @@ export default async function AdminUsersPage() {
              <h3 className="text-lg font-bold text-on-surface">Academy Registry</h3>
           </div>
           <div className="flex items-center gap-3">
-             <div className="hidden sm:flex bg-surface-container-low rounded-lg p-1">
-                <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md bg-white shadow-sm text-primary">Active</button>
+             <div className="hidden sm:flex bg-surface-container-low rounded-lg p-1 border border-outline-variant/10">
+                <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md bg-surface-container-lowest shadow-sm text-primary">Active</button>
                 <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md text-on-surface-variant opacity-60">Archived</button>
              </div>
              <button className="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all">
@@ -71,7 +71,7 @@ export default async function AdminUsersPage() {
                 users.map(user => (
                   <tr key={user.id} className={cn(
                     "hover:bg-surface-container-low/30 transition-all group",
-                    !user.is_active && "bg-neutral-50/50"
+                    !user.is_active && "bg-error-container/5"
                   )}>
                     <td className="px-8 py-5">
                       <div className="flex items-center gap-4">
@@ -113,11 +113,11 @@ export default async function AdminUsersPage() {
           </table>
         </div>
 
-        <div className="px-8 py-6 border-t border-surface-container-low bg-white flex items-center justify-between">
+        <div className="px-8 py-6 border-t border-surface-container-low bg-surface-container-lowest flex items-center justify-between">
            <p className="text-[10px] font-black text-on-surface-variant opacity-40 uppercase tracking-[0.2em]">Total Database Index: {users.length}</p>
-           <div className="flex items-center gap-1">
-              <button className="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:bg-surface-container-low transition-all">Bulk Export</button>
-              <button className="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:bg-surface-container-low transition-all">Archival</button>
+           <div className="flex items-center gap-2">
+              <button className="btn btn-secondary btn-sm ring-1 ring-outline-variant/10">Bulk Export</button>
+              <button className="btn btn-secondary btn-sm ring-1 ring-outline-variant/10">Archival</button>
            </div>
         </div>
       </section>

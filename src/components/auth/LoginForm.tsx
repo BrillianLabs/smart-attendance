@@ -30,7 +30,7 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
         {/* Branding Header */}
         <div className="text-center mb-10">
           {/* Logo — square container, object-contain to show full image */}
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[1.5rem] bg-white shadow-md mb-6 overflow-hidden ring-4 ring-surface-container-low mx-auto p-1.5">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[1.5rem] bg-surface-container-lowest shadow-md mb-6 overflow-hidden ring-4 ring-primary/10 mx-auto p-1.5">
             <Image 
               src={logoUrl || "/logo-256.webp"} 
               alt={schoolName} 
@@ -65,7 +65,7 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
                   <span className="material-symbols-outlined text-[20px]">mail</span>
                 </div>
                 <input 
-                  className="w-full pl-12 pr-4 py-3.5 bg-surface-container-low border-none rounded-xl text-on-surface text-[0.875rem] focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all duration-200 placeholder:text-outline/40" 
+                  className="w-full pl-12 pr-4 py-3.5 bg-surface-container-low border-none rounded-xl text-on-surface text-[0.875rem] focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all duration-200 placeholder:text-outline/40" 
                   id="email" 
                   name="email" 
                   placeholder="name@school.edu" 
@@ -94,7 +94,7 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
                   <span className="material-symbols-outlined text-[20px]">lock</span>
                 </div>
                 <input 
-                  className="w-full pl-12 pr-12 py-3.5 bg-surface-container-low border-none rounded-xl text-on-surface text-[0.875rem] focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all duration-200 placeholder:text-outline/40" 
+                  className="w-full pl-12 pr-12 py-3.5 bg-surface-container-low border-none rounded-xl text-on-surface text-[0.875rem] focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all duration-200 placeholder:text-outline/40" 
                   id="password" 
                   name="password" 
                   placeholder="••••••••" 

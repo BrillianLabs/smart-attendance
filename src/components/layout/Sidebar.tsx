@@ -51,15 +51,26 @@ export function Sidebar({ profile, settings }: SidebarProps) {
       style={{ width: 'var(--sidebar-width)' }}
     >
       {/* Branding Header */}
-      <div className="mb-10 px-2 mt-2">
-        <h1 className="text-lg font-black tracking-tight uppercase text-primary leading-tight">
-          {settings?.school_name ?? 'SD NEGERI NGUWOK'}
-          <br />
-          <span className="text-[0.8rem]">KECAMATAN MODO</span>
-        </h1>
-        <p className="text-[0.75rem] text-on-surface-variant font-bold uppercase tracking-widest opacity-60">
-          Sistem Manajemen Sekolah
-        </p>
+      <div className="mb-10 px-2 mt-2 flex items-center gap-4">
+        {settings?.school_logo_url && (
+          <div className="w-12 h-12 rounded-2xl bg-white p-1 shadow-sm border border-outline-variant/10 shrink-0 flex items-center justify-center overflow-hidden">
+             <Image 
+               src={settings.school_logo_url} 
+               alt="Logo" 
+               width={48} 
+               height={48} 
+               className="w-full h-full object-contain"
+             />
+          </div>
+        )}
+        <div className="min-w-0">
+          <h1 className="text-[0.9375rem] font-black tracking-tight uppercase text-primary leading-tight truncate">
+            {settings?.school_name || 'SD NEGERI NGUWOK'}
+          </h1>
+          <p className="text-[0.625rem] text-on-surface-variant font-bold uppercase tracking-widest opacity-60">
+            Sistem Manajemen
+          </p>
+        </div>
       </div>
 
       {/* Navigation Groups */}
@@ -74,7 +85,7 @@ export function Sidebar({ profile, settings }: SidebarProps) {
                 'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ease-in-out group relative',
                 active
                   ? 'bg-surface-container-lowest text-primary font-bold shadow-sm shadow-primary/5'
-                  : 'text-on-surface-variant hover:bg-white/50 hover:translate-x-1 hover:text-primary'
+                  : 'text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 hover:text-primary'
               )}
             >
               <span className={cn(
@@ -96,7 +107,7 @@ export function Sidebar({ profile, settings }: SidebarProps) {
       <div className="mt-auto relative" ref={userMenuRef}>
         {/* User Dropup Menu */}
         {isUserMenuOpen && (
-          <div className="absolute bottom-full left-0 w-full mb-3 bg-white rounded-2xl shadow-xl border border-outline-variant/10 py-2.5 z-50 animate-fade-in overflow-hidden">
+          <div className="absolute bottom-full left-0 w-full mb-3 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/10 py-2.5 z-50 animate-fade-in overflow-hidden">
              <Link 
                href="/profile" 
                onClick={() => setIsUserMenuOpen(false)}
@@ -132,11 +143,11 @@ export function Sidebar({ profile, settings }: SidebarProps) {
           onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
           className={cn(
             "w-full flex items-center gap-3 p-3 rounded-2xl transition-all duration-200 border border-transparent",
-            isUserMenuOpen ? "bg-white border-outline-variant/10 shadow-sm" : "hover:bg-white/50"
+            isUserMenuOpen ? "bg-surface-container-lowest border-outline-variant/10 shadow-sm" : "hover:bg-surface-container-high"
           )}
         >
           {profile.avatar_url ? (
-            <div className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-white shadow-sm border border-outline-variant/10 shrink-0">
+            <div className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-primary/20 shadow-sm border border-outline-variant/10 shrink-0">
               <Image src={profile.avatar_url} alt={profile.full_name} width={36} height={36} className="object-cover w-full h-full" />
             </div>
           ) : (

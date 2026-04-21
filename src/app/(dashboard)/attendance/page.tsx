@@ -42,7 +42,7 @@ export default async function AttendancePage() {
         <div className="px-4 sm:px-8 py-6 border-b border-surface-container-low flex justify-between items-center">
           <h3 className="text-base sm:text-lg font-bold text-on-surface">Riwayat 30 Hari</h3>
           <div className="flex bg-surface-container-low rounded-lg p-1">
-            <button className="px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-md bg-white shadow-sm text-primary">List View</button>
+            <button className="px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-md bg-surface-container-lowest shadow-sm text-primary">List View</button>
             <button className="px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-md text-on-surface-variant opacity-60">Calendar</button>
           </div>
         </div>
@@ -93,8 +93,8 @@ export default async function AttendancePage() {
           </table>
         </div>
 
-        <div className="px-8 py-6 bg-surface border-t border-outline-variant/5 text-center">
-            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-outline opacity-30">End of Personal Logs</p>
+        <div className="px-8 py-6 bg-surface-container-lowest/50 border-t border-outline-variant/5 text-center">
+            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-outline opacity-40">End of Personal Logs</p>
         </div>
       </section>
     </div>

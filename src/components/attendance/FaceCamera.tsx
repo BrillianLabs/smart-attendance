@@ -147,29 +147,29 @@ export function FaceCamera({ referenceImageUrl, onVerified, onCancel, mode = 've
             : 'Ditolak';
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6">
-      <div className="bg-white w-full max-w-sm sm:max-w-lg rounded-3xl overflow-hidden shadow-2xl flex flex-col" style={{ maxHeight: '90dvh' }}>
+    <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6">
+      <div className="bg-surface-container-lowest w-full max-w-sm sm:max-w-lg rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col border border-outline-variant/10" style={{ maxHeight: '90dvh' }}>
 
         {/* ── Header ── */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-outline-variant/10">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
               <ShieldCheck className="text-primary" size={18} />
             </div>
             <div>
-              <p className="text-sm font-black text-slate-800 leading-none">
+              <p className="text-sm font-black text-on-surface leading-none">
                 {mode === 'capture' ? 'Update Foto Profil' : 'Verifikasi Identitas AI'}
               </p>
-              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-0.5">
+              <p className="text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider mt-1 opacity-60">
                 Sistem Keamanan Sekolah
               </p>
             </div>
           </div>
           <button
             onClick={onCancel}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low text-on-surface-variant transition-colors"
           >
-            <XCircle size={20} className="text-slate-400" />
+            <span className="material-symbols-outlined text-[18px] opacity-40">close</span>
           </button>
         </div>
 
@@ -181,7 +181,7 @@ export function FaceCamera({ referenceImageUrl, onVerified, onCancel, mode = 've
               <p className="text-white text-sm font-semibold leading-relaxed">{error}</p>
               <button
                 onClick={() => window.location.reload()}
-                className="mt-5 px-5 py-2 bg-white text-slate-800 rounded-xl text-xs font-black uppercase tracking-wider"
+                className="mt-5 px-5 py-2 bg-primary text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-lg"
               >
                 Coba Lagi
               </button>

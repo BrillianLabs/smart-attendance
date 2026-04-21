@@ -33,10 +33,27 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" className={`${inter.variable} ${materialSymbols.variable} antialiased`}>
+    <html lang="id" className={`${inter.variable} ${materialSymbols.variable} antialiased`} suppressHydrationWarning>
       <head>
         {/* Google Fonts preconnect for Inter is automatic with next/font, 
             tetapi kita melakukan self-host untuk Material Symbols demi kecepatan maksimal. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  var supportDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (theme === 'dark' || (!theme && supportDark)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body className={`${inter.className} font-sans`}>
         {children}

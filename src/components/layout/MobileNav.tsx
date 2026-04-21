@@ -21,7 +21,7 @@ export function MobileNav({ profile }: MobileNavProps) {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-6 left-4 right-4 flex justify-around items-center px-2 py-3 bg-white/80 backdrop-blur-2xl border border-white/20 z-50 rounded-[2rem] shadow-[0_20px_50px_rgba(0,106,97,0.15)]">
+    <nav className="md:hidden fixed bottom-6 left-4 right-4 flex justify-around items-center px-2 py-3 bg-surface-container-lowest/80 backdrop-blur-2xl border border-outline-variant/10 z-50 rounded-[2rem] shadow-[0_20px_50px_rgba(0,106,97,0.15)]">
       {navItems.map(({ href, icon, label }) => {
         const active = pathname === href || (href !== '/' && pathname.startsWith(href));
         return (

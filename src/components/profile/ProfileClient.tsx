@@ -97,7 +97,7 @@ export function ProfileClient({ profile }: ProfileClientProps) {
 
         <div className="px-8 -mt-16 relative flex flex-col md:flex-row items-end gap-6">
           <div className="relative group/avatar">
-            <div className="w-32 h-32 rounded-[2rem] bg-white p-1.5 shadow-2xl relative overflow-hidden ring-4 ring-white">
+            <div className="w-32 h-32 rounded-[2rem] bg-surface-container-lowest p-1.5 shadow-2xl relative overflow-hidden ring-4 ring-surface-container-lowest">
               {avatar ? (
                 <Image src={avatar} alt={profile.full_name} width={128} height={128} className="w-full h-full object-cover rounded-[1.75rem]" />
               ) : (
@@ -202,19 +202,24 @@ export function ProfileClient({ profile }: ProfileClientProps) {
         <div className="lg:col-span-1 space-y-6">
           <div className={cn(
              "rounded-[2.5rem] p-8 border transition-all",
-             profile.avatar_url ? "bg-primary/5 border-primary/20" : "bg-amber-50 border-amber-200"
+             profile.avatar_url 
+               ? "bg-primary/5 border-primary/20" 
+               : "bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-500/20"
           )}>
             <div className="flex items-center gap-4 mb-4">
                <div className={cn(
                   "w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner",
-                  profile.avatar_url ? "bg-primary/10 text-primary" : "bg-amber-100 text-amber-600"
+                  profile.avatar_url ? "bg-primary/10 text-primary" : "bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400"
                )}>
                   <Camera size={24} />
                </div>
                <h4 className="text-sm font-black text-on-surface tracking-tight uppercase">AI Face ID</h4>
             </div>
             
-            <p className="text-xs font-bold leading-relaxed opacity-70">
+            <p className={cn(
+              "text-xs font-bold leading-relaxed opacity-70",
+              !profile.avatar_url && "text-amber-900 dark:text-amber-200"
+            )}>
               {profile.avatar_url 
                 ? "Foto profil Anda sudah terdaftar. Sistem AI akan menggunakan foto ini untuk verifikasi kehadiran setiap hari."
                 : "Foto profil Anda belum terdaftar. Harap unggah foto wajah yang jelas agar sistem AI dapat memverifikasi kehadiran Anda."
@@ -224,12 +229,12 @@ export function ProfileClient({ profile }: ProfileClientProps) {
             <div className="mt-6 flex flex-col gap-3">
                <button 
                   onClick={() => setIsCameraOpen(true)}
-                  className="w-full py-3 bg-primary text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-primary/10 hover:translate-y-[-2px] transition-all"
+                  className="btn btn-primary w-full"
                >
                   <Webcam size={16} />
                   Ambil Foto Langsung
                </button>
-               <label className="w-full py-3 bg-surface-container-high text-on-surface-variant rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer hover:bg-surface-container-highest transition-all">
+               <label className="btn btn-secondary w-full ring-1 ring-outline-variant/5">
                   <Camera size={16} />
                   Unggah dari Berkas
                   <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
@@ -250,10 +255,10 @@ export function ProfileClient({ profile }: ProfileClientProps) {
             </ul>
           </div>
 
-          <div className="bg-surface-container rounded-[2.5rem] p-8 border border-outline-variant/10 text-center">
+          <div className="bg-surface-container-low rounded-[2.5rem] p-8 border border-outline-variant/10 text-center">
              <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-2">Keamanan Akun</p>
              <p className="text-[11px] font-bold text-on-surface-variant mb-6 leading-relaxed">Hubungi IT Support jika Anda mengalami kendala pada verifikasi AI.</p>
-             <div className="px-6 py-2 bg-white/80 rounded-xl text-[9px] font-black uppercase tracking-widest border border-outline-variant/10 inline-block">
+             <div className="px-6 py-2 bg-surface-container-lowest/80 rounded-xl text-[9px] font-black uppercase tracking-widest border border-outline-variant/10 inline-block text-on-surface">
                 v1.2.4 SECURE
              </div>
           </div>

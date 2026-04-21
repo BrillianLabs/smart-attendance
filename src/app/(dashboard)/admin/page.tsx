@@ -12,7 +12,7 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
 import { ExportButton } from '@/components/admin/ExportButton';
 
-export const metadata: Metadata = { title: 'Panel Admin | e-Absensi' };
+export const metadata: Metadata = { title: 'Panel Admin | SIGAP' };
 
 function MetricCard({ icon, label, value, trend, colorClass, barWidth, barColor }: {
   icon: string; label: string; value: number | string; trend: string; colorClass: string; barWidth: string; barColor: string;
@@ -50,10 +50,15 @@ export default async function AdminDashboard() {
   return (
     <div className="space-y-8 sm:space-y-12 animate-fade-in pb-24">
       {/* Header Section */}
-      <section className="flex justify-between items-end px-1">
+      <section className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1">
         <div>
-          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Analitik Sistem</span>
-          <h2 className="text-2xl sm:text-[2rem] font-bold text-on-surface leading-tight tracking-tight">Ringkasan Presensi</h2>
+          <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-primary mb-3 block opacity-80">Management Experience</span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-on-surface tracking-tight leading-none mb-2">
+            Selamat Datang di <span className="text-primary italic">SIGAP</span>
+          </h1>
+          <p className="text-sm font-medium text-on-surface-variant opacity-60">
+            Sistem Informasi Guru Absensi Pintar — SD NEGERI NGUWOK
+          </p>
         </div>
         <div className="hidden sm:flex gap-4">
           <button className="btn btn-secondary btn-sm ring-1 ring-outline-variant/5">

@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils/cn';
 import { Attendance, LeaveRequest } from '@/lib/types';
 
-export const metadata: Metadata = { title: 'Dashboard | SD Negeri Nguwok' };
+export const metadata: Metadata = { title: 'Dashboard | SIGAP' };
 
 export default async function DashboardPage() {
   const [profile, settings, todayAtt, history, leaves] = await Promise.all([
@@ -42,8 +42,11 @@ export default async function DashboardPage() {
             {todayStr}
           </p>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-on-background leading-tight">
-            Selamat Pagi, <span className="text-primary">{profile.full_name.split(' ')[0]}</span>
+            Selamat Datang di <span className="text-primary italic">SIGAP</span>
           </h1>
+          <p className="text-on-surface-variant text-sm font-medium opacity-60 mt-2">
+            Sistem Informasi Guru Absensi Pintar - SD NEGERI NGUWOK
+          </p>
         </div>
         <div className="flex items-center gap-3 bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/10 shadow-sm">
           <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>calendar_today</span>

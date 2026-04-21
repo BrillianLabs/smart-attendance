@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { User, LogOut, Settings as SettingsIcon, ChevronUp } from 'lucide-react';
+import { User, LogOut, Settings as SettingsIcon, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -35,8 +35,25 @@ export function Sidebar({ profile, settings }: SidebarProps) {
   const pathname = usePathname();
   const isAdmin  = profile.role === 'admin';
   const navItems = isAdmin ? [...staffNav, ...adminNav] : staffNav;
+  
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Initialize collapse state from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('sidebar-collapsed');
+    if (saved === 'true') setIsCollapsed(true);
+    setIsMounted(true);
+  }, []);
+
+  // Save to localStorage
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem('sidebar-collapsed', String(isCollapsed));
+    }
+  }, [isCollapsed, isMounted]);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -49,32 +66,46 @@ export function Sidebar({ profile, settings }: SidebarProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed);
+
   return (
     <aside
-      className="hidden lg:flex flex-col h-screen sticky top-0 bg-surface-container-low border-r border-outline-variant/10 p-6 gap-2"
-      style={{ width: 'var(--sidebar-width)' }}
+      className={cn(
+        "hidden lg:flex flex-col h-screen sticky top-0 bg-surface-container-low border-r border-outline-variant/10 transition-all duration-300 ease-in-out z-40 group/sidebar",
+        isCollapsed ? "w-20 p-4" : "w-[280px] p-6"
+      )}
     >
+      {/* Collapse Toggle Button */}
+      <button
+        onClick={toggleCollapse}
+        className="absolute -right-3 top-20 w-6 h-6 bg-surface-container-lowest border border-outline-variant/10 rounded-full flex items-center justify-center text-primary shadow-sm hover:bg-primary hover:text-white transition-all z-50 opacity-0 group-hover/sidebar:opacity-100"
+      >
+        {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+      </button>
+
       {/* Branding Header */}
-      <div className="mb-10 px-2 mt-2 flex items-center gap-4">
+      <div className={cn(
+        "mb-10 px-2 mt-2 flex items-center gap-4 transition-all duration-300",
+        isCollapsed ? "justify-center px-0" : "justify-start"
+      )}>
         {settings?.school_logo_url && (
-          <div className="w-12 h-12 rounded-2xl bg-white p-1 shadow-sm border border-outline-variant/10 shrink-0 flex items-center justify-center overflow-hidden">
+          <div className="w-10 h-10 rounded-xl bg-white p-1 shadow-sm border border-outline-variant/10 shrink-0 flex items-center justify-center overflow-hidden">
              <Image 
                src={settings.school_logo_url} 
                alt="Logo" 
-               width={48} 
-               height={48} 
+               width={40} 
+               height={40} 
                className="w-full h-full object-contain"
              />
           </div>
         )}
-        <div className="min-w-0">
-          <h1 className="text-[0.9375rem] font-black tracking-tight uppercase text-primary leading-tight truncate">
-            {settings?.school_name || 'SD NEGERI NGUWOK'}
-          </h1>
-          <p className="text-[0.625rem] text-on-surface-variant font-bold uppercase tracking-widest opacity-60">
-            Sistem Manajemen
-          </p>
-        </div>
+        {!isCollapsed && (
+          <div className="min-w-0 animate-fade-in">
+            <h1 className="text-lg font-black tracking-tighter uppercase text-primary leading-none">
+              SIGAP v1.0
+            </h1>
+          </div>
+        )}
       </div>
 
       {/* Navigation Groups */}
@@ -85,8 +116,10 @@ export function Sidebar({ profile, settings }: SidebarProps) {
             <Link
               key={href}
               href={href}
+              title={isCollapsed ? label : ""}
               className={cn(
-                'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ease-in-out group relative',
+                'flex items-center rounded-xl transition-all duration-200 ease-in-out group relative',
+                isCollapsed ? "justify-center p-3" : "gap-3 px-4 py-3",
                 active
                   ? 'bg-surface-container-lowest text-primary font-bold shadow-sm shadow-primary/5'
                   : 'text-on-surface-variant hover:bg-surface-container-high hover:translate-x-1 hover:text-primary'
@@ -98,7 +131,9 @@ export function Sidebar({ profile, settings }: SidebarProps) {
               )} style={{ fontVariationSettings: active ? "'FILL' 1" : "'FILL' 0" }}>
                 {icon}
               </span>
-              <span className="text-[0.875rem] tracking-tight">{label}</span>
+              {!isCollapsed && (
+                <span className="text-[0.875rem] tracking-tight truncate animate-fade-in">{label}</span>
+              )}
               {active && (
                 <div className="absolute left-0 w-1 h-6 bg-primary rounded-r-full" />
               )}
@@ -111,7 +146,10 @@ export function Sidebar({ profile, settings }: SidebarProps) {
       <div className="mt-auto relative" ref={userMenuRef}>
         {/* User Dropup Menu */}
         {isUserMenuOpen && (
-          <div className="absolute bottom-full left-0 w-full mb-3 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/10 py-2.5 z-50 animate-fade-in overflow-hidden">
+          <div className={cn(
+            "absolute bottom-full left-0 mb-3 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/10 py-2.5 z-50 animate-fade-in overflow-hidden",
+            isCollapsed ? "w-48 left-12" : "w-full"
+          )}>
              <Link 
                href="/profile" 
                onClick={() => setIsUserMenuOpen(false)}
@@ -162,7 +200,8 @@ export function Sidebar({ profile, settings }: SidebarProps) {
         <button 
           onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
           className={cn(
-            "w-full flex items-center gap-3 p-3 rounded-2xl transition-all duration-200 border border-transparent",
+            "w-full flex items-center transition-all duration-200 border border-transparent rounded-2xl",
+            isCollapsed ? "justify-center p-2" : "gap-3 p-3",
             isUserMenuOpen ? "bg-surface-container-lowest border-outline-variant/10 shadow-sm" : "hover:bg-surface-container-high"
           )}
         >
@@ -175,11 +214,15 @@ export function Sidebar({ profile, settings }: SidebarProps) {
               {profile.full_name.charAt(0).toUpperCase()}
             </div>
           )}
-          <div className="min-w-0 flex-1 text-left">
-            <p className="text-[0.8125rem] font-black text-on-surface truncate">{profile.full_name}</p>
-            <p className="text-[0.625rem] text-on-surface-variant font-bold uppercase tracking-widest opacity-60 leading-none mt-0.5">{profile.role}</p>
-          </div>
-          <ChevronUp className={cn("text-outline-variant transition-transform shrink-0", isUserMenuOpen && "rotate-180")} size={16} />
+          {!isCollapsed && (
+            <div className="min-w-0 flex-1 text-left animate-fade-in">
+              <p className="text-[0.8125rem] font-black text-on-surface truncate">{profile.full_name}</p>
+              <p className="text-[0.625rem] text-on-surface-variant font-bold uppercase tracking-widest opacity-60 leading-none mt-0.5">{profile.role}</p>
+            </div>
+          )}
+          {!isCollapsed && (
+            <ChevronUp className={cn("text-outline-variant transition-transform shrink-0", isUserMenuOpen && "rotate-180")} size={16} />
+          )}
         </button>
       </div>
     </aside>

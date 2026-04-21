@@ -21,10 +21,10 @@ const materialSymbols = localFont({
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
-  const name = settings?.school_name || 'SIAGA';
+  const name = settings?.school_name || 'SIGAP';
   return {
     title: { default: name, template: `%s | ${name}` },
-    description: `Sistem manajemen kehadiran online ${name}`,
+    description: `Sistem Informasi Guru Absensi Pintar - ${name}`,
     icons: {
       icon: settings?.school_logo_url || '/logo-256.webp',
       apple: settings?.school_logo_url || '/logo-256.webp',

@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   avatar_url  TEXT,
   is_active   BOOLEAN NOT NULL DEFAULT TRUE,
   nip         TEXT,
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -198,10 +199,14 @@ INSERT INTO storage.buckets (id, name, public)
 VALUES ('school-assets', 'school-assets', true)
 ON CONFLICT (id) DO NOTHING;
 
--- Allow admin to upload, everyone to view
+-- Allow admin to manage all school assets
 DROP POLICY IF EXISTS "school_assets_upload" ON storage.objects;
 CREATE POLICY "school_assets_upload" ON storage.objects
   FOR INSERT WITH CHECK (bucket_id = 'school-assets' AND get_my_role() = 'admin');
+
+DROP POLICY IF EXISTS "school_assets_update" ON storage.objects;
+CREATE POLICY "school_assets_update" ON storage.objects
+  FOR UPDATE WITH CHECK (bucket_id = 'school-assets');
 
 DROP POLICY IF EXISTS "school_assets_view" ON storage.objects;
 CREATE POLICY "school_assets_view" ON storage.objects
@@ -209,4 +214,4 @@ CREATE POLICY "school_assets_view" ON storage.objects
 
 DROP POLICY IF EXISTS "school_assets_delete" ON storage.objects;
 CREATE POLICY "school_assets_delete" ON storage.objects
-  FOR DELETE USING (bucket_id = 'school-assets' AND get_my_role() = 'admin');
+  FOR DELETE USING (bucket_id = 'school-assets');

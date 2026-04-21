@@ -69,6 +69,7 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
                   id="email" 
                   name="email" 
                   placeholder="name@school.edu" 
+                  autoComplete="username"
                   required 
                   type="email" 
                 />
@@ -97,6 +98,7 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
                   id="password" 
                   name="password" 
                   placeholder="••••••••" 
+                  autoComplete="current-password"
                   required 
                   type={showPw ? 'text' : 'password'}
                 />

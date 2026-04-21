@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { ActionResult, Attendance } from '@/lib/types';
 import { format } from 'date-fns';
 import { isAdmin } from './auth';
+import { checkTeleportation, checkAccuracy, checkRoundCoordinates } from '@/lib/utils/fakeGpsDetector';
 
 export async function checkIn(
   lat: number,
@@ -14,6 +15,33 @@ export async function checkIn(
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Tidak terautentikasi.' };
+
+  // ── Server-side GPS validation ──────────────────────────────────────────
+  const accuracyFromClient = null; // lat/lng come from client — do coordinate checks
+  const roundCheck = checkRoundCoordinates(lat, lng);
+  if (roundCheck.isSuspicious) return { success: false, error: `🚫 GPS Palsu Terdeteksi: ${roundCheck.reason}` };
+
+  // Teleportation check: compare with last recent attendance record
+  const { data: lastAtt } = await supabase
+    .from('attendance')
+    .select('check_in_lat, check_in_lng, check_in')
+    .eq('user_id', user.id)
+    .not('check_in', 'is', null)
+    .not('check_in_lat', 'is', null)
+    .order('check_in', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (lastAtt?.check_in_lat && lastAtt?.check_in_lng && lastAtt?.check_in) {
+    const teleportCheck = checkTeleportation(
+      lastAtt.check_in_lat, lastAtt.check_in_lng, lastAtt.check_in,
+      lat, lng
+    );
+    if (teleportCheck.isSuspicious) {
+      return { success: false, error: `🚫 GPS Palsu Terdeteksi: ${teleportCheck.reason}` };
+    }
+  }
+  // ────────────────────────────────────────────────────────────────────────
 
   const today = format(new Date(), 'yyyy-MM-dd');
 
@@ -139,6 +167,21 @@ export async function checkOut(
   if (existing?.check_out) {
     return { success: false, error: 'Anda sudah melakukan absen pulang hari ini.' };
   }
+
+  // ── Server-side GPS validation ──────────────────────────────────────────
+  const roundCheck2 = checkRoundCoordinates(lat, lng);
+  if (roundCheck2.isSuspicious) return { success: false, error: `🚫 GPS Palsu Terdeteksi: ${roundCheck2.reason}` };
+
+  if (existing.check_in_lat && existing.check_in_lng && existing.check_in) {
+    const teleportCheck = checkTeleportation(
+      existing.check_in_lat, existing.check_in_lng, existing.check_in,
+      lat, lng
+    );
+    if (teleportCheck.isSuspicious) {
+      return { success: false, error: `🚫 GPS Palsu Terdeteksi: ${teleportCheck.reason}` };
+    }
+  }
+  // ────────────────────────────────────────────────────────────────────────
 
     let photo_url = existing.check_out_photo_url;
     if (photoBase64) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { runClientGpsChecks } from '@/lib/utils/fakeGpsDetector';
 
 interface GeolocationState {
   lat: number | null;
@@ -8,15 +9,17 @@ interface GeolocationState {
   accuracy: number | null;
   error: string | null;
   loading: boolean;
+  isFakeGps: boolean;
 }
 
 export function useGeolocation() {
   const [state, setState] = useState<GeolocationState>({
-    lat:      null,
-    lng:      null,
-    accuracy: null,
-    error:    null,
-    loading:  false,
+    lat:       null,
+    lng:       null,
+    accuracy:  null,
+    error:     null,
+    loading:   false,
+    isFakeGps: false,
   });
 
   const request = useCallback(() => {
@@ -29,12 +32,28 @@ export function useGeolocation() {
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        const { latitude, longitude, accuracy } = pos.coords;
+
+        // Run fake GPS detection
+        const fakeCheck = runClientGpsChecks(latitude, longitude, accuracy);
+        if (fakeCheck.isSuspicious) {
+          setState(s => ({
+            ...s,
+            lat: null, lng: null, accuracy: null,
+            loading: false,
+            isFakeGps: true,
+            error: fakeCheck.reason ?? 'Lokasi GPS terdeteksi tidak valid.',
+          }));
+          return;
+        }
+
         setState({
-          lat:      pos.coords.latitude,
-          lng:      pos.coords.longitude,
-          accuracy: pos.coords.accuracy,
-          error:    null,
-          loading:  false,
+          lat:       latitude,
+          lng:       longitude,
+          accuracy:  accuracy,
+          error:     null,
+          loading:   false,
+          isFakeGps: false,
         });
       },
       (err) => {

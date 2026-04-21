@@ -29,19 +29,19 @@ export default async function AdminLeavePage({ searchParams }: Props) {
       {/* Page Header */}
       <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 px-1">
         <div className="space-y-1">
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Decision Center</span>
-          <h1 className="text-4xl font-black text-on-surface tracking-tight">Leave <span className="text-primary italic">Approvals</span></h1>
-          <p className="text-sm font-medium text-on-surface-variant opacity-60">Managing {leaves.length} pending and archival requests.</p>
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Pusat Keputusan</span>
+          <h1 className="text-4xl font-black text-on-surface tracking-tight">Persetujuan <span className="text-primary italic">Izin</span></h1>
+          <p className="text-sm font-medium text-on-surface-variant opacity-60">Mengelola {leaves.length} pengajuan yang menunggu dan arsip.</p>
         </div>
       </section>
 
       {/* Filter Tabs - Tonal Pill Design */}
       <div className="nav-tab-container">
         {[
-          { key: '', label: 'All Indices' },
-          { key: 'pending', label: 'Pending' },
-          { key: 'approved', label: 'Approved' },
-          { key: 'rejected', label: 'Rejected' }
+          { key: '', label: 'Semua Indeks' },
+          { key: 'pending', label: 'Menunggu' },
+          { key: 'approved', label: 'Disetujui' },
+          { key: 'rejected', label: 'Ditolak' }
         ].map(s => (
           <Link
             key={s.key}
@@ -61,7 +61,7 @@ export default async function AdminLeavePage({ searchParams }: Props) {
         {leaves.length === 0 ? (
           <div className="text-center py-20">
              <span className="material-symbols-outlined text-4xl text-outline/20 mb-3 block">mark_email_read</span>
-             <p className="text-xs font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">No requests matching this filter</p>
+             <p className="text-xs font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">Tidak ada pengajuan yang sesuai filter</p>
           </div>
         ) : (
           <div className="divide-y divide-surface-container-low">
@@ -78,13 +78,13 @@ export default async function AdminLeavePage({ searchParams }: Props) {
                     </div>
                     <div className="space-y-1.5 min-w-0">
                        <div className="flex items-center gap-3">
-                          <p className="text-lg font-bold text-on-surface">{leave.profiles?.full_name ?? 'Unknown Member'}</p>
+                          <p className="text-lg font-bold text-on-surface">{leave.profiles?.full_name ?? 'Anggota Tidak Dikenal'}</p>
                           <Badge variant="gray" className="px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest opacity-60">
                             {leave.leave_type}
                           </Badge>
                        </div>
                        <p className="text-[10px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">
-                          {leave.profiles?.position ?? 'Academy Member'} • {format(parseISO(leave.start_date), 'd MMM', { locale: idLocale })}
+                          {leave.profiles?.position ?? 'Anggota Institusi'} • {format(parseISO(leave.start_date), 'd MMM', { locale: idLocale })}
                           {leave.start_date !== leave.end_date && (
                             <> – {format(parseISO(leave.end_date), 'd MMM yyyy', { locale: idLocale })}</>
                           )}
@@ -98,7 +98,7 @@ export default async function AdminLeavePage({ searchParams }: Props) {
                        {leave.admin_note && (
                         <p className="text-[11px] font-medium text-primary mt-3 flex items-center gap-2">
                           <span className="material-symbols-outlined text-sm">sticky_note_2</span>
-                          Official Note: {leave.admin_note}
+                          Catatan Resmi: {leave.admin_note}
                         </p>
                       )}
                     </div>

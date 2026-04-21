@@ -38,29 +38,29 @@ export default function NewLeavePage() {
               <span className="material-symbols-outlined text-white text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>event_busy</span>
             </div>
             <h2 className="text-4xl font-black text-on-surface leading-[1.1] mb-6 tracking-tight">
-              Request <span className="text-primary italic">Leave</span>
+              Ajukan <span className="text-primary italic">Izin</span>
             </h2>
             <p className="text-sm font-medium text-on-surface-variant leading-relaxed opacity-70">
-              Complete the form to request academic leave or personal absence. Requests are reviewed by administrators within 24 hours.
+              Lengkapi formulir untuk mengajukan izin akademik atau keperluan pribadi. Pengajuan akan ditinjau oleh administrator dalam waktu 24 jam.
             </p>
           </div>
 
           <div className="mt-16 space-y-10">
             <div>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-40 mb-5 block">Journey Tracking</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-40 mb-5 block">Tahapan Pengajuan</span>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/10"></div>
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold text-primary">Form Submission</span>
-                    <span className="text-[9px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest mt-0.5">Step 1 of 3</span>
+                    <span className="text-xs font-bold text-primary">Pengisian Formulir</span>
+                    <span className="text-[9px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest mt-0.5">Langkah 1 dari 3</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 opacity-40">
                   <div className="w-3 h-3 rounded-full bg-outline"></div>
                   <div className="flex flex-col">
-                    <span className="text-xs font-bold text-on-surface">Queue for Review</span>
-                    <span className="text-[9px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest mt-0.5">Verification Phase</span>
+                    <span className="text-xs font-bold text-on-surface">Antrean Peninjauan</span>
+                    <span className="text-[9px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest mt-0.5">Fase Verifikasi</span>
                   </div>
                 </div>
               </div>
@@ -69,10 +69,10 @@ export default function NewLeavePage() {
             <div className="p-6 bg-surface-container-high/40 rounded-3xl border border-outline-variant/10 shadow-sm">
                <div className="flex items-center gap-2 mb-2 text-primary">
                   <span className="material-symbols-outlined text-[18px]">info</span>
-                  <p className="text-[10px] font-black uppercase tracking-wider">Guidelines</p>
+                  <p className="text-[10px] font-black uppercase tracking-wider">Panduan</p>
                </div>
                <p className="text-[11px] text-on-surface-variant leading-relaxed font-medium">
-                  Ensure all medical documents are attached if requesting sick leave. Provide a clear and concise reason for administrative review.
+                  Pastikan dokumen pendukung (seperti surat dokter) sudah siap jika diperlukan. Berikan alasan yang jelas untuk memudahkan peninjauan admin.
                </p>
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function NewLeavePage() {
         <div className="md:w-7/12 p-8 lg:p-16">
           <form onSubmit={handleSubmit} className="space-y-10">
             <Select name="leave_type" label="Tipe Pengajuan" required>
-              <option value="">Select a category...</option>
+              <option value="">Pilih kategori...</option>
               <option value="sakit">Sakit (Medical Leave)</option>
               <option value="izin">Izin Kepentingan (Personal Leave)</option>
               <option value="cuti">Cuti Tahunan (Annual Leave)</option>
@@ -110,16 +110,16 @@ export default function NewLeavePage() {
 
             <Textarea
               name="reason"
-              label="Alasan Detail (Justification)"
+              label="Alasan Detail (Justifikasi)"
               required
-              placeholder="Please provide a comprehensive explanation for your absence..."
+              placeholder="Berikan alasan lengkap mengenai pengajuan izin Anda..."
               rows={6}
             />
 
             <div className="pt-10 flex flex-col sm:flex-row items-center justify-end gap-6 border-t border-outline-variant/10">
               <Link href="/leave" className="w-full sm:w-auto">
                 <button type="button" className="w-full px-8 py-4 text-xs font-black uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors">
-                  Cancel
+                  Batal
                 </button>
               </Link>
               <button 
@@ -127,7 +127,7 @@ export default function NewLeavePage() {
                 disabled={isPending}
                 className="w-full sm:w-auto px-12 py-5 bg-gradient-to-br from-primary to-primary-dim text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl shadow-2xl shadow-primary/20 active:scale-95 hover:scale-[1.02] transition-all disabled:opacity-50 disabled:grayscale ring-1 ring-white/10"
               >
-                {isPending ? 'Processing...' : 'Submit Request'}
+                {isPending ? 'Memproses...' : 'Kirim Pengajuan'}
               </button>
             </div>
           </form>

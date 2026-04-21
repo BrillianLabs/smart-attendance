@@ -2,11 +2,13 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { User, LogOut, Settings as SettingsIcon, ChevronUp } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
 import { logout } from '@/lib/actions/auth';
+import { useConfirm } from '@/context/ConfirmContext';
+import toast from 'react-hot-toast';
 import { Profile, Settings } from '@/lib/types';
 
 interface SidebarProps {
@@ -28,6 +30,8 @@ const adminNav = [
 ];
 
 export function Sidebar({ profile, settings }: SidebarProps) {
+  const router = useRouter();
+  const confirm = useConfirm();
   const pathname = usePathname();
   const isAdmin  = profile.role === 'admin';
   const navItems = isAdmin ? [...staffNav, ...adminNav] : staffNav;
@@ -123,19 +127,35 @@ export function Sidebar({ profile, settings }: SidebarProps) {
                  className="flex items-center gap-3 px-4 py-3 text-[0.8125rem] font-bold text-on-surface-variant hover:text-primary hover:bg-primary/5 transition-all"
                >
                   <SettingsIcon size={18} />
-                  Settings
+                  Pengaturan
                </Link>
              )}
              <div className="mx-2 my-1.5 h-[1px] bg-outline-variant/20" />
-             <form action={logout}>
-               <button 
-                 type="submit"
-                 className="w-full flex items-center gap-3 px-4 py-3 text-[0.8125rem] font-bold text-error hover:bg-error/5 transition-all"
-               >
-                  <LogOut size={18} />
-                  Keluar
-               </button>
-             </form>
+              <button 
+                onClick={async () => {
+                  const ok = await confirm({
+                    title: 'Konfirmasi Keluar',
+                    message: 'Apakah Anda yakin ingin keluar dari sistem presensi?',
+                    confirmLabel: 'Ya, Keluar',
+                    variant: 'danger'
+                  });
+                  if (ok) {
+                    setIsUserMenuOpen(false);
+                    const loadingToast = toast.loading('Keluar...');
+                    await logout();
+                    toast.dismiss(loadingToast);
+                    toast.success('Berhasil keluar. Sampai jumpa! 👋');
+                    setTimeout(() => {
+                      router.push('/login');
+                      router.refresh();
+                    }, 800);
+                  }
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 text-[0.8125rem] font-bold text-error hover:bg-error/5 transition-all"
+              >
+                 <LogOut size={18} />
+                 Keluar
+              </button>
           </div>
         )}
 

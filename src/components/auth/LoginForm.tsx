@@ -2,7 +2,9 @@
 
 import { useTransition, useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { login } from '@/lib/actions/auth';
+import toast from 'react-hot-toast';
 
 interface LoginFormProps {
   schoolName: string;
@@ -10,6 +12,7 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [showPw, setShowPw] = useState(false);
@@ -18,8 +21,15 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
     setError(null);
     startTransition(async () => {
       const result = await login(formData);
-      if (result && 'error' in result) {
-        setError(result.error);
+      if (result && !result.success) {
+        setError(result.error || 'Terjadi kesalahan');
+      } else {
+        toast.success('Selamat datang kembali! 👋');
+        // Give time for toast to be seen before redirecting
+        setTimeout(() => {
+          router.push('/');
+          router.refresh();
+        }, 800);
       }
     });
   }
@@ -30,7 +40,7 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
         {/* Branding Header */}
         <div className="text-center mb-10">
           {/* Logo — square container, object-contain to show full image */}
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[1.5rem] bg-surface-container-lowest shadow-md mb-6 overflow-hidden ring-4 ring-primary/10 mx-auto p-1.5">
+          <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2rem] bg-white shadow-2xl mb-6 overflow-hidden ring-4 ring-primary/10 mx-auto p-4 shrink-0">
             <Image 
               src={logoUrl || "/logo-256.webp"} 
               alt={schoolName} 

@@ -19,13 +19,13 @@ export async function login(formData: FormData): Promise<ActionResult> {
     return { success: false, error: 'Email atau password salah.' };
   }
 
-  redirect('/');
+  return { success: true, data: undefined };
 }
 
 export async function logout() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect('/login');
+  return { success: true };
 }
 
 export async function getSession() {

@@ -3,11 +3,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { logout } from '@/lib/actions/auth';
 import { User, LogOut, Shield } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
 import { Profile, Settings } from '@/lib/types';
+import { useConfirm } from '@/context/ConfirmContext';
+import toast from 'react-hot-toast';
 
 interface NavbarProps {
   profile: Profile;
@@ -16,6 +18,8 @@ interface NavbarProps {
 
 export function Navbar({ profile, settings }: NavbarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const confirm = useConfirm();
   const isAdmin = profile.role === 'admin';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -215,17 +219,34 @@ export function Navbar({ profile, settings }: NavbarProps) {
                   )}
                 </div>
 
-                <div className="pt-2">
-                  <form action={logout}>
+                  <div className="pt-2">
                     <button 
-                      type="submit"
-                      className="w-full flex items-center gap-3 px-5 py-2.5 text-[0.8125rem] font-bold text-error hover:bg-error/5 transition-all"
+                      onClick={async () => {
+                        const ok = await confirm({
+                          title: 'Konfirmasi Keluar',
+                          message: 'Apakah Anda yakin ingin mengakhiri sesi ini? Anda harus masuk kembali untuk mengakses data.',
+                          confirmLabel: 'Keluar Sekarang',
+                          variant: 'danger'
+                        });
+
+                        if (ok) {
+                          setIsMenuOpen(false);
+                          const loadingToast = toast.loading('Keluar...');
+                          await logout();
+                          toast.dismiss(loadingToast);
+                          toast.success('Berhasil keluar. Sampai jumpa! 👋');
+                          setTimeout(() => {
+                            router.push('/login');
+                            router.refresh();
+                          }, 800);
+                        }
+                      }}
+                      className="w-full flex items-center gap-3 px-5 py-2.5 text-[0.8125rem] font-bold text-error hover:bg-error/5 transition-all text-left"
                     >
                       <LogOut size={16} />
                       Keluar
                     </button>
-                  </form>
-                </div>
+                  </div>
               </div>
             )}
           </div>

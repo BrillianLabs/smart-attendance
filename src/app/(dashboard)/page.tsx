@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils/cn';
 import { Attendance, LeaveRequest } from '@/lib/types';
 
-export const metadata: Metadata = { title: 'Dashboard | Atelier Academy' };
+export const metadata: Metadata = { title: 'Dashboard | SD Negeri Nguwok' };
 
 export default async function DashboardPage() {
   const [profile, settings, todayAtt, history, leaves] = await Promise.all([

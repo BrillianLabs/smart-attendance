@@ -10,7 +10,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils/cn';
 
-export const metadata: Metadata = { title: 'Approvals | Atelier Academy' };
+export const metadata: Metadata = { title: 'Persetujuan Izin | SD Negeri Nguwok' };
 
 interface Props {
   searchParams: Promise<{ status?: string }>;
@@ -73,7 +73,7 @@ export default async function AdminLeavePage({ searchParams }: Props) {
                   <div className="flex items-start gap-6">
                     <div className="w-14 h-14 rounded-full bg-surface-container-low overflow-hidden flex-shrink-0 flex items-center justify-center font-black text-primary border border-outline-variant/5">
                       {leave.profiles?.avatar_url ? (
-                        <Image src={leave.profiles.avatar_url} alt="Profile" width={56} height={56} className="object-cover" />
+                        <Image src={leave.profiles.avatar_url} alt="Profile" width={56} height={56} className="w-full h-full object-cover" />
                       ) : (
                         (leave.profiles?.full_name ?? 'U').charAt(0).toUpperCase()
                       )}

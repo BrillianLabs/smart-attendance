@@ -8,7 +8,7 @@ import { format, parseISO } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { cn } from '@/lib/utils/cn';
 
-export const metadata: Metadata = { title: 'Attendance Logs | Atelier Academy' };
+export const metadata: Metadata = { title: 'Log Presensi | SD Negeri Nguwok' };
 
 export default async function AttendancePage() {
   const [todayAtt, settings, history, profile] = await Promise.all([

@@ -10,7 +10,7 @@ import { id as idLocale } from 'date-fns/locale';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export const metadata: Metadata = { title: 'Admin Overview | Atelier Academy' };
+export const metadata: Metadata = { title: 'Panel Admin | SD Negeri Nguwok' };
 
 function MetricCard({ icon, label, value, trend, colorClass, barWidth, barColor }: {
   icon: string; label: string; value: number | string; trend: string; colorClass: string; barWidth: string; barColor: string;
@@ -134,7 +134,7 @@ export default async function AdminDashboard() {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-surface-container-low overflow-hidden flex-shrink-0 flex items-center justify-center font-bold text-primary shadow-inner">
                           {att.profiles?.avatar_url ? (
-                            <Image src={att.profiles.avatar_url} alt="Profile" width={40} height={40} className="object-cover" />
+                            <Image src={att.profiles.avatar_url} alt="Profile" width={40} height={40} className="w-full h-full object-cover" />
                           ) : (
                             att.profiles?.full_name?.charAt(0).toUpperCase()
                           )}

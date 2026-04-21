@@ -12,15 +12,20 @@ import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils/cn';
 import toast from 'react-hot-toast';
 import { format, parseISO } from 'date-fns';
-import { FaceCamera } from './FaceCamera';
 
-// Dynamically import the Map component to avoid SSR issues
+// Lazy load heavy components — they are not needed on page load
 const AttendanceMap = dynamic(
   () => import('./AttendanceMap'),
   { 
     ssr: false,
     loading: () => <div className="w-full h-full bg-surface-container animate-pulse flex items-center justify-center text-xs font-bold opacity-30 text-on-surface">Memuat Peta...</div>
   }
+);
+
+// face-api.js is ~5MB — only load it when the camera modal is opened
+const FaceCamera = dynamic(
+  () => import('./FaceCamera').then(m => ({ default: m.FaceCamera })),
+  { ssr: false }
 );
 
 interface AttendanceButtonProps {

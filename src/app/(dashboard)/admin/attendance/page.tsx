@@ -10,7 +10,7 @@ import { id as idLocale } from 'date-fns/locale';
 import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
 
-export const metadata: Metadata = { title: 'Attendance Reports | Atelier Academy' };
+export const metadata: Metadata = { title: 'Laporan Presensi | SD Negeri Nguwok' };
 
 interface Props {
   searchParams: Promise<{ date?: string; month?: string; userId?: string; }>;
@@ -110,7 +110,7 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-full bg-surface-container-low overflow-hidden flex-shrink-0 flex items-center justify-center font-black text-primary border border-outline-variant/5">
                           {att.profiles?.avatar_url ? (
-                            <Image src={att.profiles.avatar_url} alt="Profile" width={40} height={40} className="object-cover" />
+                            <Image src={att.profiles.avatar_url} alt="Profile" width={40} height={40} className="w-full h-full object-cover" />
                           ) : (
                             att.profiles?.full_name?.charAt(0).toUpperCase()
                           )}

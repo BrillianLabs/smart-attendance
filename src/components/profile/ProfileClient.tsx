@@ -7,7 +7,13 @@ import { toast } from 'react-hot-toast';
 import Image from 'next/image';
 import { Camera, Save, User, UserCircle, Briefcase, Phone, Loader2, Webcam } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
-import { FaceCamera } from '@/components/attendance/FaceCamera';
+import dynamic from 'next/dynamic';
+
+// face-api.js is ~5MB — lazy load, only needed when capture button is clicked
+const FaceCamera = dynamic(
+  () => import('@/components/attendance/FaceCamera').then(m => ({ default: m.FaceCamera })),
+  { ssr: false }
+);
 
 interface ProfileClientProps {
   profile: Profile;

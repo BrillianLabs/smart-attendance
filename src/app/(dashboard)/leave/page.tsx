@@ -6,7 +6,7 @@ import { format, parseISO } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { cn } from '@/lib/utils/cn';
 
-export const metadata: Metadata = { title: 'Leave Requests | Atelier Academy' };
+export const metadata: Metadata = { title: 'Pengajuan Izin | SD Negeri Nguwok' };
 
 const leaveTypeLabel: Record<string, string> = {
   sakit: 'Sakit (Medical)', izin: 'Izin (Personal)', cuti: 'Cuti (Annual)', dinas: 'Dinas Luar',

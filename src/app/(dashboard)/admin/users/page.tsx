@@ -8,7 +8,7 @@ import { AddUserModal } from '@/components/admin/AddUserModal';
 import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
 
-export const metadata: Metadata = { title: 'User Directory | Atelier Academy' };
+export const metadata: Metadata = { title: 'Direktori Pengguna | SD Negeri Nguwok' };
 
 export default async function AdminUsersPage() {
   const profile = await getProfile();

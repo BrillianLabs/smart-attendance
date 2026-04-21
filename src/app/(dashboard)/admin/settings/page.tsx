@@ -4,7 +4,7 @@ import { getProfile } from '@/lib/actions/auth';
 import { getSettings } from '@/lib/actions/admin';
 import { SettingsForm } from '@/components/admin/SettingsForm';
 
-export const metadata: Metadata = { title: 'System Configuration | Atelier Academy' };
+export const metadata: Metadata = { title: 'Pengaturan Sistem | SD Negeri Nguwok' };
 
 export default async function AdminSettingsPage() {
   const profile = await getProfile();

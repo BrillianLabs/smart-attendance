@@ -96,7 +96,7 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
             name="school_name"
             label="Academy Name"
             required
-            defaultValue={initial?.school_name ?? 'Atelier Academy'}
+            defaultValue={initial?.school_name ?? 'SD NEGERI NGUWOK KECAMATAN MODO'}
             placeholder="Official institutional name"
           />
 

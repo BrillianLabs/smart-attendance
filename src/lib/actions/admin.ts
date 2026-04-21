@@ -65,9 +65,15 @@ export async function uploadLogo(formData: FormData): Promise<ActionResult<strin
   try {
     // Process image to WebP using Sharp
     const buffer = Buffer.from(await file.arrayBuffer());
+    if (buffer.length === 0) return { success: false, error: 'File kosong atau tidak terbaca.' };
+
     const webpBuffer = await sharp(buffer)
       .webp({ quality: 80 })
-      .toBuffer();
+      .toBuffer()
+      .catch(err => {
+        console.error('Sharp error:', err);
+        throw new Error('Gagal mengonversi gambar ke format WebP.');
+      });
 
     const path = `logo/school-logo.webp`;
 
@@ -78,18 +84,23 @@ export async function uploadLogo(formData: FormData): Promise<ActionResult<strin
         contentType: 'image/webp'
       });
 
-    if (uploadError) return { success: false, error: uploadError.message };
+    if (uploadError) {
+      console.error('Storage upload error:', uploadError);
+      return { success: false, error: `Gagal mengunggah ke storage: ${uploadError.message}` };
+    }
 
     const { data: { publicUrl } } = supabase.storage
       .from('school-assets')
       .getPublicUrl(path);
 
-    await supabase.from('settings').update({ school_logo_url: publicUrl }).eq('id', 1);
+    const { error: dbError } = await supabase.from('settings').update({ school_logo_url: publicUrl }).eq('id', 1);
+    if (dbError) throw new Error(`Gagal menyimpan URL logo ke database: ${dbError.message}`);
+
     revalidatePath('/', 'layout');
     return { success: true, data: publicUrl };
-  } catch (err) {
+  } catch (err: any) {
     console.error('Logo conversion error:', err);
-    return { success: false, error: 'Gagal memproses logo. Pastikan format file benar.' };
+    return { success: false, error: err.message || 'Terjadi kesalahan sistem saat memproses logo.' };
   }
 }
 

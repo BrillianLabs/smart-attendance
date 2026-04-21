@@ -40,7 +40,7 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
         {/* Branding Header */}
         <div className="text-center mb-10">
           {/* Logo — square container, object-contain to show full image */}
-          <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2rem] bg-white shadow-2xl mb-6 overflow-hidden ring-4 ring-primary/10 mx-auto p-4 shrink-0">
+          <div className="inline-flex items-center justify-center w-28 h-28 rounded-[2.5rem] bg-white shadow-2xl mb-6 overflow-hidden ring-4 ring-primary/10 mx-auto p-5 shrink-0">
             <Image 
               src={logoUrl || "/logo-256.webp"} 
               alt={schoolName} 
@@ -51,11 +51,15 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
               className="w-full h-full object-contain"
             />
           </div>
-          <h1 className="font-headline text-[1.25rem] font-bold tracking-tight text-on-surface mb-1">
-            {schoolName || 'SD NEGERI NGUWOK KECAMATAN MODO'}
+          <h1 className="font-headline text-[2.5rem] font-black tracking-tighter text-on-surface mb-0 leading-tight">
+            SIAGA
           </h1>
-          <p className="text-on-surface-variant text-sm tracking-wide opacity-80">
-            Selamat datang di sistem presensi digital.
+          <p className="text-primary font-bold text-[10px] uppercase tracking-[0.2em] mb-3">
+            (Sistem Absensi Digital)
+          </p>
+          <div className="h-px w-8 bg-outline-variant/30 mx-auto mb-3"></div>
+          <p className="text-on-surface-variant text-[0.75rem] font-black opacity-60 uppercase tracking-[0.05em]">
+            SD NEGERI NGUWOK KEC. MODO
           </p>
         </div>
 

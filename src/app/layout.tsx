@@ -19,7 +19,7 @@ const materialSymbols = localFont({
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
-  const name = settings?.school_name ?? 'SisAbsen';
+  const name = settings?.school_name ?? 'e-Absensi';
   return {
     title: { default: name, template: `%s | ${name}` },
     description: `Sistem manajemen kehadiran online ${name}`,

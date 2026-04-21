@@ -9,7 +9,7 @@ export default async function LoginPage() {
 
   return (
     <LoginForm
-      schoolName={settings?.school_name ?? 'Atelier Academy'}
+      schoolName={settings?.school_name ?? 'e-Absensi'}
       logoUrl={settings?.school_logo_url ?? null}
     />
   );

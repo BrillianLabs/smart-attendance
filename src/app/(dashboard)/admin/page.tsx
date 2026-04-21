@@ -98,16 +98,17 @@ export default async function AdminDashboard() {
 
       {/* Table Data Section - Matching Admin Template */}
       <section className="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-[0px_12px_32px_rgba(42,52,57,0.04)] border border-outline-variant/10">
-        <div className="px-8 py-6 flex justify-between items-center border-b border-surface-container-low">
-          <h3 className="text-lg font-bold text-on-surface">Rekap Kehadiran Hari Ini</h3>
-          <div className="flex items-center gap-4">
+        <div className="px-4 sm:px-8 py-6 flex justify-between items-center border-b border-surface-container-low">
+          <h3 className="text-base sm:text-lg font-bold text-on-surface">Rekap Presensi</h3>
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="hidden md:flex bg-surface-container-low rounded-lg p-1">
-              <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md bg-white shadow-sm text-primary">All Students</button>
-              <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md text-on-surface-variant opacity-60">Staff Only</button>
+              <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md bg-white shadow-sm text-primary">Semua</button>
+              <button className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md text-on-surface-variant opacity-60">Guru/Staff</button>
             </div>
-            <button className="flex items-center gap-2 px-4 py-2 border border-outline-variant/30 rounded-full text-[10px] font-bold uppercase tracking-widest text-on-surface hover:bg-surface-container-low transition-colors">
+            <button className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-outline-variant/30 rounded-full text-[10px] font-bold uppercase tracking-widest text-on-surface hover:bg-surface-container-low transition-colors">
               <span className="material-symbols-outlined text-sm">download</span>
-              Export CSV
+              <span className="hidden sm:inline">Export CSV</span>
+              <span className="sm:hidden">CSV</span>
             </button>
           </div>
         </div>
@@ -115,11 +116,11 @@ export default async function AdminDashboard() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface-container-low/50">
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Nama Mahasiswa</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Jam Masuk</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Jam Pulang</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Status</th>
-                <th className="px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Aksi</th>
+                <th className="px-4 sm:px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Nama</th>
+                <th className="px-4 sm:px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Masuk</th>
+                <th className="px-4 sm:px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Pulang</th>
+                <th className="px-4 sm:px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Status</th>
+                <th className="px-4 sm:px-8 py-5 text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-surface-container-low">
@@ -130,8 +131,8 @@ export default async function AdminDashboard() {
               ) : (
                 todayAttendance.map((att) => (
                   <tr key={att.id} className="hover:bg-surface-container-low/30 transition-colors group">
-                    <td className="px-8 py-5">
-                      <div className="flex items-center gap-3">
+                    <td className="px-4 sm:px-8 py-5">
+                      <div className="flex items-center gap-3 min-w-0">
                         <div className="w-10 h-10 rounded-full bg-surface-container-low overflow-hidden flex-shrink-0 flex items-center justify-center font-bold text-primary shadow-inner">
                           {att.profiles?.avatar_url ? (
                             <Image src={att.profiles.avatar_url} alt="Profile" width={40} height={40} className="w-full h-full object-cover" />
@@ -139,24 +140,24 @@ export default async function AdminDashboard() {
                             att.profiles?.full_name?.charAt(0).toUpperCase()
                           )}
                         </div>
-                        <div>
-                          <p className="text-sm font-bold text-on-surface">{att.profiles?.full_name}</p>
-                          <p className="text-[10px] font-bold text-on-surface-variant opacity-50 uppercase tracking-wider">ID: {att.id.slice(0, 8)}</p>
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-on-surface truncate">{att.profiles?.full_name}</p>
+                          <p className="text-[10px] font-bold text-on-surface-variant opacity-50 uppercase tracking-wider truncate">ID: {att.id.slice(0, 8)}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-8 py-5 text-sm text-on-surface-variant font-medium">
-                      {att.check_in ? format(parseISO(att.check_in), 'hh:mm a') : '--:--'}
+                    <td className="px-4 sm:px-8 py-5 text-sm text-on-surface-variant font-medium">
+                      {att.check_in ? format(parseISO(att.check_in), 'HH:mm') : '--:--'}
                     </td>
-                    <td className="px-8 py-5 text-sm text-on-surface-variant font-medium">
-                      {att.check_out ? format(parseISO(att.check_out), 'hh:mm a') : '--:--'}
+                    <td className="px-4 sm:px-8 py-5 text-sm text-on-surface-variant font-medium">
+                      {att.check_out ? format(parseISO(att.check_out), 'HH:mm') : '--:--'}
                     </td>
-                    <td className="px-8 py-5">
+                    <td className="px-4 sm:px-8 py-5">
                       <Badge variant={statusVariant(att.status)} className="px-3 py-1 text-[10px] uppercase tracking-widest font-black rounded-full">
                         {statusLabel(att.status)}
                       </Badge>
                     </td>
-                    <td className="px-8 py-5">
+                    <td className="px-4 sm:px-8 py-5">
                       <button className="text-outline hover:text-primary transition-colors">
                         <span className="material-symbols-outlined">more_horiz</span>
                       </button>
@@ -183,18 +184,20 @@ export default async function AdminDashboard() {
         </div>
       </section>
 
-      {/* Attendance Ribbon (Bespoke Component from Template) */}
-      <div className="fixed bottom-10 right-12 left-auto bg-white/60 backdrop-blur-xl px-7 py-5 rounded-full border border-white shadow-[0_12px_40px_rgba(0,0,0,0.08)] flex items-center gap-8 max-w-2xl z-40 animate-fade-in translate-y-0 group hover:-translate-y-1 transition-all duration-300">
+      {/* Attendance Ribbon (Bespoke Component from Template) - Hidden on Mobile for better aesthetics */}
+      <div className="hidden md:flex fixed bottom-10 right-12 left-auto bg-white/60 backdrop-blur-xl px-7 py-5 rounded-full border border-white shadow-[0_12px_40px_rgba(0,0,0,0.08)] items-center gap-8 max-w-2xl z-40 animate-fade-in translate-y-0 group hover:-translate-y-1 transition-all duration-300">
         <div className="flex flex-col">
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-1">Real-time Feed</span>
           <span className="text-xs font-bold text-on-surface-variant">Live system activity</span>
         </div>
-        <div className="w-[180px] h-2 bg-surface-container-highest rounded-full relative overflow-hidden hidden sm:block">
+        <div className="w-[180px] h-2 bg-surface-container-highest rounded-full relative overflow-hidden">
           <div className="absolute left-0 top-0 h-full w-[65%] bg-primary animate-pulse"></div>
         </div>
         <div className="flex -space-x-3">
           {[1,2,3].map(i => (
-            <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-surface-container-high shadow-sm ring-1 ring-black/5" />
+            <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-surface-container-low shadow-sm ring-1 ring-black/5 flex items-center justify-center overflow-hidden">
+               <div className="w-full h-full bg-primary/10" />
+            </div>
           ))}
         </div>
         <div className="flex items-center gap-2">

@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { Profile } from '@/lib/types';
 import { updateProfileMetadata, updateProfileAvatar } from '@/lib/actions/profile';
+import { compressImage } from '@/lib/utils/image';
 import { toast } from 'react-hot-toast';
 import Image from 'next/image';
 import { Camera, Save, User, UserCircle, Briefcase, Phone, Loader2, Webcam } from 'lucide-react';
@@ -39,28 +40,37 @@ export function ProfileClient({ profile }: ProfileClientProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error('Ukuran foto maksimal 2MB');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64 = reader.result as string;
-      const loading = toast.loading('Mengunggah foto...');
-      
-      startTransition(async () => {
-        const res = await updateProfileAvatar(base64);
-        toast.dismiss(loading);
-        if (res.success) {
-          setAvatar(res.data);
-          toast.success('Foto profil diperbarui!');
-        } else {
-          toast.error(res.error);
-        }
+    const loading = toast.loading('Mengompres & Mengunggah foto...');
+    
+    try {
+      // Compress client-side to 512px WebP
+      const compressedFile = await compressImage(file, {
+        maxWidth: 512,
+        maxHeight: 512,
+        quality: 0.8
       });
-    };
-    reader.readAsDataURL(file);
+
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64 = reader.result as string;
+        
+        startTransition(async () => {
+          const res = await updateProfileAvatar(base64);
+          toast.dismiss(loading);
+          if (res.success) {
+            setAvatar(res.data);
+            toast.success('Foto profil diperbarui!');
+          } else {
+            toast.error(res.error);
+          }
+        });
+      };
+      reader.readAsDataURL(compressedFile);
+    } catch (err) {
+      toast.dismiss(loading);
+      toast.error('Gagal memproses gambar.');
+      console.error(err);
+    }
   };
 
   const handleCameraCapture = async (base64: string) => {

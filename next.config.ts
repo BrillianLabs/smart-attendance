@@ -35,6 +35,12 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Increase body size limit for logo and photo uploads
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
 };
 
 const bundleAnalyzer = withBundleAnalyzer({

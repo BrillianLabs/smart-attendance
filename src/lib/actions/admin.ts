@@ -68,6 +68,7 @@ export async function uploadLogo(formData: FormData): Promise<ActionResult<strin
     if (buffer.length === 0) return { success: false, error: 'File kosong atau tidak terbaca.' };
 
     const webpBuffer = await sharp(buffer)
+      .resize(512, 512, { fit: 'inside', withoutEnlargement: true })
       .webp({ quality: 80 })
       .toBuffer()
       .catch(err => {
@@ -75,7 +76,8 @@ export async function uploadLogo(formData: FormData): Promise<ActionResult<strin
         throw new Error('Gagal mengonversi gambar ke format WebP.');
       });
 
-    const path = `logo/school-logo.webp`;
+    const timestamp = Date.now();
+    const path = `logo/school-logo-${timestamp}.webp`;
 
     const { error: uploadError } = await supabase.storage
       .from('school-assets')

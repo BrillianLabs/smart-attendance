@@ -297,8 +297,9 @@ async function uploadVerificationPhoto(userId: string, type: 'check_in' | 'check
     const base64Data = base64.replace(/^data:image\/\w+;base64,/, '');
     const buffer = Buffer.from(base64Data, 'base64');
 
-    // Convert to WebP using Sharp (Quality 70 for logs)
+    // Convert to WebP using Sharp (Quality 70 for logs, max 800px)
     const webpBuffer = await sharp(buffer)
+      .resize(800, 800, { fit: 'inside', withoutEnlargement: true })
       .webp({ quality: 70 })
       .toBuffer();
 

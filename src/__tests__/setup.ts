@@ -15,7 +15,8 @@ vi.mock('next/navigation', () => ({
   redirect: vi.fn(),
 }));
 
-// Mock Next.js cache
-vi.mock('next/cache', () => ({
-  revalidatePath: vi.fn(),
+// Mock UseConfirm
+vi.mock('@/context/ConfirmContext', () => ({
+  useConfirm: () => vi.fn().mockResolvedValue(true),
+  ConfirmProvider: ({ children }: { children: React.ReactNode }) => children,
 }));

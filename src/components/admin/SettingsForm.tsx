@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 import { updateSettings, uploadLogo } from '@/lib/actions/admin';
 import { Settings } from '@/lib/types';
 import { Input } from '@/components/ui/Input';
+import { compressImage } from '@/lib/utils/image';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -36,15 +37,32 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
     reader.onload = ev => setLogoPreview(ev.target?.result as string);
     reader.readAsDataURL(file);
 
-    const formData = new FormData();
-    formData.set('logo', file);
     startTransition(async () => {
-      const res = await uploadLogo(formData);
-      if (res.success) {
-        toast.success('Logo institusi diperbarui! 🖼️');
-        router.refresh();
-      } else {
-        toast.error(res.error);
+      const loadingToast = toast.loading('Mengompres & Mengunggah logo...');
+      try {
+        // Compress client-side
+        const compressedFile = await compressImage(file, {
+          maxWidth: 512,
+          maxHeight: 512,
+          quality: 0.8
+        });
+
+        const formData = new FormData();
+        formData.set('logo', compressedFile);
+
+        const res = await uploadLogo(formData);
+        toast.dismiss(loadingToast);
+
+        if (res.success) {
+          toast.success('Logo institusi diperbarui! 🖼️');
+          router.refresh();
+        } else {
+          toast.error(res.error);
+        }
+      } catch (err) {
+        toast.dismiss(loadingToast);
+        toast.error('Gagal memproses gambar.');
+        console.error(err);
       }
     });
   };

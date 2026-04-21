@@ -29,14 +29,16 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
       <main className="w-full max-w-[420px] animate-fade-in">
         {/* Branding Header */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-surface-container-lowest shadow-sm mb-6 overflow-hidden ring-4 ring-surface-container-low mx-auto">
+          {/* Logo — square container, object-contain to show full image */}
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[1.5rem] bg-white shadow-md mb-6 overflow-hidden ring-4 ring-surface-container-low mx-auto p-1.5">
             <Image 
-              src={logoUrl || "/logo.png"} 
+              src={logoUrl || "/logo-256.webp"} 
               alt={schoolName} 
-              width={64} 
-              height={64} 
+              width={256} 
+              height={256}
+              loading="eager"
               priority
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           </div>
           <h1 className="font-headline text-[1.25rem] font-bold tracking-tight text-on-surface mb-1">

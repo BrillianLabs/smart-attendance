@@ -1,19 +1,22 @@
-# 🏛️ Atelier Academy — Management System
+# 🏛️ e-Absensi — Premium Attendance System
 
-Atelier Academy adalah sistem manajemen kehadiran dan operasional institusi akademik modern yang dirancang dengan estetika premium dan fungsionalitas tinggi. Menggunakan filosofi desain **"No-Line"** dan layout **Bento Grid**, sistem ini memberikan pengalaman pengguna yang intuitif sekaligus mewah.
+e-Absensi adalah sistem manajemen kehadiran modern yang dirancang dengan estetika premium dan fungsionalitas tinggi. Menggunakan filosofi desain **"No-Line"** dan layout **Bento Grid**, sistem ini memberikan pengalaman pengguna yang intuitif, cepat, dan aman.
 
 ## ✨ Fitur Utama (Highlight)
-- **🎨 Premium UI System**: Selaras dengan identitas visual *Atelier Academy* (Sea-Glass palette).
-- **📍 GPS Verified Attendance**: Presensi digital berbasis lokasi dengan radius aman yang dapat dikonfigurasi.
-- **📊 Academy Analytics**: Dashboard informatif untuk Admin dengan visualisasi data *real-time*.
-- **📩 Leave & Request Journey**: Sistem pengajuan izin atau cuti yang terintegrasi dengan alur verifikasi admin.
-- **🔐 Portal Khusus**: Area kerja terpisah untuk Administrator dan Staf/Guru.
+- **🎨 Premium UI System**: Antarmuka modern dengan Glassmorphism dan desain responsif (Mobile First).
+- **📸 Face Recognition Verification**: Verifikasi presensi berbasis AI Face Detection untuk menjamin kehadiran fisik.
+- **📍 Anti-Fake GPS & Geofencing**: Proteksi terhadap lokasi palsu (spoofing) dan pembatasan radius kehadiran.
+- **🚀 Ultra-Fast Performance**: Aset gambar WebP, font lokal, dan kueri teroptimasi untuk kecepatan maksimal.
+- **📊 Academy Analytics**: Dashboard informatif untuk Admin dengan visualisasi data real-time.
+- **📩 Leave Journey**: Alur pengajuan izin dan cuti yang seamlessly terintegrasi.
 
 ## 🚀 Teknologi
 - **Framework**: Next.js 16 (App Router)
+- **AI/ML**: `face-api.js` (TensorFlow.js)
+- **Perlindungan**: `@dhamaddam/anti-fake-gps`
 - **Styling**: Tailwind CSS v4 (Custom Tonal Configuration)
-- **Database**: Supabase / PostgreSQL (dengan Row Level Security)
-- **Icons**: Material Symbols Outlined (High Fidelity)
+- **Database**: Supabase / PostgreSQL
+- **Icons**: Material Symbols Outlined (Self-hosted)
 
 ## 🔑 Akun Demo (Default)
 
@@ -23,7 +26,6 @@ Gunakan akun berikut untuk menguji coba fitur dalam lingkungan pengembangan:
 | :--- | :--- | :--- | :--- |
 | **Administrator** | `admin@sekolah.sch.id` | `User123!` | Kepala Sekolah / Admin |
 | **Staff/Guru** | `budi@sekolah.sch.id` | `User123!` | Guru Matematika |
-| **Staff/Guru** | `siti@sekolah.sch.id` | `User123!` | Guru B. Indonesia |
 
 > [!IMPORTANT]
 > **Catatan Keamanan**: Harap segera ubah kata sandi default atau perbarui konfigurasi akun melalui menu *User Management* setelah melakukan instalasi awal.
@@ -39,7 +41,7 @@ Gunakan akun berikut untuk menguji coba fitur dalam lingkungan pengembangan:
    Pastikan sudah mengatur file `.env.local` dengan kredensial Supabase Anda.
 
 3. **Database Setup**:
-   Jalankan perintah berikut untuk menyinkronkan skema dan menyuntikkan data *seed* (Atelier Academy branding):
+   Jalankan perintah berikut untuk menyinkronkan skema dan menyuntikkan data seed:
    ```bash
    npm run db:fresh
    ```
@@ -54,28 +56,20 @@ Gunakan akun berikut untuk menguji coba fitur dalam lingkungan pengembangan:
 Proyek ini telah dikonfigurasi untuk dideploy ke Netlify (Site Name: `brillian-sis-smart`).
 
 ### Konfigurasi Penting:
-- **Middleware**: Proyek ini menggunakan `src/proxy.ts` (konvensi Next.js 16) untuk menangani autentikasi dan sesi Supabase.
-- **Environment Variables**: Variabel Supabase (`NEXT_PUBLIC_SUPABASE_URL`, dll) sudah diset secara otomatis via Netlify CLI.
-- **Build Settings**: Menggunakan `@netlify/plugin-nextjs` v5 untuk performa maksimal pada App Router.
+- **Middleware**: Menggunakan `src/proxy.ts` (Next.js 16) untuk menangani autentikasi.
+- **Aset**: Gambar dioptimalkan otomatis via `next/image` dan hosting WebP lokal.
 
 ## 📖 Panduan Penggunaan (Usage Guide)
 
-Untuk panduan lengkap mengenai cara penggunaan aplikasi sebagai Staff maupun Administrator, silakan baca:
+Untuk panduan lengkap mengenai cara penggunaan aplikasi, silakan baca:
 👉 **[PANDUAN PENGGUNAAN (USAGE.md)](./USAGE.md)**
 
 ---
-
-### Langkah-langkah Update Kode:
-Jika kamu melakukan perubahan kode di lokal, cukup jalankan perintah berikut untuk mengupdate website live:
-1. `git add .`
-2. `git commit -m "Deskripsi perubahan kamu"`
-3. `git push origin main`
-Netlify akan mendeteksi *push* tersebut dan melakukan *re-deploy* secara otomatis.
-
-### ✅ Catatan Perbaikan (Terakhir):
-- Memperbaiki `profile.ts` action (missing `data` return).
-- Memperbaiki `Navbar.tsx` & `Sidebar.tsx` (missing imports + hydration issues).
-- Stabilisasi `proxy.ts` (Next.js 16 deprecated `middleware.ts`).
+### ✅ Update Terakhir:
+- **Branding**: Selesai migrasi ke e-Absensi.
+- **Performance**: Optimasi aset 8.6MB menjadi 17KB dan self-hosting fonts.
+- **Security**: Integrasi deteksi GPS palsu dan Face Recognition.
+- **UI/UX**: Perbaikan responsivitas Dashboard Admin dan navigasi mobile.
 
 ---
-© 2026 **Atelier Academy**. Designed for Academic Excellence.
+© 2026 **e-Absensi**. Designed for Excellence.

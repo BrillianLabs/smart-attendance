@@ -120,7 +120,7 @@ async function runSeed() {
       .from('settings')
       .upsert({
         id: 1,
-        school_name: 'Atelier Academy',
+        school_name: 'SD NEGERI NGUWOK',
         primary_color: '#2563EB',
         allowed_radius_m: 100
       });

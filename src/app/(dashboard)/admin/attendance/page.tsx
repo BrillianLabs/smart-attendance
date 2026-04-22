@@ -35,7 +35,7 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
       {/* Header Section */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1">
         <div>
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Academy Analytics</span>
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">SD NEGERI NGUWOK Analytics</span>
           <h1 className="text-4xl font-black text-on-surface tracking-tight">Attendance <span className="text-primary italic">Reports</span></h1>
           <p className="text-sm font-medium text-on-surface-variant opacity-60 mt-1">Found {attendance.length} verification records.</p>
         </div>
@@ -66,7 +66,7 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
           <div className="flex flex-col gap-2 w-full sm:w-64">
              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant opacity-60 ml-1">Member Focus</label>
              <select name="userId" defaultValue={userId ?? ''} className="w-full px-4 py-3 bg-white border-none rounded-xl text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 transition-all appearance-none">
-                <option value="">All Academy Members</option>
+                <option value="">Semua Anggota</option>
                 {users.map(u => (
                   <option key={u.id} value={u.id}>{u.full_name}</option>
                 ))}
@@ -89,7 +89,7 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="bg-surface-container-low/50">
-                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Academy Member</th>
+                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Nama Anggota</th>
                 <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Date Index</th>
                 <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Verification</th>
                 <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Status</th>

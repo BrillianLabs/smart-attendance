@@ -78,7 +78,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
             </div>
           )}
            <span className="text-xs sm:text-sm font-black tracking-tighter text-primary leading-tight truncate max-w-[150px] sm:max-w-none uppercase">
-            {settings?.school_name ?? 'e-Absensi'}
+            {settings?.school_name ?? 'SD NEGERI NGUWOK'}
           </span>
         </div>
 

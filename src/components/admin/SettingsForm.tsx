@@ -114,7 +114,7 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
             name="school_name"
             label="Nama Sekolah / Institusi"
             required
-            defaultValue={initial?.school_name ?? 'SD NEGERI NGUWOK KECAMATAN MODO'}
+            defaultValue={initial?.school_name ?? 'SD NEGERI NGUWOK'}
             placeholder="Masukkan nama resmi sekolah"
           />
 

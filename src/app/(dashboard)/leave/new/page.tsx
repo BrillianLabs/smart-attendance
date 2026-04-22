@@ -133,7 +133,7 @@ export default function NewLeavePage() {
           </form>
 
           <footer className="mt-20 text-center opacity-20">
-             <p className="text-[10px] font-black uppercase tracking-[0.5em] text-on-surface">e-Absensi Admin</p>
+             <p className="text-[10px] font-black uppercase tracking-[0.5em] text-on-surface">SD NEGERI NGUWOK</p>
           </footer>
         </div>
 

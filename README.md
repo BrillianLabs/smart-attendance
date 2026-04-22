@@ -7,7 +7,7 @@ e-Absensi adalah sistem manajemen kehadiran modern yang dirancang dengan estetik
 - **📸 Face Recognition Verification**: Verifikasi presensi berbasis AI Face Detection untuk menjamin kehadiran fisik.
 - **📍 Anti-Fake GPS & Geofencing**: Proteksi terhadap lokasi palsu (spoofing) dan pembatasan radius kehadiran.
 - **🚀 Ultra-Fast Performance**: Aset gambar WebP, font lokal, dan kueri teroptimasi untuk kecepatan maksimal.
-- **📊 Academy Analytics**: Dashboard informatif untuk Admin dengan visualisasi data real-time.
+- **📊 SD NEGERI NGUWOK Analytics**: Dashboard informatif untuk Admin dengan visualisasi data real-time.
 - **📩 Leave Journey**: Alur pengajuan izin dan cuti yang seamlessly terintegrasi.
 
 ## 🚀 Teknologi

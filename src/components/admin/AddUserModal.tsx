@@ -5,6 +5,7 @@ import { createStaffUser } from '@/lib/actions/admin';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input, Select } from '@/components/ui/Input';
+import { Role } from '@/lib/types';
 import { UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -14,29 +15,31 @@ export function AddUserModal() {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [form, setForm] = useState({
-    email:     '',
+    username:  '',
     password:  '',
     full_name: '',
-    role:      'staff' as 'admin' | 'staff',
+    role:      'staff' as Role,
     position:  '',
     nip:       '',
+    email:     '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     startTransition(async () => {
       const res = await createStaffUser(
-        form.email,
+        form.username,
         form.password,
         form.full_name,
         form.role,
         form.position || undefined,
-        form.nip || undefined
+        form.nip || undefined,
+        form.email || undefined
       );
       if (res.success) {
         toast.success('Pengguna berhasil ditambahkan!');
         setOpen(false);
-        setForm({ email: '', password: '', full_name: '', role: 'staff', position: '', nip: '' });
+        setForm({ username: '', password: '', full_name: '', role: 'staff', position: '', nip: '', email: '' });
         router.refresh();
       } else {
         toast.error(res.error);
@@ -61,11 +64,18 @@ export function AddUserModal() {
             placeholder="Nama lengkap pengguna"
           />
           <Input
-            label="Username / NIP"
+            label="Username / ID Login"
+            value={form.username}
+            onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
+            required
+            placeholder="Contoh: siswanto123"
+          />
+          <Input
+            label="Email Pribadi / Dinas"
             value={form.email}
             onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-            required
-            placeholder="Contoh: 19850504..."
+            placeholder="Contoh: user@guru.sd.belajar.id"
+            type="email"
           />
           <Input
             type="password"
@@ -94,7 +104,8 @@ export function AddUserModal() {
             onChange={e => setForm(f => ({ ...f, role: e.target.value as any }))}
           >
             <option value="staff">Staf / Guru</option>
-            <option value="admin">Admin</option>
+            <option value="admin">Administrator Sekolah</option>
+            <option value="superuser">Developer / Superuser</option>
           </Select>
           <div className="flex gap-3 pt-2">
             <Button type="button" variant="secondary" className="flex-1" onClick={() => setOpen(false)}>

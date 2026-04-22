@@ -22,12 +22,35 @@ describe('Auth Utility - Email Mapping', () => {
   });
 });
 
-// Since testing Server Actions directly requires complex mocking of cookies/supabase,
-// we focus on the logic parts.
-describe('Permission Check logic', () => {
-  it('should identify admin role correctly', () => {
-    const profile = { role: 'admin' };
-    const isAdmin = profile.role === 'admin';
-    expect(isAdmin).toBe(true);
+describe('Password Policy logic', () => {
+  it('should reject passwords shorter than 6 characters', () => {
+    const password = '12345';
+    const isValid = password.length >= 6;
+    expect(isValid).toBe(false);
+  });
+
+  it('should accept passwords with 6 or more characters', () => {
+    const password = 'secure123';
+    const isValid = password.length >= 6;
+    expect(isValid).toBe(true);
+  });
+});
+
+describe('NIP to Email Lookup logic', () => {
+  const mockProfiles = [
+    { nip: '12345', email: 'user@gmail.com' }
+  ];
+
+  const getEmailFromNip = (nip: string) => {
+    const profile = mockProfiles.find(p => p.nip === nip);
+    return profile?.email || `${nip}@absen.smart`;
+  };
+
+  it('should return real email if NIP exists in database', () => {
+    expect(getEmailFromNip('12345')).toBe('user@gmail.com');
+  });
+
+  it('should return fallback internal email if NIP not found', () => {
+    expect(getEmailFromNip('99999')).toBe('99999@absen.smart');
   });
 });

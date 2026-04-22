@@ -265,11 +265,63 @@ export function ProfileClient({ profile }: ProfileClientProps) {
             </ul>
           </div>
 
-          <div className="bg-surface-container-low rounded-[2.5rem] p-8 border border-outline-variant/10 text-center">
-             <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-2">Keamanan Akun</p>
-             <p className="text-[11px] font-bold text-on-surface-variant mb-6 leading-relaxed">Hubungi IT Support jika Anda mengalami kendala pada verifikasi AI.</p>
-             <div className="px-6 py-2 bg-surface-container-lowest/80 rounded-xl text-[9px] font-black uppercase tracking-widest border border-outline-variant/10 inline-block text-on-surface">
-                v1.2.4 SECURE
+          {/* Change Password Card */}
+          <div className="bg-surface-container-low rounded-[2.5rem] p-8 border border-outline-variant/10">
+             <h4 className="text-sm font-black text-on-surface tracking-tight uppercase mb-6 flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary text-[20px]">lock_reset</span>
+                Ganti Kata Sandi
+             </h4>
+             
+             <form action={(formData) => {
+                const pass = formData.get('new_password') as string;
+                const conf = formData.get('confirm_password') as string;
+                if (pass !== conf) {
+                  toast.error('Konfirmasi password tidak cocok');
+                  return;
+                }
+                startTransition(async () => {
+                  const res = await import('@/lib/actions/auth').then(m => m.updatePassword(pass));
+                  if (res.success) {
+                    toast.success('Password berhasil diperbarui');
+                    (document.getElementById('change-pw-form') as HTMLFormElement)?.reset();
+                  } else {
+                    toast.error(res.error);
+                  }
+                });
+             }} id="change-pw-form" className="space-y-4">
+                <div className="space-y-1.5">
+                   <label className="text-[9px] font-black text-on-surface-variant uppercase tracking-widest px-1">Password Baru</label>
+                   <input 
+                      name="new_password"
+                      type="password"
+                      required
+                      placeholder="Minimal 6 karakter"
+                      className="w-full bg-surface-container-lowest px-4 py-3 rounded-xl border border-outline-variant/10 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface text-sm"
+                   />
+                </div>
+                <div className="space-y-1.5">
+                   <label className="text-[9px] font-black text-on-surface-variant uppercase tracking-widest px-1">Konfirmasi Password</label>
+                   <input 
+                      name="confirm_password"
+                      type="password"
+                      required
+                      placeholder="Ulangi password baru"
+                      className="w-full bg-surface-container-lowest px-4 py-3 rounded-xl border border-outline-variant/10 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface text-sm"
+                   />
+                </div>
+                <button 
+                  type="submit"
+                  disabled={isPending}
+                  className="w-full py-3 bg-on-surface text-surface rounded-xl font-black uppercase tracking-widest text-[10px] transition-all hover:opacity-90 disabled:opacity-50"
+                >
+                  {isPending ? 'Memproses...' : 'Update Password'}
+                </button>
+             </form>
+             
+             <div className="mt-8 pt-6 border-t border-outline-variant/10 text-center">
+                <div className="px-4 py-1.5 bg-surface-container-lowest/80 rounded-lg text-[9px] font-black uppercase tracking-widest border border-outline-variant/10 inline-block text-on-surface opacity-50">
+                   v1.2.4 SECURE
+                </div>
              </div>
           </div>
         </div>

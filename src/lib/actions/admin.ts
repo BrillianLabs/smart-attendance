@@ -2,9 +2,10 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
-import { ActionResult, Profile, Settings } from '@/lib/types';
+import { ActionResult, Profile, Settings, Role } from '@/lib/types';
 import { isAdmin } from './auth';
 import sharp from 'sharp';
+import { encrypt, decrypt, hashNip } from '@/lib/utils/encryption';
 
 // ========================
 // SETTINGS
@@ -116,15 +117,41 @@ export async function getAllProfiles(): Promise<Profile[]> {
     .from('profiles')
     .select('*')
     .order('full_name');
-  return data ?? [];
+  
+  if (!data) return [];
+
+  // Decrypt NIPs for display
+  return data.map(p => ({
+    ...p,
+    nip: decrypt(p.nip || '')
+  }));
 }
 
 export async function updateProfile(
   id: string,
-  updates: Partial<Pick<Profile, 'full_name' | 'role' | 'position' | 'phone' | 'is_active' | 'nip'>>
+  updates: Partial<Pick<Profile, 'full_name' | 'role' | 'position' | 'phone' | 'is_active' | 'nip' | 'email'>>
 ): Promise<ActionResult> {
   if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
   const supabase = await createClient();
+
+  // If email is being updated, we must update it in Supabase Auth as well
+  if (updates.email) {
+    const { error: authError } = await supabase.auth.admin.updateUserById(id, {
+      email: updates.email,
+      email_confirm: true
+    });
+    if (authError) {
+      console.error('Error updating auth email:', authError.message);
+      return { success: false, error: `Gagal update email di sistem Auth: ${authError.message}` };
+    }
+  }
+
+  // Handle NIP encryption and hash
+  if (updates.nip) {
+    (updates as any).nip_hash = hashNip(updates.nip);
+    updates.nip = encrypt(updates.nip);
+  }
+
   const { error } = await supabase.from('profiles').update(updates).eq('id', id);
   if (error) return { success: false, error: error.message };
   revalidatePath('/admin/users');
@@ -135,34 +162,40 @@ export async function createStaffUser(
   username: string,
   password: string,
   fullName: string,
-  role: 'admin' | 'staff',
+  role: Role,
   position?: string,
-  nip?: string
+  nip?: string,
+  realEmail?: string
 ): Promise<ActionResult> {
   if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
   const supabase = await createClient();
 
-  // If username doesn't have @, it's a NIP/Username
-  const email = username.includes('@') ? username : `${username.trim().replace(/\s/g, '')}@absen.smart`;
+  // Primary email for Auth. Use realEmail if provided, otherwise derive from username
+  const authEmail = realEmail || (username.includes('@') ? username : `${username.trim().replace(/\s/g, '')}@absen.smart`);
 
   // Use admin API to create user
   const { data, error } = await supabase.auth.admin.createUser({
-    email,
+    email: authEmail,
     password,
-    user_metadata: { full_name: fullName, role },
+    user_metadata: { full_name: fullName, role, nip: nip || username },
     email_confirm: true,
   });
 
   if (error) return { success: false, error: error.message };
 
   if (data.user) {
-    const updates: any = {};
-    if (position) updates.position = position;
-    if (nip) updates.nip = nip;
-    
-    if (Object.keys(updates).length > 0) {
-      await supabase.from('profiles').update(updates).eq('id', data.user.id);
+    const profileUpdates: any = {
+      email: authEmail, 
+    };
+    if (position) profileUpdates.position = position;
+    if (nip) {
+      profileUpdates.nip = encrypt(nip);
+      profileUpdates.nip_hash = hashNip(nip);
     }
+    
+    // Profiles row is automatically created by trigger, so we update it
+    const { error: profError } = await supabase.from('profiles').update(profileUpdates).eq('id', data.user.id);
+    if (profError) console.error('Error updating profile after create:', profError.message);
   }
 
   revalidatePath('/admin/users');

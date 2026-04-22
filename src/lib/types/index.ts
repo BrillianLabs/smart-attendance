@@ -1,6 +1,6 @@
 // TypeScript types for SisAbsen
 
-export type Role = 'admin' | 'staff';
+export type Role = 'admin' | 'staff' | 'superuser';
 export type AttendanceStatus = 'hadir' | 'telat' | 'izin' | 'alpha';
 export type LeaveStatus = 'pending' | 'approved' | 'rejected';
 export type LeaveType = 'sakit' | 'izin' | 'cuti' | 'dinas';
@@ -14,6 +14,7 @@ export interface Profile {
   avatar_url: string | null;
   is_active: boolean;
   nip?: string | null;
+  email?: string | null;
   created_at: string;
 }
 

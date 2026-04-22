@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { ActionResult, Profile } from '@/lib/types';
+import { hashNip, decrypt } from '@/lib/utils/encryption';
 
 export async function login(formData: FormData): Promise<ActionResult> {
   let email      = formData.get('email')    as string;
@@ -12,9 +13,24 @@ export async function login(formData: FormData): Promise<ActionResult> {
     return { success: false, error: 'Username/NIP dan password wajib diisi.' };
   }
 
-  // Pre-process email: if it's just a username/nip (no @), append our internal suffix
+  // Pre-process email: if it's just a username/nip (no @), look up real email from profiles
   if (!email.includes('@')) {
-    email = `${email.trim().replace(/\s/g, '')}@absen.smart`;
+    const hashedNip = hashNip(email);
+    const supabaseAdmin = await createClient(); 
+    
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('email')
+      .eq('nip_hash', hashedNip)
+      .single();
+    
+    if (profile?.email) {
+      email = profile.email;
+    } else {
+      // Fallback to internal domain for legacy users not in Excel
+      const cleanNip = email.trim().replace(/\s/g, '');
+      email = `${cleanNip}@absen.smart`;
+    }
   }
 
   const supabase = await createClient();
@@ -27,10 +43,47 @@ export async function login(formData: FormData): Promise<ActionResult> {
   return { success: true, data: undefined };
 }
 
-export async function logout() {
+export async function requestPasswordReset(emailOrNip: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  let email = emailOrNip.trim();
+
+  // If NIP, find the email
+  if (!email.includes('@')) {
+    const hashedNip = hashNip(email);
+    const { data } = await supabase
+      .from('profiles')
+      .select('email')
+      .eq('nip_hash', hashedNip)
+      .single();
+    
+    if (!data?.email) {
+      return { success: false, error: 'User dengan NIP tersebut tidak ditemukan.' };
+    }
+    email = data.email;
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/reset-password`,
+  });
+
+  if (error) return { success: false, error: error.message };
+  return { success: true, data: undefined };
+}
+
+export async function updatePassword(password: string): Promise<ActionResult> {
+  if (password.length < 6) return { success: false, error: 'Password minimal 6 karakter.' };
+  
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password });
+  
+  if (error) return { success: false, error: error.message };
+  return { success: true, data: undefined };
+}
+
+export async function logout(): Promise<ActionResult> {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  return { success: true };
+  return { success: true, data: undefined };
 }
 
 export async function getSession() {
@@ -50,10 +103,18 @@ export async function getProfile(): Promise<Profile | null> {
     .eq('id', user.id)
     .single();
 
-  return data as Profile;
+  if (!data) return null;
+
+  const profile = data as Profile;
+  // Decrypt NIP for UI
+  if (profile.nip) {
+    profile.nip = decrypt(profile.nip);
+  }
+
+  return profile;
 }
 
 export async function isAdmin() {
   const profile = await getProfile();
-  return profile?.role === 'admin';
+  return profile?.role === 'admin' || profile?.role === 'superuser';
 }

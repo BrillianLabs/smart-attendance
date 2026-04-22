@@ -23,6 +23,8 @@ export function UserActions({ user }: { user: Profile }) {
     full_name: user.full_name,
     position:  user.position ?? '',
     role:      user.role,
+    email:     user.email ?? '',
+    nip:       user.nip ?? '',
   });
 
   const handleToggleActive = async () => {
@@ -75,6 +77,8 @@ export function UserActions({ user }: { user: Profile }) {
         full_name: form.full_name,
         position:  form.position || null,
         role:      form.role,
+        email:     form.email || null,
+        nip:       form.nip || null,
       });
       if (res.success) {
         toast.success('Profil diperbarui');
@@ -129,6 +133,19 @@ export function UserActions({ user }: { user: Profile }) {
             required
           />
           <Input
+            label="Email Pribadi / Dinas"
+            value={form.email}
+            onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+            placeholder="user@guru.sd.belajar.id"
+            type="email"
+          />
+          <Input
+            label="NIP / Username"
+            value={form.nip}
+            onChange={e => setForm(f => ({ ...f, nip: e.target.value }))}
+            placeholder="NIP atau Username login"
+          />
+          <Input
             label="Jabatan"
             value={form.position}
             onChange={e => setForm(f => ({ ...f, position: e.target.value }))}
@@ -139,8 +156,9 @@ export function UserActions({ user }: { user: Profile }) {
             value={form.role}
             onChange={e => setForm(f => ({ ...f, role: e.target.value as any }))}
           >
-            <option value="staff">Staf</option>
-            <option value="admin">Admin</option>
+            <option value="staff">Staf / Guru</option>
+            <option value="admin">Administrator Sekolah</option>
+            <option value="superuser">Developer / Superuser</option>
           </Select>
           <div className="flex gap-3 pt-2">
             <Button type="button" variant="secondary" className="flex-1" onClick={() => setEditOpen(false)}>

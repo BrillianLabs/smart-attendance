@@ -53,6 +53,7 @@ export default async function AdminUsersPage() {
             <thead>
               <tr className="bg-surface-container-low/50">
                 <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">Profil Pengguna</th>
+                <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">Email</th>
                 <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">Jabatan / Posisi</th>
                 <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">NIP / Username</th>
                 <th className="px-8 py-5 text-[0.6875rem] font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60 text-center">Status</th>
@@ -62,7 +63,7 @@ export default async function AdminUsersPage() {
             <tbody className="divide-y divide-surface-container-low">
               {users.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-16 text-center">
+                  <td colSpan={6} className="px-8 py-16 text-center">
                     <span className="material-symbols-outlined text-5xl text-outline/30 mb-4 block">group_off</span>
                     <p className="text-sm font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">Tidak ada anggota terdaftar di direktori</p>
                   </td>
@@ -87,6 +88,11 @@ export default async function AdminUsersPage() {
                           <p className="text-[10px] font-bold text-on-surface-variant opacity-50 uppercase tracking-wider">Terdaftar {new Date().getFullYear()}</p>
                         </div>
                       </div>
+                    </td>
+                    <td className="px-8 py-5">
+                      <span className="text-xs font-bold text-primary lowercase">
+                        {user.email || '-'}
+                      </span>
                     </td>
                     <td className="px-8 py-5">
                       <span className="text-sm font-medium text-on-surface-variant">

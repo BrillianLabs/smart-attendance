@@ -4,12 +4,12 @@ import { useState, useTransition, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { updatePassword } from '@/lib/actions/auth';
 import { toast } from 'react-hot-toast';
+import { Input } from '@/components/ui/Input';
 
 function ResetPasswordForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [showPw, setShowPw] = useState(false);
 
   async function handleSubmit(formData: FormData) {
     setError(null);
@@ -43,50 +43,20 @@ function ResetPasswordForm() {
       </div>
 
       <form action={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <label className="block text-[11px] font-bold uppercase tracking-[0.05rem] text-on-surface-variant ml-1">
-            Password Baru
-          </label>
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline opacity-60">
-              <span className="material-symbols-outlined text-[20px]">lock</span>
-            </div>
-            <input 
-              className="w-full pl-12 pr-12 py-3.5 bg-surface-container-low border-none rounded-xl text-on-surface text-[0.875rem] focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all duration-200" 
-              name="password" 
-              type={showPw ? 'text' : 'password'}
-              placeholder="Minimal 6 karakter"
-              required 
-            />
-            <button
-              type="button"
-              onClick={() => setShowPw(!showPw)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-outline opacity-60 hover:opacity-100 transition-opacity"
-            >
-              <span className="material-symbols-outlined text-[20px]">
-                {showPw ? 'visibility_off' : 'visibility'}
-              </span>
-            </button>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <label className="block text-[11px] font-bold uppercase tracking-[0.05rem] text-on-surface-variant ml-1">
-            Konfirmasi Password
-          </label>
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline opacity-60">
-              <span className="material-symbols-outlined text-[20px]">lock_clock</span>
-            </div>
-            <input 
-              className="w-full pl-12 pr-4 py-3.5 bg-surface-container-low border-none rounded-xl text-on-surface text-[0.875rem] focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all duration-200" 
-              name="confirm_password" 
-              type="password"
-              placeholder="Ulangi password baru"
-              required 
-            />
-          </div>
-        </div>
+        <Input 
+          name="password"
+          type="password"
+          label="Password Baru"
+          placeholder="Minimal 6 karakter"
+          required
+        />
+        <Input 
+          name="confirm_password"
+          type="password"
+          label="Konfirmasi Password"
+          placeholder="Ulangi password baru"
+          required
+        />
 
         {error && (
           <div className="animate-shake p-3 rounded-xl bg-error-container/10 border border-error-container/20 text-error text-xs font-semibold text-center mt-2">

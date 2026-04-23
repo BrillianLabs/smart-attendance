@@ -27,16 +27,16 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
       ref={dialogRef}
       onClose={onClose}
       className={cn(
-        'w-full rounded-[2.5rem] border border-outline-variant/10 p-0 shadow-2xl bg-surface-container-lowest text-on-surface overflow-hidden',
+        'w-[calc(100%-2rem)] max-h-[85vh] rounded-[2.5rem] border border-outline-variant/10 p-0 shadow-2xl bg-surface-container-lowest text-on-surface overflow-y-auto scrollbar-hide',
         'backdrop:bg-black/80 backdrop:backdrop-blur-sm animate-fade-in',
         sizeClass
       )}
       style={{ margin: 'auto' }}
     >
       {open && (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col">
           {title && (
-            <div className="flex items-center justify-between px-8 py-6 border-b border-outline-variant/10">
+            <div className="sticky top-0 bg-surface-container-lowest/90 backdrop-blur-md z-10 flex items-center justify-between px-8 py-6 border-b border-outline-variant/10">
               <h2 className="text-xl font-black tracking-tight">{title}</h2>
               <button
                 onClick={onClose}
@@ -46,7 +46,7 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
               </button>
             </div>
           )}
-          <div className="p-8">{children}</div>
+          <div className="p-8 pb-12">{children}</div>
         </div>
       )}
     </dialog>

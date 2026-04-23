@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast';
 import Image from 'next/image';
 import { Camera, Save, User, UserCircle, Briefcase, Phone, Loader2, Webcam } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
+import { Input } from '@/components/ui/Input';
 import dynamic from 'next/dynamic';
 
 // face-api.js is ~5MB — lazy load, only needed when capture button is clicked
@@ -289,26 +290,22 @@ export function ProfileClient({ profile }: ProfileClientProps) {
                   }
                 });
              }} id="change-pw-form" className="space-y-4">
-                <div className="space-y-1.5">
-                   <label className="text-[9px] font-black text-on-surface-variant uppercase tracking-widest px-1">Password Baru</label>
-                   <input 
-                      name="new_password"
-                      type="password"
-                      required
-                      placeholder="Minimal 6 karakter"
-                      className="w-full bg-surface-container-lowest px-4 py-3 rounded-xl border border-outline-variant/10 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface text-sm"
-                   />
-                </div>
-                <div className="space-y-1.5">
-                   <label className="text-[9px] font-black text-on-surface-variant uppercase tracking-widest px-1">Konfirmasi Password</label>
-                   <input 
-                      name="confirm_password"
-                      type="password"
-                      required
-                      placeholder="Ulangi password baru"
-                      className="w-full bg-surface-container-lowest px-4 py-3 rounded-xl border border-outline-variant/10 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface text-sm"
-                   />
-                </div>
+                <Input 
+                   name="new_password"
+                   type="password"
+                   label="Password Baru"
+                   required
+                   placeholder="Minimal 6 karakter"
+                   className="bg-surface-container-lowest"
+                />
+                <Input 
+                   name="confirm_password"
+                   type="password"
+                   label="Konfirmasi Password"
+                   required
+                   placeholder="Ulangi password baru"
+                   className="bg-surface-container-lowest"
+                />
                 <button 
                   type="submit"
                   disabled={isPending}

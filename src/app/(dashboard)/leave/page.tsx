@@ -84,6 +84,19 @@ export default async function LeavePage() {
                         <p className="text-sm text-on-surface-variant leading-relaxed line-clamp-2 italic opacity-80">
                           "{leave.reason}"
                         </p>
+                        {leave.attachment_url && (
+                          <div className="mt-4">
+                            <a 
+                              href={leave.attachment_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-high hover:bg-primary/10 text-primary rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-outline-variant/10 shadow-sm"
+                            >
+                              <span className="material-symbols-outlined text-[18px]">attach_file</span>
+                              Lihat Lampiran
+                            </a>
+                          </div>
+                        )}
                       </div>
 
                       {leave.admin_note && (

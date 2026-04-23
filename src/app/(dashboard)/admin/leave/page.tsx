@@ -92,8 +92,21 @@ export default async function AdminLeavePage({ searchParams }: Props) {
                             <>, {format(parseISO(leave.start_date), 'yyyy')}</>
                           )}
                        </p>
-                       <div className="mt-4 p-5 bg-surface rounded-2xl border border-outline-variant/10 italic text-sm text-on-surface-variant leading-relaxed max-w-2xl">
+                       <div className="mt-4 p-5 bg-surface rounded-2xl border border-outline-variant/10 italic text-sm text-on-surface-variant leading-relaxed max-w-2xl relative group/reason">
                           "{leave.reason}"
+                          {leave.attachment_url && (
+                            <div className="mt-4 pt-4 border-t border-outline-variant/5">
+                               <a 
+                                 href={leave.attachment_url} 
+                                 target="_blank" 
+                                 rel="noopener noreferrer"
+                                 className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-primary hover:text-white shadow-sm"
+                               >
+                                 <span className="material-symbols-outlined text-[18px]">visibility</span>
+                                 Dokumen Pendukung
+                               </a>
+                            </div>
+                          )}
                        </div>
                        {leave.admin_note && (
                         <p className="text-[11px] font-medium text-primary mt-3 flex items-center gap-2">
@@ -104,12 +117,12 @@ export default async function AdminLeavePage({ searchParams }: Props) {
                     </div>
                   </div>
 
-                  <div className="flex lg:flex-col items-center lg:items-end gap-4 shrink-0">
+                  <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-start gap-4 shrink-0 w-full lg:w-auto border-t lg:border-t-0 pt-4 lg:pt-0 mt-4 lg:mt-0">
                     <Badge variant={statusVariant(leave.status)} className="px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
                       {statusLabel(leave.status)}
                     </Badge>
                     {leave.status === 'pending' && (
-                      <div className="mt-2 animate-slide-in">
+                      <div className="animate-slide-in">
                         <LeaveReviewButtons leaveId={leave.id} />
                       </div>
                     )}

@@ -193,6 +193,21 @@ async function runSeed() {
     }
 
     // --------------------------------------------------------------------------------
+    // 5.5 PASTIKAN STORAGE BUCKET EKSIS
+    // --------------------------------------------------------------------------------
+    console.log("\n➡️ Menyiapkan Storage Buckets...");
+    const { data: buckets } = await supabase.storage.listBuckets();
+    const neededBuckets = ['school-assets', 'leave-attachments'];
+    for (const b of neededBuckets) {
+      if (!buckets?.find(bucket => bucket.id === b)) {
+        console.log(`   - Membuat bucket: ${b}`);
+        await supabase.storage.createBucket(b, { public: true });
+      } else {
+        console.log(`   - Bucket ${b} sudah ada.`);
+      }
+    }
+
+    // --------------------------------------------------------------------------------
     // 6. KEMBALIKAN TRIGGER POSTGRES 
     // --------------------------------------------------------------------------------
     console.log("\n➡️ Mengembalikan perlindungan Trigger untuk App...");

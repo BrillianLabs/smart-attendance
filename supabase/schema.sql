@@ -212,6 +212,26 @@ DROP POLICY IF EXISTS "school_assets_view" ON storage.objects;
 CREATE POLICY "school_assets_view" ON storage.objects
   FOR SELECT USING (bucket_id = 'school-assets');
 
-DROP POLICY IF EXISTS "school_assets_delete" ON storage.objects;
-CREATE POLICY "school_assets_delete" ON storage.objects
-  FOR DELETE USING (bucket_id = 'school-assets');
+-- Create storage bucket for leave attachments
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('leave-attachments', 'leave-attachments', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Allow authenticated users to upload their own leave attachments
+DROP POLICY IF EXISTS "leave_attachments_upload" ON storage.objects;
+CREATE POLICY "leave_attachments_upload" ON storage.objects
+  FOR INSERT WITH CHECK (
+    bucket_id = 'leave-attachments' 
+    AND auth.uid() IS NOT NULL
+  );
+
+DROP POLICY IF EXISTS "leave_attachments_view" ON storage.objects;
+CREATE POLICY "leave_attachments_view" ON storage.objects
+  FOR SELECT USING (bucket_id = 'leave-attachments');
+
+DROP POLICY IF EXISTS "leave_attachments_delete" ON storage.objects;
+CREATE POLICY "leave_attachments_delete" ON storage.objects
+  FOR DELETE USING (
+    bucket_id = 'leave-attachments'
+    AND (auth.uid()::text = (storage.foldername(name))[1] OR get_my_role() = 'admin')
+  );

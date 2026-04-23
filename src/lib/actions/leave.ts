@@ -10,10 +10,11 @@ export async function submitLeave(formData: FormData): Promise<ActionResult> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Tidak terautentikasi.' };
 
-  const startDate = formData.get('start_date') as string;
-  const endDate   = formData.get('end_date')   as string;
-  const leaveType = formData.get('leave_type') as LeaveType;
-  const reason    = formData.get('reason')     as string;
+  const startDate  = formData.get('start_date') as string;
+  const endDate    = formData.get('end_date')   as string;
+  const leaveType  = formData.get('leave_type') as LeaveType;
+  const reason     = formData.get('reason')     as string;
+  const attachment = formData.get('attachment') as File;
 
   if (!startDate || !endDate || !leaveType || !reason) {
     return { success: false, error: 'Semua field wajib diisi.' };
@@ -22,12 +23,50 @@ export async function submitLeave(formData: FormData): Promise<ActionResult> {
     return { success: false, error: 'Tanggal mulai tidak boleh setelah tanggal selesai.' };
   }
 
+  let attachmentUrl: string | null = null;
+
+  // Handle Attachment Upload
+  if (attachment && attachment.size > 0) {
+    // Validate size (2MB)
+    if (attachment.size > 2 * 1024 * 1024) {
+      return { success: false, error: 'Ukuran dokumen maksimal adalah 2MB.' };
+    }
+
+    // Validate type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+    if (!allowedTypes.includes(attachment.type)) {
+      return { success: false, error: 'Format dokumen harus JPG atau PDF.' };
+    }
+
+    const fileExt = attachment.name.split('.').pop();
+    const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+    const filePath = `leave-attachments/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('leave-attachments')
+      .upload(fileName, attachment, {
+        upsert: true,
+        contentType: attachment.type
+      });
+
+    if (uploadError) {
+      return { success: false, error: `Gagal mengunggah dokumen: ${uploadError.message}` };
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('leave-attachments')
+      .getPublicUrl(fileName);
+    
+    attachmentUrl = publicUrl;
+  }
+
   const { error } = await supabase.from('leave_requests').insert({
     user_id: user.id,
     start_date: startDate,
     end_date:   endDate,
     leave_type: leaveType,
     reason,
+    attachment_url: attachmentUrl,
   });
 
   if (error) return { success: false, error: error.message };

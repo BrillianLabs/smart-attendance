@@ -5,7 +5,7 @@ import { getAdminStats, getSettings } from '@/lib/actions/admin';
 import { getAdminAttendance, getMonthlyStats } from '@/lib/actions/attendance';
 import { getAllLeaveRequests } from '@/lib/actions/leave';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
-import { formatWIB } from '@/lib/utils/date';
+import { formatWIB, getAcademicYear } from '@/lib/utils/date';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
@@ -58,6 +58,22 @@ export default async function AdminDashboard() {
           <p className="text-sm font-medium text-on-surface-variant opacity-60">
             Sistem Informasi Guru Absensi Pintar — SD NEGERI NGUWOK
           </p>
+        </div>
+        <div className="flex items-center gap-4 bg-surface-container-low px-5 py-2.5 rounded-2xl border border-outline-variant/10 shadow-sm">
+          <div className="flex items-center gap-2 pr-4 border-r border-outline-variant/20">
+            <span className="material-symbols-outlined text-primary text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>calendar_today</span>
+            <div className="flex flex-col">
+               <span className="text-[9px] font-black uppercase tracking-[0.1em] opacity-40 leading-none mb-0.5">Tahun Ajaran</span>
+               <span className="text-xs font-bold tracking-tight text-on-surface">{getAcademicYear()}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-secondary text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>account_balance_wallet</span>
+            <div className="flex flex-col">
+               <span className="text-[9px] font-black uppercase tracking-[0.1em] opacity-40 leading-none mb-0.5">Tahun Anggaran</span>
+               <span className="text-xs font-bold tracking-tight text-on-surface">{new Date().getFullYear()}</span>
+            </div>
+          </div>
         </div>
         <div className="hidden sm:flex gap-4">
           <button className="btn btn-secondary btn-sm ring-1 ring-outline-variant/5">

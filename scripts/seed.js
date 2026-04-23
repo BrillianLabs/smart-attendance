@@ -36,11 +36,47 @@ const supabase = createClient(supabaseUrl, serviceKey, {
   auth: { autoRefreshToken: false, persistSession: false }
 });
 
-const DUMMY_USERS = [
-  { email: 'admin@sekolah.sch.id', pwd: 'User123!', name: 'Administrator', role: 'admin', pos: 'Kepala Sekolah / Admin' },
-  { email: 'budi@sekolah.sch.id', pwd: 'User123!', name: 'Budi Santoso', role: 'staff', pos: 'Guru Matematika' },
-  { email: 'siti@sekolah.sch.id', pwd: 'User123!', name: 'Siti Rahayu', role: 'staff', pos: 'Guru B. Indonesia' }
-];
+const crypto = require('crypto');
+
+// Load Real User Data from JSON
+const USERS_DATA = JSON.parse(fs.readFileSync(path.join(__dirname, 'users_data.json'), 'utf8'));
+
+// Encryption Utils for Seed (Node.js version)
+const ENCRYPTION_KEY = envConfig.NIP_ENCRYPTION_KEY || '';
+const HASH_SALT = envConfig.NIP_HASH_SALT || '';
+
+function encrypt(text) {
+  if (!text || !ENCRYPTION_KEY) return text;
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
+  let encrypted = cipher.update(text);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  return iv.toString('hex') + ':' + encrypted.toString('hex');
+}
+
+function hashNip(nip) {
+  if (!nip || !HASH_SALT) return '';
+  const cleanNip = nip.trim().replace(/\s/g, '');
+  return crypto.createHmac('sha256', HASH_SALT).update(cleanNip).digest('hex');
+}
+
+const DUMMY_USERS = USERS_DATA.map(u => ({
+  email: u.email || `${u.nip || u.full_name.toLowerCase().replace(/\s/g, '')}@absen.smart`,
+  pwd: 'User123!',
+  name: u.full_name,
+  role: u.role,
+  pos: u.position,
+  nip: u.nip
+}));
+
+// Tambahkan super admin manual
+DUMMY_USERS.push({ 
+  email: 'admin@sekolah.sch.id', 
+  pwd: 'User123!', 
+  name: 'Administrator Utama', 
+  role: 'admin', 
+  pos: 'IT Administrator' 
+});
 
 async function runSeed() {
   const userIds = {};
@@ -102,12 +138,19 @@ async function runSeed() {
     for (const u of DUMMY_USERS) {
       if (userIds[u.email]) {
         // Karena trigger dihapus, kita INSERT manual dari awal supaya 100% aman
-        const { error: insErr } = await supabase.from('profiles').upsert({
+        const profileUpdates = {
           id: userIds[u.email],
           full_name: u.name,
           role: u.role,
           position: u.pos
-        });
+        };
+
+        if (u.nip) {
+          profileUpdates.nip = encrypt(u.nip);
+          profileUpdates.nip_hash = hashNip(u.nip);
+        }
+
+        const { error: insErr } = await supabase.from('profiles').upsert(profileUpdates);
         if (insErr) console.error("Gagal simpan profil: ", insErr.message);
       }
     }
@@ -134,7 +177,7 @@ async function runSeed() {
     await supabase.from('leave_requests').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     await supabase.from('attendance').delete().neq('id', '00000000-0000-0000-0000-000000000000');
 
-    const staffEmails = ['budi@sekolah.sch.id', 'siti@sekolah.sch.id'];
+    const staffEmails = DUMMY_USERS.filter(u => u.role === 'staff').map(u => u.email);
     for (const email of staffEmails) {
       const u_id = userIds[email];
       if (!u_id) continue;
@@ -171,9 +214,10 @@ async function runSeed() {
     // 5. MEMBUAT DUMMY REQUEST IZIN
     // --------------------------------------------------------------------------------
     console.log("\n➡️ Memasukkan Contoh Tiket Izin Cuti...");
-    if (userIds['budi@sekolah.sch.id']) {
+    const someStaff = staffEmails.slice(0, 2);
+    if (someStaff[0]) {
       await supabase.from('leave_requests').insert({
-        user_id: userIds['budi@sekolah.sch.id'],
+        user_id: userIds[someStaff[0]],
         start_date: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
         end_date: new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0],
         leave_type: 'sakit',
@@ -181,9 +225,9 @@ async function runSeed() {
         status: 'pending'
       });
     }
-    if (userIds['siti@sekolah.sch.id']) {
+    if (someStaff[1]) {
       await supabase.from('leave_requests').insert({
-        user_id: userIds['siti@sekolah.sch.id'],
+        user_id: userIds[someStaff[1]],
         start_date: new Date(Date.now() - 86400000 * 5).toISOString().split('T')[0],
         end_date: new Date(Date.now() - 86400000 * 5).toISOString().split('T')[0],
         leave_type: 'izin',
@@ -235,7 +279,13 @@ async function runSeed() {
     await finPgClient.end();
 
     console.log("\n🎉 SELESAI! CLI Seeder Sukses Dieksekusi.");
-    console.log("Coba login dengan admin@sekolah.sch.id atau budi@sekolah.sch.id (Password: User123!)");
+    console.log("--------------------------------------------------");
+    console.log("KREDENSI LOGIN:");
+    DUMMY_USERS.forEach(u => {
+      console.log(`- ${u.name.padEnd(30)} | ${u.email.padEnd(30)} | Pass: ${u.pwd}`);
+    });
+    console.log("--------------------------------------------------");
+    console.log("Gunakan NIP atau Email di atas untuk login.");
 
   } catch (err) {
     console.error("❌ Fatal Error:", err.message);

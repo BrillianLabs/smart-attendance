@@ -43,3 +43,19 @@ export function getTimezoneAbbreviation(): string {
       return 'WIB';
   }
 }
+
+/**
+ * Menghitung Tahun Ajaran (TA) secara dinamis berdasarkan tanggal
+ * @param date Objek Date atau string ISO
+ */
+export function getAcademicYear(date: string | Date = new Date()): string {
+  const d = typeof date === 'string' ? parseISO(date) : date;
+  const month = d.getMonth(); // 0-11
+  const year = d.getFullYear();
+  
+  if (month >= 6) { // Juli - Desember
+    return `${year}/${year + 1}`;
+  } else { // Januari - Juni
+    return `${year - 1}/${year}`;
+  }
+}

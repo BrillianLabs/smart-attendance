@@ -5,7 +5,7 @@ import { getAdminAttendance } from '@/lib/actions/attendance';
 import { getAllProfiles } from '@/lib/actions/admin';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
 import { ExportButton } from '@/components/admin/ExportButton';
-import { formatWIB } from '@/lib/utils/date';
+import { formatWIB, getAcademicYear } from '@/lib/utils/date';
 import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
 
@@ -124,7 +124,7 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
                       <p className="text-sm font-bold text-on-surface">
                         {formatWIB(att.date, 'EEEE, d MMM')}
                       </p>
-                      <p className="text-[10px] font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">AY 2024 Index</p>
+                      <p className="text-[10px] font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">TA {getAcademicYear(att.date)}</p>
                     </td>
                     <td className="px-8 py-5">
                        <div className="flex flex-col">

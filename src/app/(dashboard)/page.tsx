@@ -6,7 +6,7 @@ import { getTodayAttendance, getMyAttendanceHistory } from '@/lib/actions/attend
 import { getMyLeaveRequests } from '@/lib/actions/leave';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
 import { AttendanceClient } from '@/components/attendance/AttendanceClient';
-import { formatWIB, getTimezoneAbbreviation } from '@/lib/utils/date';
+import { formatWIB, getTimezoneAbbreviation, getAcademicYear } from '@/lib/utils/date';
 import Link from 'next/link';
 import { cn } from '@/lib/utils/cn';
 import { Attendance, LeaveRequest } from '@/lib/types';
@@ -49,7 +49,7 @@ export default async function DashboardPage() {
         </div>
         <div className="flex items-center gap-3 bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/10 shadow-sm">
           <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>calendar_today</span>
-          <span className="text-sm font-semibold tracking-tight">Tahun Ajaran 2024/2025</span>
+          <span className="text-sm font-semibold tracking-tight">Tahun Ajaran {getAcademicYear()}</span>
         </div>
       </header>
 

@@ -4,7 +4,7 @@ import { getSettings } from '@/lib/actions/admin';
 import { getProfile } from '@/lib/actions/auth';
 import { AttendanceClient } from '@/components/attendance/AttendanceClient';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
-import { formatWIB } from '@/lib/utils/date';
+import { formatWIB, getAcademicYear } from '@/lib/utils/date';
 import { cn } from '@/lib/utils/cn';
 
 export const metadata: Metadata = { title: 'Log Presensi | SD Negeri Nguwok' };
@@ -68,7 +68,7 @@ export default async function AttendancePage() {
                       <p className="text-sm font-bold text-on-surface">
                         {formatWIB(att.date, 'EEE, d MMM')}
                       </p>
-                      <p className="text-[10px] font-bold text-on-surface-variant opacity-40 uppercase tracking-wider">TA 2024/2025</p>
+                      <p className="text-[10px] font-bold text-on-surface-variant opacity-40 uppercase tracking-wider">TA {getAcademicYear(att.date)}</p>
                     </td>
                     <td className="px-4 sm:px-8 py-4">
                       <span className="text-sm font-medium text-on-surface opacity-80">

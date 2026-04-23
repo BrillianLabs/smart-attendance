@@ -287,7 +287,7 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
                  </span>
                </div>
                <div>
-                 <p className="text-[10px] font-black text-on-surface-variant opacity-60 uppercase tracking-[0.2em] leading-none mb-1.5">Identity Secured</p>
+                 <p className="text-[10px] font-black text-on-surface-variant opacity-60 uppercase tracking-[0.2em] leading-none mb-1.5">Identitas Diamankan</p>
                  <Badge variant={statusVariant(attendance.status)} className="px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all">
                     {statusLabel(attendance.status)}
                  </Badge>

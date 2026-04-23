@@ -26,7 +26,7 @@ export default async function AttendancePage() {
     <div className="max-w-4xl mx-auto space-y-12 animate-fade-in pb-24">
       {/* Page Header */}
       <section className="px-1">
-        <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Personal Logs</span>
+        <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Log Pribadi</span>
         <h1 className="text-3xl sm:text-4xl font-black text-on-surface tracking-tight">Riwayat Presensi</h1>
         <p className="text-sm font-medium text-on-surface-variant opacity-60 mt-1">{todayStr}</p>
       </section>
@@ -94,7 +94,7 @@ export default async function AttendancePage() {
         </div>
 
         <div className="px-8 py-6 bg-surface-container-lowest/50 border-t border-outline-variant/5 text-center">
-            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-outline opacity-40">End of Personal Logs</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-outline opacity-40">Akhir Log Pribadi</p>
         </div>
       </section>
     </div>

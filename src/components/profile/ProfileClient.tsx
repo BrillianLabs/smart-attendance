@@ -224,7 +224,7 @@ export function ProfileClient({ profile }: ProfileClientProps) {
                )}>
                   <Camera size={24} />
                </div>
-               <h4 className="text-sm font-black text-on-surface tracking-tight uppercase">AI Face ID</h4>
+               <h4 className="text-sm font-black text-on-surface tracking-tight uppercase">ID Wajah AI</h4>
             </div>
             
             <p className={cn(

@@ -24,7 +24,7 @@ export default async function LeavePage() {
       {/* Header Section */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1">
         <div>
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Management Portal</span>
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Portal Manajemen</span>
           <h1 className="text-3xl sm:text-4xl font-black text-on-surface tracking-tight">Pengajuan <span className="text-primary italic">Izin</span></h1>
           <p className="text-sm font-medium text-on-surface-variant opacity-60 mt-1">Kelola dan pantau riwayat pengajuan izin Anda.</p>
         </div>
@@ -43,10 +43,10 @@ export default async function LeavePage() {
             <div className="w-20 h-20 bg-surface-container-low rounded-[2rem] flex items-center justify-center mb-6">
               <span className="material-symbols-outlined text-4xl text-outline/30">inbox</span>
             </div>
-            <h3 className="text-xl font-bold text-on-surface mb-2 tracking-tight">No requests found</h3>
-            <p className="text-sm text-on-surface-variant mb-10 max-w-sm opacity-60 font-medium">Your request history is currently empty. Start by submitting a new absence notification.</p>
+            <h3 className="text-xl font-bold text-on-surface mb-2 tracking-tight">Tidak ada pengajuan ditemukan</h3>
+            <p className="text-sm text-on-surface-variant mb-10 max-w-sm opacity-60 font-medium">Riwayat pengajuan Anda saat ini kosong. Mulai dengan membuat pengajuan ketidakhadiran baru.</p>
             <Link href="/leave/new">
-              <button className="text-primary font-bold text-xs uppercase tracking-widest hover:underline decoration-primary/30 underline-offset-8">Create your first request</button>
+              <button className="text-primary font-bold text-xs uppercase tracking-widest hover:underline decoration-primary/30 underline-offset-8">Buat pengajuan pertama Anda</button>
             </Link>
           </div>
         ) : (

@@ -52,7 +52,7 @@ export default async function AdminDashboard() {
       {/* Header Section */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1">
         <div>
-          <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-primary mb-3 block opacity-80">Management Experience</span>
+          <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-primary mb-3 block opacity-80">Pengalaman Manajemen</span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-on-surface tracking-tight leading-none mb-2">
             Selamat Datang di <span className="text-primary italic">SIGAP</span>
           </h1>
@@ -115,7 +115,7 @@ export default async function AdminDashboard() {
               className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-outline-variant/30 rounded-full text-[10px] font-bold uppercase tracking-widest text-on-surface hover:bg-surface-container-low transition-colors"
             >
               <span className="material-symbols-outlined text-sm">download</span>
-              <span className="hidden sm:inline">Export Excel</span>
+              <span className="hidden sm:inline">Ekspor Excel</span>
               <span className="sm:hidden">Excel</span>
             </ExportButton>
           </div>

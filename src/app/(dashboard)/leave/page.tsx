@@ -23,7 +23,7 @@ export default async function LeavePage() {
       {/* Header Section */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1">
         <div>
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Portal Manajemen</span>
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Manajemen</span>
           <h1 className="text-3xl sm:text-4xl font-black text-on-surface tracking-tight">Pengajuan <span className="text-primary italic">Izin</span></h1>
           <p className="text-sm font-medium text-on-surface-variant opacity-60 mt-1">Kelola dan pantau riwayat pengajuan izin Anda.</p>
         </div>

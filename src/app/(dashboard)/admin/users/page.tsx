@@ -21,7 +21,7 @@ export default async function AdminUsersPage() {
       {/* Dynamic Header */}
       <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 px-1">
         <div className="space-y-1">
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Portal Manajemen</span>
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Manajemen</span>
           <h1 className="text-4xl font-black text-on-surface tracking-tight">Direktori Guru & Staf</h1>
           <p className="text-sm font-medium text-on-surface-variant opacity-60">
             Mengelola <span className="text-on-surface font-bold">{users.length}</span> anggota institusi terverifikasi.

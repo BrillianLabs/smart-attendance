@@ -51,7 +51,7 @@ export default async function AdminDashboard() {
       {/* Header Section */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1">
         <div>
-          <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-primary mb-3 block opacity-80">Pengalaman Manajemen</span>
+          <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-primary mb-3 block opacity-80">Manajemen</span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-on-surface tracking-tight leading-none mb-2">
             Selamat Datang di <span className="text-primary italic">SIGAP</span>
           </h1>

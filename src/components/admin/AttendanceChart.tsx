@@ -5,8 +5,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
-import { format, parseISO } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
+import { formatWIB } from '@/lib/utils/date';
 
 interface ChartData {
   date: string;
@@ -25,7 +24,7 @@ export function AttendanceChart({ data }: { data: ChartData[] }) {
 
   const formatted = data.map(d => ({
     ...d,
-    label: format(parseISO(d.date), 'd/M', { locale: idLocale }),
+    label: formatWIB(d.date, 'd/M'),
   }));
 
   if (!mounted || formatted.length === 0) {

@@ -5,8 +5,7 @@ import { getAdminAttendance } from '@/lib/actions/attendance';
 import { getAllProfiles } from '@/lib/actions/admin';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
 import { ExportButton } from '@/components/admin/ExportButton';
-import { format, parseISO } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
+import { formatWIB } from '@/lib/utils/date';
 import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
 
@@ -21,7 +20,7 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
   if (!profile || profile.role !== 'admin') redirect('/');
 
   const params  = await searchParams;
-  const month   = params.month ?? format(new Date(), 'yyyy-MM');
+  const month   = params.month ?? formatWIB(new Date(), 'yyyy-MM');
   const userId  = params.userId;
   const viewDate = params.date;
 
@@ -123,13 +122,13 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
                     </td>
                     <td className="px-8 py-5">
                       <p className="text-sm font-bold text-on-surface">
-                        {format(parseISO(att.date), 'EEEE, d MMM', { locale: idLocale })}
+                        {formatWIB(att.date, 'EEEE, d MMM')}
                       </p>
                       <p className="text-[10px] font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">AY 2024 Index</p>
                     </td>
                     <td className="px-8 py-5">
                        <div className="flex flex-col">
-                          <span className="text-sm font-bold text-on-surface">{att.check_in ? format(parseISO(att.check_in), 'HH:mm') : '--:--'}</span>
+                          <span className="text-sm font-bold text-on-surface">{formatWIB(att.check_in, 'HH:mm')}</span>
                           <span className="text-[9px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">Check-in Log</span>
                        </div>
                     </td>

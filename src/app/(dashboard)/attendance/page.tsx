@@ -4,8 +4,7 @@ import { getSettings } from '@/lib/actions/admin';
 import { getProfile } from '@/lib/actions/auth';
 import { AttendanceClient } from '@/components/attendance/AttendanceClient';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
-import { format, parseISO } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
+import { formatWIB } from '@/lib/utils/date';
 import { cn } from '@/lib/utils/cn';
 
 export const metadata: Metadata = { title: 'Log Presensi | SD Negeri Nguwok' };
@@ -20,7 +19,7 @@ export default async function AttendancePage() {
 
   if (!profile) return null;
 
-  const todayStr = format(new Date(), 'EEEE, d MMMM yyyy', { locale: idLocale });
+  const todayStr = formatWIB(new Date(), 'EEEE, d MMMM yyyy');
 
   return (
     <div className="max-w-4xl mx-auto space-y-12 animate-fade-in pb-24">
@@ -67,18 +66,18 @@ export default async function AttendancePage() {
                   <tr key={att.id} className="hover:bg-surface-container-low/30 transition-colors group">
                     <td className="px-4 sm:px-8 py-4">
                       <p className="text-sm font-bold text-on-surface">
-                        {format(parseISO(att.date), 'EEE, d MMM', { locale: idLocale })}
+                        {formatWIB(att.date, 'EEE, d MMM')}
                       </p>
                       <p className="text-[10px] font-bold text-on-surface-variant opacity-40 uppercase tracking-wider">TA 2024/2025</p>
                     </td>
                     <td className="px-4 sm:px-8 py-4">
                       <span className="text-sm font-medium text-on-surface opacity-80">
-                        {att.check_in ? format(parseISO(att.check_in), 'HH:mm') : '--:--'}
+                        {formatWIB(att.check_in, 'HH:mm')}
                       </span>
                     </td>
                     <td className="px-4 sm:px-8 py-4">
                       <span className="text-sm font-medium text-on-surface opacity-80">
-                        {att.check_out ? format(parseISO(att.check_out), 'HH:mm') : '--:--'}
+                        {formatWIB(att.check_out, 'HH:mm')}
                       </span>
                     </td>
                     <td className="px-4 sm:px-8 py-4">

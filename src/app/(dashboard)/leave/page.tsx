@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getMyLeaveRequests } from '@/lib/actions/leave';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
-import { format, parseISO } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
+import { formatWIB } from '@/lib/utils/date';
 import { cn } from '@/lib/utils/cn';
 
 export const metadata: Metadata = { title: 'Pengajuan Izin | SD Negeri Nguwok' };
@@ -71,12 +70,12 @@ export default async function LeavePage() {
                       </div>
                       <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-[0.1em] flex items-center gap-2 opacity-60">
                         <span className="material-symbols-outlined text-sm">event</span>
-                        {format(parseISO(leave.start_date), 'd MMM', { locale: idLocale })}
+                        {formatWIB(leave.start_date, 'd MMM')}
                         {leave.start_date !== leave.end_date && (
-                          <> – {format(parseISO(leave.end_date), 'd MMM yyyy', { locale: idLocale })}</>
+                          <> – {formatWIB(leave.end_date, 'd MMM yyyy')}</>
                         )}
                         {leave.start_date === leave.end_date && (
-                          <>, {format(parseISO(leave.start_date), 'yyyy', { locale: idLocale })}</>
+                          <>, {formatWIB(leave.start_date, 'yyyy')}</>
                         )}
                       </p>
                       

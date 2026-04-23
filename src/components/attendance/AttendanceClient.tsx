@@ -11,7 +11,7 @@ import { Attendance, Settings, Profile } from '@/lib/types';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils/cn';
 import toast from 'react-hot-toast';
-import { format, parseISO } from 'date-fns';
+import { formatWIB } from '@/lib/utils/date';
 
 // Lazy load heavy components — they are not needed on page load
 const AttendanceMap = dynamic(
@@ -295,7 +295,7 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
             </div>
             <div className="flex flex-col items-end">
                <span className="text-2xl font-black text-on-surface tracking-tighter">
-                {attendance.check_in ? format(parseISO(attendance.check_in), 'HH:mm') : '--:--'}
+                {formatWIB(attendance.check_in, 'HH:mm')}
                </span>
                <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.1em] opacity-40">Verified AI</span>
             </div>

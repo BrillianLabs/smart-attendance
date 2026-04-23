@@ -5,8 +5,7 @@ import { getAdminStats, getSettings } from '@/lib/actions/admin';
 import { getAdminAttendance, getMonthlyStats } from '@/lib/actions/attendance';
 import { getAllLeaveRequests } from '@/lib/actions/leave';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
-import { format, parseISO } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
+import { formatWIB } from '@/lib/utils/date';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
@@ -40,7 +39,7 @@ export default async function AdminDashboard() {
   const profile = await getProfile();
   if (!profile || profile.role !== 'admin') redirect('/');
 
-  const today = format(new Date(), 'yyyy-MM-dd');
+  const today = formatWIB(new Date(), 'yyyy-MM-dd');
   const [stats, todayAttendance, settings] = await Promise.all([
     getAdminStats(today),
     getAdminAttendance({ date: today, limit: 10 }),
@@ -151,11 +150,11 @@ export default async function AdminDashboard() {
                   <div className="grid grid-cols-2 gap-4 bg-surface-container-low/50 p-3 rounded-xl border border-outline-variant/5">
                     <div className="flex flex-col">
                       <span className="text-[9px] font-bold text-outline uppercase tracking-widest">Masuk</span>
-                      <span className="text-sm font-medium text-on-surface">{att.check_in ? format(parseISO(att.check_in), 'HH:mm') : '--:--'}</span>
+                      <span className="text-sm font-medium text-on-surface">{formatWIB(att.check_in, 'HH:mm')}</span>
                     </div>
                     <div className="flex flex-col">
                       <span className="text-[9px] font-bold text-outline uppercase tracking-widest">Pulang</span>
-                      <span className="text-sm font-medium text-on-surface">{att.check_out ? format(parseISO(att.check_out), 'HH:mm') : '--:--'}</span>
+                      <span className="text-sm font-medium text-on-surface">{formatWIB(att.check_out, 'HH:mm')}</span>
                     </div>
                   </div>
                 </div>
@@ -198,10 +197,10 @@ export default async function AdminDashboard() {
                       </div>
                     </td>
                     <td className="px-8 py-5 text-sm text-on-surface-variant font-medium">
-                      {att.check_in ? format(parseISO(att.check_in), 'HH:mm') : '--:--'}
+                      {formatWIB(att.check_in, 'HH:mm')}
                     </td>
                     <td className="px-8 py-5 text-sm text-on-surface-variant font-medium">
-                      {att.check_out ? format(parseISO(att.check_out), 'HH:mm') : '--:--'}
+                      {formatWIB(att.check_out, 'HH:mm')}
                     </td>
                     <td className="px-8 py-5">
                       <Badge variant={statusVariant(att.status)} className="px-3 py-1 text-[10px] uppercase tracking-widest font-black rounded-full">

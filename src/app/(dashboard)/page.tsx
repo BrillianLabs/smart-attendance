@@ -6,8 +6,7 @@ import { getTodayAttendance, getMyAttendanceHistory } from '@/lib/actions/attend
 import { getMyLeaveRequests } from '@/lib/actions/leave';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
 import { AttendanceClient } from '@/components/attendance/AttendanceClient';
-import { format, parseISO } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
+import { formatWIB, getTimezoneAbbreviation } from '@/lib/utils/date';
 import Link from 'next/link';
 import { cn } from '@/lib/utils/cn';
 import { Attendance, LeaveRequest } from '@/lib/types';
@@ -26,7 +25,7 @@ export default async function DashboardPage() {
   if (!profile) redirect('/login');
   if (profile.role === 'admin') redirect('/admin');
 
-  const todayStr = format(new Date(), 'EEEE, d MMMM yyyy', { locale: idLocale });
+  const todayStr = formatWIB(new Date(), 'EEEE, d MMMM yyyy');
   const pendingLeavesCount = leaves.filter((l: LeaveRequest) => l.status === 'pending').length;
 
   // Stats calculation
@@ -149,16 +148,16 @@ export default async function DashboardPage() {
                     </div>
                     <div>
                       <p className="font-bold tracking-tight text-on-surface">
-                        {format(parseISO(att.date), 'EEEE, d MMMM yyyy', { locale: idLocale })}
+                        {formatWIB(att.date, 'EEEE, d MMMM yyyy')}
                       </p>
                       <p className="text-xs text-on-surface-variant font-medium opacity-60">
-                        {att.check_in ? format(parseISO(att.check_in), "HH:mm 'WIB'") : '--:--'} • {att.check_in_lat ? 'GPS Office' : 'Remote'}
+                        {att.check_in ? `${formatWIB(att.check_in, 'HH:mm')} ${getTimezoneAbbreviation()}` : '--:--'} • {att.check_in_lat ? 'GPS Office' : 'Remote'}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-6">
                     <span className="hidden md:block text-sm font-medium text-on-surface-variant opacity-60">
-                      {att.check_out ? `Pulang ${format(parseISO(att.check_out), 'HH:mm')}` : 'Belum Out'}
+                      {att.check_out ? `Pulang ${formatWIB(att.check_out, 'HH:mm')}` : 'Belum Out'}
                     </span>
                     <Badge variant={statusVariant(att.status)} className="px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all group-hover:shadow-md">
                       {statusLabel(att.status)}

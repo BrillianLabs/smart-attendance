@@ -4,8 +4,7 @@ import { getProfile } from '@/lib/actions/auth';
 import { getAllLeaveRequests } from '@/lib/actions/leave';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
 import { LeaveReviewButtons } from '@/components/admin/LeaveReviewButtons';
-import { format, parseISO } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
+import { formatWIB } from '@/lib/utils/date';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils/cn';
@@ -84,12 +83,12 @@ export default async function AdminLeavePage({ searchParams }: Props) {
                           </Badge>
                        </div>
                        <p className="text-[10px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">
-                          {leave.profiles?.position ?? 'Anggota Institusi'} • {format(parseISO(leave.start_date), 'd MMM', { locale: idLocale })}
+                          {leave.profiles?.position ?? 'Anggota Institusi'} • {formatWIB(leave.start_date, 'd MMM')}
                           {leave.start_date !== leave.end_date && (
-                            <> – {format(parseISO(leave.end_date), 'd MMM yyyy', { locale: idLocale })}</>
+                            <> – {formatWIB(leave.end_date, 'd MMM yyyy')}</>
                           )}
                           {leave.start_date === leave.end_date && (
-                            <>, {format(parseISO(leave.start_date), 'yyyy')}</>
+                            <>, {formatWIB(leave.start_date, 'yyyy')}</>
                           )}
                        </p>
                        <div className="mt-4 p-5 bg-surface rounded-2xl border border-outline-variant/10 italic text-sm text-on-surface-variant leading-relaxed max-w-2xl relative group/reason">

@@ -200,17 +200,49 @@ VALUES ('school-assets', 'school-assets', true)
 ON CONFLICT (id) DO NOTHING;
 
 -- Allow admin to manage all school assets
+-- Allow users to upload their own avatar to school-assets/uid/...
 DROP POLICY IF EXISTS "school_assets_upload" ON storage.objects;
 CREATE POLICY "school_assets_upload" ON storage.objects
-  FOR INSERT WITH CHECK (bucket_id = 'school-assets' AND get_my_role() = 'admin');
+  FOR INSERT WITH CHECK (
+    bucket_id = 'school-assets' 
+    AND (
+      get_my_role() = 'admin' 
+      OR (auth.uid()::text = (storage.foldername(name))[1])
+    )
+  );
 
 DROP POLICY IF EXISTS "school_assets_update" ON storage.objects;
 CREATE POLICY "school_assets_update" ON storage.objects
-  FOR UPDATE WITH CHECK (bucket_id = 'school-assets');
+  FOR UPDATE USING (
+    bucket_id = 'school-assets'
+    AND (
+      get_my_role() = 'admin'
+      OR (auth.uid()::text = (storage.foldername(name))[1])
+    )
+  )
+  WITH CHECK (bucket_id = 'school-assets');
 
 DROP POLICY IF EXISTS "school_assets_view" ON storage.objects;
 CREATE POLICY "school_assets_view" ON storage.objects
   FOR SELECT USING (bucket_id = 'school-assets');
+
+-- ================================================
+-- Create storage bucket for attendance photos
+-- ================================================
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('attendance-photos', 'attendance-photos', true)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "attendance_photos_upload" ON storage.objects;
+CREATE POLICY "attendance_photos_upload" ON storage.objects
+  FOR INSERT WITH CHECK (
+    bucket_id = 'attendance-photos'
+    AND (auth.uid()::text = (storage.foldername(name))[1])
+  );
+
+DROP POLICY IF EXISTS "attendance_photos_view" ON storage.objects;
+CREATE POLICY "attendance_photos_view" ON storage.objects
+  FOR SELECT USING (bucket_id = 'attendance-photos');
 
 -- Create storage bucket for leave attachments
 INSERT INTO storage.buckets (id, name, public)

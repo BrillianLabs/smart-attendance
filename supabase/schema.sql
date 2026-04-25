@@ -169,6 +169,10 @@ CREATE POLICY "attendance_update" ON attendance FOR UPDATE
   USING (
     (auth.uid() = user_id AND check_out IS NULL) 
     OR get_my_role() = 'admin'
+  )
+  WITH CHECK (
+    (auth.uid() = user_id) 
+    OR get_my_role() = 'admin'
   );
 
 -- LEAVE REQUESTS policies

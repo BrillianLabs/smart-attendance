@@ -100,7 +100,9 @@ export default async function DashboardPage() {
               </h3>
               <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full w-fit backdrop-blur-md">
                 <span className="material-symbols-outlined text-sm">schedule</span>
-                <p className="text-sm font-medium tracking-tight italic">Shift Pagi: 07:00 - 15:00</p>
+                <p className="text-sm font-medium tracking-tight italic">
+                  Shift: {settings?.work_start_time?.substring(0, 5) ?? '07:30'} - {settings?.work_end_time?.substring(0, 5) ?? '15:00'}
+                </p>
               </div>
             </div>
           </div>

@@ -279,26 +279,64 @@ export function AttendanceClient({ initial, settings, profile }: AttendanceButto
       {/* Today Result Log */}
       {attendance && (
         <section className="bg-surface-container-low p-6 rounded-[2rem] border border-outline-variant/10 animate-fade-in shadow-sm shadow-primary/5">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-               <div className="w-11 h-11 rounded-xl bg-surface-container-lowest flex items-center justify-center shadow-sm border border-outline-variant/5">
-                 <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
-                   {attendance.status === 'hadir' ? 'check_circle' : 'schedule'}
+          <div className="flex flex-col gap-6">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-4">
+                 <div className="w-11 h-11 rounded-xl bg-surface-container-lowest flex items-center justify-center shadow-sm border border-outline-variant/5">
+                   <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+                     {attendance.status === 'hadir' || attendance.status === 'datang_awal' ? 'check_circle' : 'schedule'}
+                   </span>
+                 </div>
+                 <div>
+                   <p className="text-[10px] font-black text-on-surface-variant opacity-60 uppercase tracking-[0.2em] leading-none mb-1.5">Check-In Terverifikasi</p>
+                   <Badge variant={statusVariant(attendance.status)} className="px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all">
+                      {statusLabel(attendance.status)}
+                   </Badge>
+                 </div>
+              </div>
+              <div className="flex flex-col items-end">
+                 <span className="text-2xl font-black text-on-surface tracking-tighter">
+                  {formatWIB(attendance.check_in, 'HH:mm')}
                  </span>
-               </div>
-               <div>
-                 <p className="text-[10px] font-black text-on-surface-variant opacity-60 uppercase tracking-[0.2em] leading-none mb-1.5">Identitas Diamankan</p>
-                 <Badge variant={statusVariant(attendance.status)} className="px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all">
-                    {statusLabel(attendance.status)}
-                 </Badge>
-               </div>
+                 <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.1em] opacity-40">Verified AI</span>
+              </div>
             </div>
-            <div className="flex flex-col items-end">
-               <span className="text-2xl font-black text-on-surface tracking-tighter">
-                {formatWIB(attendance.check_in, 'HH:mm')}
-               </span>
-               <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.1em] opacity-40">Verified AI</span>
-            </div>
+
+            {attendance.check_out && (
+              <div className="flex justify-between items-center border-t border-outline-variant/10 pt-6">
+                <div className="flex items-center gap-4">
+                   <div className="w-11 h-11 rounded-xl bg-surface-container-lowest flex items-center justify-center shadow-sm border border-outline-variant/5">
+                     <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>
+                       home_pin
+                     </span>
+                   </div>
+                   <div>
+                     <p className="text-[10px] font-black text-on-surface-variant opacity-60 uppercase tracking-[0.2em] leading-none mb-1.5">Check-Out Terverifikasi</p>
+                     {(() => {
+                        let coStatus = attendance.checkout_status;
+                        if (!coStatus) {
+                          const coTime = new Date(attendance.check_out!);
+                          const wibString = coTime.toLocaleTimeString('en-GB', { timeZone: 'Asia/Jakarta', hour12: false });
+                          const [h, m] = wibString.split(':').map(Number);
+                          const isEarly = h < 12 || (h === 12 && m < 10);
+                          coStatus = isEarly ? 'pulang_awal' : 'pulang_sesuai';
+                        }
+                        return (
+                          <Badge variant={statusVariant(coStatus)} className="px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all">
+                            {statusLabel(coStatus)}
+                          </Badge>
+                        );
+                      })()}
+                   </div>
+                </div>
+                <div className="flex flex-col items-end">
+                   <span className="text-2xl font-black text-on-surface tracking-tighter text-secondary">
+                    {formatWIB(attendance.check_out, 'HH:mm')}
+                   </span>
+                   <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.1em] opacity-40">Verified AI</span>
+                </div>
+              </div>
+            )}
           </div>
         </section>
       )}

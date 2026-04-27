@@ -24,7 +24,8 @@ DROP TYPE IF EXISTS leave_type CASCADE;
 -- ========================
 
 CREATE TYPE user_role AS ENUM ('admin', 'staff');
-CREATE TYPE attendance_status AS ENUM ('hadir', 'telat', 'izin', 'alpha');
+CREATE TYPE attendance_status AS ENUM ('hadir', 'datang_awal', 'telat', 'izin', 'alpha', 'tidak_masuk');
+CREATE TYPE checkout_status AS ENUM ('pulang_awal', 'pulang_sesuai');
 CREATE TYPE leave_status AS ENUM ('pending', 'approved', 'rejected');
 CREATE TYPE leave_type AS ENUM ('sakit', 'izin', 'cuti', 'dinas');
 
@@ -78,11 +79,12 @@ CREATE TABLE IF NOT EXISTS attendance (
   check_in_lng   FLOAT8,
   check_out_lat  FLOAT8,
   check_out_lng  FLOAT8,
-  status         attendance_status NOT NULL DEFAULT 'hadir',
-  note           TEXT,
+  status              attendance_status NOT NULL DEFAULT 'hadir',
+  checkout_status     checkout_status,
+  note                TEXT,
   check_in_photo_url  TEXT,
   check_out_photo_url TEXT,
-  created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
   UNIQUE (user_id, date)
 );

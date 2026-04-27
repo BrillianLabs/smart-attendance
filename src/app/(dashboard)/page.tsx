@@ -170,12 +170,30 @@ export default async function DashboardPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-6">
-                    <span className="hidden md:block text-sm font-medium text-on-surface-variant opacity-60">
-                      {att.check_out ? `Pulang ${formatWIB(att.check_out, 'HH:mm')}` : 'Belum Out'}
-                    </span>
-                    <Badge variant={statusVariant(att.status)} className="px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all group-hover:shadow-md">
-                      {statusLabel(att.status)}
-                    </Badge>
+                    <div className="flex flex-col items-end gap-1.5">
+                      <Badge variant={statusVariant(att.status)} className="px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all group-hover:shadow-md">
+                        {statusLabel(att.status)}
+                      </Badge>
+                      {att.check_out && (
+                        <div className="flex items-center gap-2">
+                          {(() => {
+                            let coStatus = att.checkout_status;
+                            if (!coStatus) {
+                              const coTime = new Date(att.check_out);
+                              const wibString = coTime.toLocaleTimeString('en-GB', { timeZone: 'Asia/Jakarta', hour12: false });
+                              const [h, m] = wibString.split(':').map(Number);
+                              const isEarly = h < 12 || (h === 12 && m < 10);
+                              coStatus = isEarly ? 'pulang_awal' : 'pulang_sesuai';
+                            }
+                            return (
+                              <Badge variant={statusVariant(coStatus)} className="px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all group-hover:shadow-md">
+                                {statusLabel(coStatus)}
+                              </Badge>
+                            );
+                          })()}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))

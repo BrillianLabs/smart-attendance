@@ -69,7 +69,7 @@ export async function checkIn(
 
   const now = new Date();
   const zonedNow = toZonedTime(now, APP_TIMEZONE);
-  let status: 'hadir' | 'telat' = 'hadir';
+  let status: 'datang_awal' | 'telat' = 'datang_awal';
 
   if (settings?.work_start_time) {
     const [h, m] = settings.work_start_time.split(':').map(Number);
@@ -193,13 +193,24 @@ export async function checkOut(
       photo_url = await uploadVerificationPhoto(user.id, 'check_out', photoBase64);
     }
 
+    const now = new Date();
+    const zonedNow = toZonedTime(now, APP_TIMEZONE);
+    const coHours = zonedNow.getHours();
+    const coMinutes = zonedNow.getMinutes();
+    
+    // Rule: Absen pulang sebelum jam 12.10 : Pulang Awal
+    // Rule: Absen pulang pada jam 12.10 atau setelahnya : Pulang Sesuai.
+    const isEarly = coHours < 12 || (coHours === 12 && coMinutes < 10);
+    const checkout_status = isEarly ? 'pulang_awal' : 'pulang_sesuai';
+
     const { data, error } = await supabase
       .from('attendance')
       .update({
-        check_out: new Date().toISOString(),
+        check_out: now.toISOString(),
         check_out_lat: lat,
         check_out_lng: lng,
         check_out_photo_url: photo_url,
+        checkout_status: checkout_status
       })
       .eq('id', existing.id)
       .select()

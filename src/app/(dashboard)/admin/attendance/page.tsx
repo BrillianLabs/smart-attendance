@@ -140,9 +140,32 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
                        </div>
                     </td>
                     <td className="px-8 py-5">
-                      <Badge variant={statusVariant(att.status)} className="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest">
-                        {statusLabel(att.status)}
-                      </Badge>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2">
+                          <Badge variant={statusVariant(att.status)} className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest whitespace-nowrap">
+                            {statusLabel(att.status)}
+                          </Badge>
+                        </div>
+                        {att.check_out && (
+                          <div className="flex items-center gap-2">
+                            {(() => {
+                              let coStatus = att.checkout_status;
+                              if (!coStatus) {
+                                const coTime = new Date(att.check_out);
+                                const wibString = coTime.toLocaleTimeString('en-GB', { timeZone: 'Asia/Jakarta', hour12: false });
+                                const [h, m] = wibString.split(':').map(Number);
+                                const isEarly = h < 12 || (h === 12 && m < 10);
+                                coStatus = isEarly ? 'pulang_awal' : 'pulang_sesuai';
+                              }
+                              return (
+                                <Badge variant={statusVariant(coStatus)} className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest whitespace-nowrap">
+                                  {statusLabel(coStatus)}
+                                </Badge>
+                              );
+                            })()}
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))

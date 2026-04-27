@@ -1,7 +1,8 @@
 // TypeScript types for SisAbsen
 
 export type Role = 'admin' | 'staff' | 'superuser';
-export type AttendanceStatus = 'hadir' | 'telat' | 'izin' | 'alpha';
+export type AttendanceStatus = 'hadir' | 'datang_awal' | 'telat' | 'izin' | 'alpha' | 'tidak_masuk';
+export type CheckoutStatus = 'pulang_awal' | 'pulang_sesuai';
 export type LeaveStatus = 'pending' | 'approved' | 'rejected';
 export type LeaveType = 'sakit' | 'izin' | 'cuti' | 'dinas';
 
@@ -29,6 +30,7 @@ export interface Attendance {
   check_out_lat: number | null;
   check_out_lng: number | null;
   status: AttendanceStatus;
+  checkout_status: CheckoutStatus | null;
   note: string | null;
   check_in_photo_url?: string | null;
   check_out_photo_url?: string | null;

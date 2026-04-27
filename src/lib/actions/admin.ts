@@ -224,7 +224,16 @@ export async function getAdminStats(date: string) {
 
   const counts = { hadir: 0, telat: 0, izin: 0, alpha: 0 };
   for (const row of todayAttendance ?? []) {
-    counts[row.status as keyof typeof counts] = (counts[row.status as keyof typeof counts] ?? 0) + 1;
+    const status = row.status as string;
+    if (status === 'hadir' || status === 'datang_awal') {
+      counts.hadir++;
+    } else if (status === 'telat') {
+      counts.telat++;
+    } else if (status === 'izin') {
+      counts.izin++;
+    } else if (status === 'alpha' || status === 'tidak_masuk') {
+      counts.alpha++;
+    }
   }
 
   const attended = counts.hadir + counts.telat;

@@ -4,9 +4,10 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { ActionResult, Attendance } from '@/lib/types';
 import { format } from 'date-fns';
-import { formatWIB } from '@/lib/utils/date';
+import { formatWIB, APP_TIMEZONE } from '@/lib/utils/date';
 import { isAdmin } from './auth';
 import { checkTeleportation, checkAccuracy, checkRoundCoordinates } from '@/lib/utils/fakeGpsDetector';
+import { toZonedTime } from 'date-fns-tz';
 import sharp from 'sharp';
 
 export async function checkIn(
@@ -67,13 +68,15 @@ export async function checkIn(
     .single();
 
   const now = new Date();
+  const zonedNow = toZonedTime(now, APP_TIMEZONE);
   let status: 'hadir' | 'telat' = 'hadir';
 
   if (settings?.work_start_time) {
     const [h, m] = settings.work_start_time.split(':').map(Number);
-    const workStart = new Date(now);
+    const workStart = new Date(zonedNow);
     workStart.setHours(h, m, 0, 0);
-    if (now > workStart) status = 'telat';
+    
+    if (zonedNow > workStart) status = 'telat';
   }
 
   const checkInTime = now.toISOString();

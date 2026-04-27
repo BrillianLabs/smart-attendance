@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation';
 import { submitLeave } from '@/lib/actions/leave';
 import { Input, Select, Textarea } from '@/components/ui/Input';
 import toast from 'react-hot-toast';
-import { format } from 'date-fns';
+import { formatWIB } from '@/lib/utils/date';
 import Link from 'next/link';
 
 export default function NewLeavePage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const today = format(new Date(), 'yyyy-MM-dd');
+  const today = formatWIB(new Date(), 'yyyy-MM-dd');
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

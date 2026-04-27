@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { ActionResult, Attendance } from '@/lib/types';
 import { format } from 'date-fns';
+import { formatWIB } from '@/lib/utils/date';
 import { isAdmin } from './auth';
 import { checkTeleportation, checkAccuracy, checkRoundCoordinates } from '@/lib/utils/fakeGpsDetector';
 import sharp from 'sharp';
@@ -44,7 +45,7 @@ export async function checkIn(
   }
   // ────────────────────────────────────────────────────────────────────────
 
-  const today = format(new Date(), 'yyyy-MM-dd');
+  const today = formatWIB(new Date(), 'yyyy-MM-dd');
 
   // Check if already checked in today
   const { data: existing } = await supabase
@@ -153,7 +154,7 @@ export async function checkOut(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Tidak terautentikasi.' };
 
-  const today = format(new Date(), 'yyyy-MM-dd');
+  const today = formatWIB(new Date(), 'yyyy-MM-dd');
 
   const { data: existing } = await supabase
     .from('attendance')
@@ -212,7 +213,7 @@ export async function getTodayAttendance(): Promise<Attendance | null> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const today = format(new Date(), 'yyyy-MM-dd');
+  const today = formatWIB(new Date(), 'yyyy-MM-dd');
   const { data } = await supabase
     .from('attendance')
     .select('*')
@@ -259,7 +260,7 @@ export async function getAdminAttendance(params: {
     const start = `${params.month}-01`;
     const [y, m] = params.month.split('-').map(Number);
     const end = new Date(y, m, 0);
-    query = query.gte('date', start).lte('date', format(end, 'yyyy-MM-dd'));
+    query = query.gte('date', start).lte('date', formatWIB(end, 'yyyy-MM-dd'));
   }
 
   if (params.userId) query = query.eq('user_id', params.userId);
@@ -290,7 +291,7 @@ export async function getMonthlyStats(month: string) {
 async function uploadVerificationPhoto(userId: string, type: 'check_in' | 'check_out', base64: string): Promise<string | null> {
   try {
     const supabase = await createClient();
-    const today = format(new Date(), 'yyyy-MM-dd');
+    const today = formatWIB(new Date(), 'yyyy-MM-dd');
     const path = `${userId}/${today}-${type}.webp`;
     
     // Convert base64 to buffer

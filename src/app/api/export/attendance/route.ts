@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getAdminAttendance } from '@/lib/actions/attendance';
 import { format, parseISO } from 'date-fns';
+import { formatWIB } from '@/lib/utils/date';
 import { id as idLocale } from 'date-fns/locale';
 import * as XLSX from 'xlsx';
 
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   const date   = searchParams.get('date') ?? undefined;
-  const month  = searchParams.get('month') ?? format(new Date(), 'yyyy-MM');
+  const month  = searchParams.get('month') ?? formatWIB(new Date(), 'yyyy-MM');
   const userId = searchParams.get('userId') ?? undefined;
 
   const attendance = await getAdminAttendance({ date, month: date ? undefined : month, userId });

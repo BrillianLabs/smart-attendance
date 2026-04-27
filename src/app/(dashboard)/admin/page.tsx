@@ -76,9 +76,9 @@ export default async function AdminDashboard() {
           </div>
         </div>
         <div className="hidden sm:flex gap-4">
-          <button className="btn btn-secondary btn-sm ring-1 ring-outline-variant/5">
-            Riwayat
-          </button>
+          <Link href="/admin/attendance" className="btn btn-secondary btn-sm ring-1 ring-outline-variant/5">
+            Riwayat Laporan
+          </Link>
           <button className="btn btn-primary btn-sm">
             Registrasi Baru
           </button>

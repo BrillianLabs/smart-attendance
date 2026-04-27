@@ -24,6 +24,7 @@ const staffNav = [
 
 const adminNav = [
   { href: '/admin',          icon: 'admin_panel_settings', label: 'Panel Admin' },
+  { href: '/admin/attendance', icon: 'analytics',          label: 'Laporan Presensi' },
   { href: '/admin/users',    icon: 'group',          label: 'Daftar Anggota' },
   { href: '/admin/leave',    icon: 'approval_delegation', label: 'Persetujuan Izin' },
   { href: '/admin/settings', icon: 'settings',      label: 'Pengaturan' },

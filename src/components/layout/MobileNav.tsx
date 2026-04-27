@@ -41,6 +41,7 @@ export function MobileNav({ profile }: MobileNavProps) {
   ];
 
   const adminExtraItems = [
+    { href: '/admin/attendance', icon: 'analytics', label: 'Laporan Presensi' },
     { href: '/admin/users', icon: 'group', label: 'Daftar Anggota' },
     { href: '/admin/leave', icon: 'approval_delegation', label: 'Persetujuan Izin' },
     { href: '/admin/settings', icon: 'settings', label: 'Pengaturan' },

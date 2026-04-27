@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getAdminAttendance } from '@/lib/actions/attendance';
-import { format, parseISO } from 'date-fns';
 import { formatWIB } from '@/lib/utils/date';
-import { id as idLocale } from 'date-fns/locale';
 import * as XLSX from 'xlsx';
 
 export async function GET(request: NextRequest) {
@@ -34,9 +32,9 @@ export async function GET(request: NextRequest) {
     'No': index + 1,
     'Nama Lengkap': att.profiles?.full_name ?? 'N/A',
     'Jabatan': att.profiles?.position ?? '-',
-    'Tanggal': format(parseISO(att.date), 'dd/MM/yyyy'),
-    'Jam Masuk': att.check_in ? format(parseISO(att.check_in), 'HH:mm') : '-',
-    'Jam Pulang': att.check_out ? format(parseISO(att.check_out), 'HH:mm') : '-',
+    'Tanggal': formatWIB(att.date, 'dd/MM/yyyy'),
+    'Jam Masuk': att.check_in ? formatWIB(att.check_in, 'HH:mm') : '-',
+    'Jam Pulang': att.check_out ? formatWIB(att.check_out, 'HH:mm') : '-',
     'Status': att.status.toUpperCase(),
     'Keterangan': att.note ?? ''
   }));

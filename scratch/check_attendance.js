@@ -10,45 +10,29 @@ const env = fs.readFileSync('.env.local', 'utf8')
     return acc;
   }, {});
 
-async function checkGlobalMisdates() {
+async function deleteDuplicates() {
   const supabase = createClient(
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.SUPABASE_SERVICE_ROLE_KEY
   );
 
-  console.log('Checking for ALL misdated records in the last 7 days...');
+  const duplicateIds = [
+    'ebeeb99f-9bb1-4298-930a-365983d21d01', // SITI MARIYAM (06:20 WIB)
+    '83e769bf-b27c-4bc7-8ba4-2e8d08d43c83', // SUHARTATIK (06:42 WIB)
+    'b4c5bb0f-5adf-4caf-b1f3-c7f88a4e4689'  // SISWANTO (06:46 WIB)
+  ];
 
-  // Kita cari yang check_in di pagi hari (00:00 - 06:59 WIB)
-  // WIB = UTC + 7. Jadi 00:00 - 06:59 WIB adalah 17:00 - 23:59 UTC hari sebelumnya.
-  // Jika check_in di jam tersebut, 'date' harusnya adalah hari H (WIB), bukan H-1.
-  
-  const { data, error } = await supabase
+  console.log('Deleting duplicate misdated records...');
+  const { error } = await supabase
     .from('attendance')
-    .select('id, date, check_in')
-    .gte('check_in', '2026-04-20T00:00:00Z'); // Last week
+    .delete()
+    .in('id', duplicateIds);
 
   if (error) {
-    console.error('Error:', error);
-    return;
-  }
-
-  const misdated = data.filter(row => {
-    const utcDate = new Date(row.check_in);
-    // Convert to WIB manually for comparison
-    const wibDate = new Date(utcDate.getTime() + (7 * 60 * 60 * 1000));
-    const expectedDate = wibDate.toISOString().split('T')[0];
-    return row.date !== expectedDate;
-  });
-
-  console.log(`Found ${misdated.length} misdated records total.`);
-  for (const row of misdated) {
-    const utcDate = new Date(row.check_in);
-    const wibDate = new Date(utcDate.getTime() + (7 * 60 * 60 * 1000));
-    const expectedDate = wibDate.toISOString().split('T')[0];
-    
-    console.log(`Fixing ID: ${row.id} | DB Date: ${row.date} -> Expected: ${expectedDate} (Check-in WIB: ${wibDate.toISOString()})`);
-    await supabase.from('attendance').update({ date: expectedDate }).eq('id', row.id);
+    console.error('Error deleting:', error);
+  } else {
+    console.log('Successfully deleted duplicates.');
   }
 }
 
-checkGlobalMisdates();
+deleteDuplicates();

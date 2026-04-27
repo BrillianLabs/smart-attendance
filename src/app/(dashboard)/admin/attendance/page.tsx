@@ -90,7 +90,8 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
               <tr className="bg-surface-container-low/50">
                 <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Nama Anggota</th>
                 <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Date Index</th>
-                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Verification</th>
+                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Masuk</th>
+                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Pulang</th>
                 <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Status</th>
               </tr>
             </thead>
@@ -129,7 +130,13 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
                     <td className="px-8 py-5">
                        <div className="flex flex-col">
                           <span className="text-sm font-bold text-on-surface">{formatWIB(att.check_in, 'HH:mm')}</span>
-                          <span className="text-[9px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">Check-in Log</span>
+                          <span className="text-[9px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">Masuk</span>
+                       </div>
+                    </td>
+                    <td className="px-8 py-5">
+                       <div className="flex flex-col">
+                          <span className="text-sm font-bold text-on-surface">{att.check_out ? formatWIB(att.check_out, 'HH:mm') : '--:--'}</span>
+                          <span className="text-[9px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">Pulang</span>
                        </div>
                     </td>
                     <td className="px-8 py-5">

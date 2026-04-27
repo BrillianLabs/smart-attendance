@@ -202,7 +202,7 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
             label="Waktu Masuk (Check-In)"
             required
             defaultValue={initial?.work_start_time ?? '07:30'}
-            hint="Batas awal absensi masuk dimulai."
+            hint="Jam masuk kerja. Absensi setelah jam ini akan dicatat sebagai 'Terlambat'."
           />
           <Input
             type="time"
@@ -210,6 +210,7 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
             label="Waktu Pulang (Check-Out)"
             required
             defaultValue={initial?.work_end_time ?? '15:00'}
+            hint="Jam pulang kerja standar."
           />
         </div>
       </section>

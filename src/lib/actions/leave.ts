@@ -113,7 +113,7 @@ export async function reviewLeave(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Tidak terautentikasi.' };
 
-  const { error } = await supabase
+  const { data: updatedLeave, error } = await supabase
     .from('leave_requests')
     .update({
       status,
@@ -121,9 +121,41 @@ export async function reviewLeave(
       reviewed_at: new Date().toISOString(),
       admin_note: adminNote ?? null,
     })
-    .eq('id', id);
+    .eq('id', id)
+    .select('user_id, start_date, end_date, reason')
+    .single();
 
   if (error) return { success: false, error: error.message };
+
+  // Sync to attendance table if approved
+  if (status === 'approved' && updatedLeave) {
+    const start = new Date(updatedLeave.start_date);
+    const end = new Date(updatedLeave.end_date);
+    const attendanceData = [];
+
+    // Generate all dates in the range
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      attendanceData.push({
+        user_id: updatedLeave.user_id,
+        date: d.toISOString().split('T')[0],
+        status: 'izin',
+        note: `Izin disetujui: ${updatedLeave.reason}`
+      });
+    }
+
+    if (attendanceData.length > 0) {
+      const { error: attError } = await supabase
+        .from('attendance')
+        .upsert(attendanceData, { onConflict: 'user_id, date' });
+      
+      if (attError) console.error('Gagal sinkronisasi presensi:', attError.message);
+    }
+    
+    revalidatePath('/');
+    revalidatePath('/attendance');
+    revalidatePath('/admin/attendance');
+  }
+
   revalidatePath('/admin/leave');
   return { success: true, data: undefined };
 }

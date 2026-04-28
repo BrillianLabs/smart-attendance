@@ -27,7 +27,12 @@ export function generateCSV(rows: Attendance[]): string {
   };
 
   const statusLabel: Record<string, string> = {
-    hadir: 'Hadir', telat: 'Terlambat', izin: 'Izin', alpha: 'Alpha',
+    hadir: 'Tepat Waktu', 
+    datang_awal: 'Tepat Waktu', 
+    telat: 'Terlambat', 
+    izin: 'Izin', 
+    alpha: 'Alpha',
+    tidak_masuk: 'Tidak Masuk'
   };
 
   const lines = [headers.join(',')];

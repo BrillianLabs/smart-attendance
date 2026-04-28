@@ -36,8 +36,8 @@ export function statusVariant(status: string): BadgeVariant {
 
 export function statusLabel(status: string): string {
   const labels: Record<string, string> = {
-    hadir:         'Datang Awal',
-    datang_awal:   'Datang Awal',
+    hadir:         'Tepat Waktu',
+    datang_awal:   'Tepat Waktu',
     telat:         'Terlambat',
     pulang_awal:   'Pulang Awal',
     pulang_sesuai: 'Pulang Sesuai',

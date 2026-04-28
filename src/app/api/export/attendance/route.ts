@@ -28,16 +28,35 @@ export async function GET(request: NextRequest) {
   const attendance = await getAdminAttendance({ date, month: date ? undefined : month, userId });
 
   // Format data for Excel
-  const excelData = attendance.map((att, index) => ({
-    'No': index + 1,
-    'Nama Lengkap': att.profiles?.full_name ?? 'N/A',
-    'Jabatan': att.profiles?.position ?? '-',
-    'Tanggal': formatWIB(att.date, 'dd/MM/yyyy'),
-    'Jam Masuk': att.check_in ? formatWIB(att.check_in, 'HH:mm') : '-',
-    'Jam Pulang': att.check_out ? formatWIB(att.check_out, 'HH:mm') : '-',
-    'Status': att.status.toUpperCase(),
-    'Keterangan': att.note ?? ''
-  }));
+  const excelData = attendance.map((att, index) => {
+    const sLabel: Record<string, string> = {
+      hadir: 'TEPAT WAKTU',
+      datang_awal: 'TEPAT WAKTU',
+      telat: 'TERLAMBAT',
+      izin: 'IZIN',
+      alpha: 'TIDAK MASUK',
+      tidak_masuk: 'TIDAK MASUK'
+    };
+
+    const coLabel: Record<string, string> = {
+      pulang_awal: 'PULANG AWAL',
+      pulang_sesuai: 'PULANG SESUAI'
+    };
+
+    const statusStr = sLabel[att.status] || att.status.toUpperCase();
+    const checkoutStr = att.checkout_status ? ` (${coLabel[att.checkout_status] || att.checkout_status})` : '';
+
+    return {
+      'No': index + 1,
+      'Nama Lengkap': att.profiles?.full_name ?? 'N/A',
+      'Jabatan': att.profiles?.position ?? '-',
+      'Tanggal': formatWIB(att.date, 'dd/MM/yyyy'),
+      'Jam Masuk': att.check_in ? formatWIB(att.check_in, 'HH:mm') : '-',
+      'Jam Pulang': att.check_out ? formatWIB(att.check_out, 'HH:mm') : '-',
+      'Status': statusStr + checkoutStr,
+      'Keterangan': att.note ?? ''
+    };
+  });
 
   // Create Workbook & Worksheet
   const worksheet = XLSX.utils.json_to_sheet(excelData);

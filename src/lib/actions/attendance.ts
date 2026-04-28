@@ -60,23 +60,17 @@ export async function checkIn(
     return { success: false, error: 'Anda sudah melakukan absen masuk hari ini.' };
   }
 
-  // Get work start time from settings
-  const { data: settings } = await supabase
-    .from('settings')
-    .select('work_start_time')
-    .eq('id', 1)
-    .single();
-
   const now = new Date();
   const zonedNow = toZonedTime(now, APP_TIMEZONE);
   let status: 'datang_awal' | 'telat' = 'datang_awal';
 
-  if (settings?.work_start_time) {
-    const [h, m] = settings.work_start_time.split(':').map(Number);
-    const workStart = new Date(zonedNow);
-    workStart.setHours(h, m, 0, 0);
-    
-    if (zonedNow > workStart) status = 'telat';
+  // Rule: Absen masuk kurang dari jam 7 : Tepat Waktu
+  // Rule: Absen masuk lebih dari jam 7 : Terlambat
+  const workStart = new Date(zonedNow);
+  workStart.setHours(7, 0, 0, 0);
+  
+  if (zonedNow > workStart) {
+    status = 'telat';
   }
 
   const checkInTime = now.toISOString();

@@ -94,7 +94,7 @@ export async function getAllLeaveRequests(status?: LeaveStatus): Promise<LeaveRe
   const supabase = await createClient();
   let query = supabase
     .from('leave_requests')
-    .select('*, profiles(full_name, position, avatar_url)')
+    .select('*, profiles!user_id(full_name, position, avatar_url)')
     .order('created_at', { ascending: false });
 
   if (status) query = query.eq('status', status);

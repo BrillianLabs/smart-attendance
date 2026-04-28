@@ -123,7 +123,7 @@ export default async function DashboardPage() {
 
           {/* User Links Quick Action */}
           <div className="mt-auto bg-surface p-6 rounded-[2rem] border-2 border-dashed border-outline-variant/30 flex flex-col gap-3">
-             <Link href="/leave/new" className="flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm hover:translate-x-1 transition-all group border border-outline-variant/5">
+             <Link href="/leave/new" className="flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:translate-x-1 transition-all group border border-outline-variant/5">
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-primary">add_circle</span>
                   <span className="text-sm font-bold text-on-surface-variant">Ajukan Izin Baru</span>

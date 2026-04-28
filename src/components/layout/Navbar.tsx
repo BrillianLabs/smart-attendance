@@ -67,7 +67,7 @@ export function Navbar({ profile, settings }: NavbarProps) {
           isAdmin ? "lg:hidden" : "flex"
         )}>
           {settings?.school_logo_url && (
-            <div className="w-8 h-8 rounded-lg bg-white p-1 shadow-sm border border-outline-variant/5 shrink-0 flex items-center justify-center overflow-hidden">
+            <div className="w-8 h-8 rounded-lg bg-surface-container-lowest p-1 shadow-sm border border-outline-variant/5 shrink-0 flex items-center justify-center overflow-hidden">
                <Image 
                  src={settings.school_logo_url} 
                  alt="Logo" 

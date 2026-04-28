@@ -74,7 +74,7 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
       <main className="w-full max-w-[420px] animate-fade-in">
         {/* Branding Header */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-28 h-28 rounded-[2.5rem] bg-white shadow-2xl mb-6 overflow-hidden ring-4 ring-primary/10 mx-auto p-5 shrink-0">
+          <div className="inline-flex items-center justify-center w-28 h-28 rounded-[2.5rem] bg-surface-container-lowest shadow-2xl mb-6 overflow-hidden ring-4 ring-primary/10 mx-auto p-5 shrink-0">
             <Image 
               src={logoUrl || "/logo-256.webp"} 
               alt={schoolName} 

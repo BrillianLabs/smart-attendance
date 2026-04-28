@@ -90,7 +90,7 @@ export function Sidebar({ profile, settings }: SidebarProps) {
         isCollapsed ? "justify-center px-0" : "justify-start"
       )}>
         {settings?.school_logo_url && (
-          <div className="w-10 h-10 rounded-xl bg-white p-1 shadow-sm border border-outline-variant/10 shrink-0 flex items-center justify-center overflow-hidden">
+          <div className="w-10 h-10 rounded-xl bg-surface-container-lowest p-1 shadow-sm border border-outline-variant/10 shrink-0 flex items-center justify-center overflow-hidden">
              <Image 
                src={settings.school_logo_url} 
                alt="Logo" 

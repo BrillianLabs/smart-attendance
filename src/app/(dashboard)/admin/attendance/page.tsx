@@ -50,7 +50,7 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
               type="date"
               name="date"
               defaultValue={viewDate ?? ''}
-              className="w-full px-4 py-3 bg-white border-none rounded-xl text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
+              className="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant/10 rounded-xl text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
           <div className="flex flex-col gap-2 w-full sm:w-48">
@@ -59,12 +59,12 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
               type="month"
               name="month"
               defaultValue={month}
-              className="w-full px-4 py-3 bg-white border-none rounded-xl text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
+              className="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant/10 rounded-xl text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
           <div className="flex flex-col gap-2 w-full sm:w-64">
              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant opacity-60 ml-1">Member Focus</label>
-             <select name="userId" defaultValue={userId ?? ''} className="w-full px-4 py-3 bg-white border-none rounded-xl text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 transition-all appearance-none">
+             <select name="userId" defaultValue={userId ?? ''} className="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant/10 rounded-xl text-sm font-bold text-on-surface focus:ring-2 focus:ring-primary/20 transition-all appearance-none">
                 <option value="">Semua Anggota</option>
                 {users.map(u => (
                   <option key={u.id} value={u.id}>{u.full_name}</option>

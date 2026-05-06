@@ -75,6 +75,7 @@ export interface DashboardStats {
   izin: number;
   alpha: number;
   total_staff: number;
+  pending_izin: number;
 }
 
 export interface AttendanceSummary {

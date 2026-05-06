@@ -56,7 +56,7 @@ export default async function AdminDashboard() {
             Selamat Datang di <span className="text-primary italic">SIGAP</span>
           </h1>
           <p className="text-sm font-medium text-on-surface-variant opacity-60">
-            Sistem Informasi Guru Absensi Pintar — SD NEGERI NGUWOK
+            Sistem Informasi Guru Absensi Pintar — {settings?.school_name ?? 'SD NEGERI NGUWOK'}
           </p>
         </div>
         <div className="flex items-center gap-4 bg-surface-container-low px-5 py-2.5 rounded-2xl border border-outline-variant/10 shadow-sm">
@@ -109,7 +109,7 @@ export default async function AdminDashboard() {
           icon="event_note" 
           label="Izin / Sakit" 
           value={stats.izin} 
-          trend="+2 hari ini" 
+          trend={stats.pending_izin > 0 ? `+${stats.pending_izin} pending` : '0 pending'} 
           colorClass="bg-error-container/20 text-error"
           barWidth="8%"
           barColor="bg-error"

@@ -214,12 +214,30 @@ export async function deleteProfile(id: string): Promise<ActionResult> {
 
 // Dashboard stats
 export async function getAdminStats(date: string) {
-  if (!await isAdmin()) return { hadir: 0, telat: 0, izin: 0, alpha: 0, total_staff: 0 };
+  if (!await isAdmin()) return { hadir: 0, telat: 0, izin: 0, alpha: 0, total_staff: 0, pending_izin: 0 };
   const supabase = await createClient();
 
-  const [{ count: totalStaff }, { data: todayAttendance }] = await Promise.all([
+  const [
+    { count: totalStaff },
+    { data: todayAttendance },
+    { count: pendingIzin },
+    { count: approvedIzin }
+  ] = await Promise.all([
     supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('is_active', true).eq('role', 'staff'),
     supabase.from('attendance').select('status').eq('date', date),
+    // Pending: izin yg menunggu persetujuan hari ini
+    supabase.from('leave_requests')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'pending')
+      .lte('start_date', date)
+      .gte('end_date', date),
+    // Approved: izin yg sudah disetujui untuk hari ini
+    // (fallback jika sinkronisasi ke tabel attendance belum berhasil)
+    supabase.from('leave_requests')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'approved')
+      .lte('start_date', date)
+      .gte('end_date', date),
   ]);
 
   const counts = { hadir: 0, telat: 0, izin: 0, alpha: 0 };
@@ -236,9 +254,13 @@ export async function getAdminStats(date: string) {
     }
   }
 
+  // Gunakan nilai tertinggi antara tabel attendance dan leave_requests (approved)
+  // untuk menghindari angka 0 jika sinkronisasi attendance belum berhasil
+  counts.izin = Math.max(counts.izin, approvedIzin ?? 0);
+
   const attended = counts.hadir + counts.telat;
   const total = totalStaff ?? 0;
   counts.alpha = Math.max(0, total - attended - counts.izin);
 
-  return { ...counts, total_staff: total };
+  return { ...counts, total_staff: total, pending_izin: pendingIzin ?? 0 };
 }

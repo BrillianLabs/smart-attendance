@@ -129,31 +129,45 @@ export async function reviewLeave(
 
   // Sync to attendance table if approved
   if (status === 'approved' && updatedLeave) {
-    const start = new Date(updatedLeave.start_date);
-    const end = new Date(updatedLeave.end_date);
+    // ✅ FIX: Parse tanggal sebagai string lokal (bukan UTC) untuk menghindari
+    // pergeseran hari akibat perbedaan timezone server (UTC) vs WIB (+7).
+    // Contoh: new Date('2026-05-06') → UTC midnight → di WIB jadi 2026-05-05!
+    const [startY, startM, startD] = updatedLeave.start_date.split('-').map(Number);
+    const [endY, endM, endD] = updatedLeave.end_date.split('-').map(Number);
+    
+    const startLocal = new Date(startY, startM - 1, startD);
+    const endLocal = new Date(endY, endM - 1, endD);
+
     const attendanceData = [];
 
-    // Generate all dates in the range
-    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    // Generate semua tanggal dalam range izin
+    for (let d = new Date(startLocal); d <= endLocal; d.setDate(d.getDate() + 1)) {
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
       attendanceData.push({
         user_id: updatedLeave.user_id,
-        date: d.toISOString().split('T')[0],
+        date: `${yyyy}-${mm}-${dd}`,
         status: 'izin',
-        note: `Izin disetujui: ${updatedLeave.reason}`
+        note: `Izin disetujui: ${updatedLeave.reason}`,
       });
     }
 
     if (attendanceData.length > 0) {
+      // Gunakan upsert agar tidak duplikat jika sudah ada record presensi hari itu
       const { error: attError } = await supabase
         .from('attendance')
-        .upsert(attendanceData, { onConflict: 'user_id, date' });
+        .upsert(attendanceData, { onConflict: 'user_id,date' });
       
-      if (attError) console.error('Gagal sinkronisasi presensi:', attError.message);
+      if (attError) {
+        console.error('Gagal sinkronisasi presensi:', attError.message);
+      }
     }
     
     revalidatePath('/');
     revalidatePath('/attendance');
     revalidatePath('/admin/attendance');
+    revalidatePath('/admin');
   }
 
   revalidatePath('/admin/leave');

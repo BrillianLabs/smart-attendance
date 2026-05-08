@@ -163,7 +163,7 @@ async function runSeed() {
       .from('settings')
       .upsert({
         id: 1,
-        school_name: 'SD NEGERI NGUWOK',
+        school_name: 'NAMA SEKOLAH',
         primary_color: '#2563EB',
         allowed_radius_m: 100
       });

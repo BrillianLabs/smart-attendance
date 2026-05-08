@@ -120,7 +120,7 @@ CREATE INDEX IF NOT EXISTS idx_leave_status ON leave_requests(status);
 
 CREATE TABLE IF NOT EXISTS settings (
   id               INT PRIMARY KEY DEFAULT 1,
-  school_name      TEXT NOT NULL DEFAULT 'SD NEGERI NGUWOK',
+  school_name      TEXT NOT NULL DEFAULT 'NAMA SEKOLAH',
   school_logo_url  TEXT,
   primary_color    TEXT NOT NULL DEFAULT '#006a61',
   school_lat       FLOAT8 NOT NULL DEFAULT -6.2088,   -- Jakarta Pusat (placeholder)

@@ -103,7 +103,7 @@ export function Sidebar({ profile, settings }: SidebarProps) {
         {!isCollapsed && (
           <div className="min-w-0 animate-fade-in">
             <h1 className="text-lg font-black tracking-tighter uppercase text-primary leading-none">
-              SIGAP v1.0
+              {process.env.NEXT_PUBLIC_APP_NAME ?? 'SIGAP'} v1.0
             </h1>
           </div>
         )}

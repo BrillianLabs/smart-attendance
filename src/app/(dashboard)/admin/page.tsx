@@ -11,7 +11,7 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
 import { ExportButton } from '@/components/admin/ExportButton';
 
-export const metadata: Metadata = { title: 'Panel Admin | SIGAP' };
+export const metadata: Metadata = { title: `Panel Admin | ${process.env.NEXT_PUBLIC_APP_NAME ?? 'SIGAP'}` };
 
 function MetricCard({ icon, label, value, trend, colorClass, barWidth, barColor }: {
   icon: string; label: string; value: number | string; trend: string; colorClass: string; barWidth: string; barColor: string;
@@ -53,10 +53,10 @@ export default async function AdminDashboard() {
         <div>
           <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-primary mb-3 block opacity-80">Manajemen</span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-on-surface tracking-tight leading-none mb-2">
-            Selamat Datang di <span className="text-primary italic">SIGAP</span>
+            Selamat Datang di <span className="text-primary italic">{process.env.NEXT_PUBLIC_APP_NAME ?? 'SIGAP'}</span>
           </h1>
           <p className="text-sm font-medium text-on-surface-variant opacity-60">
-            Sistem Informasi Guru Absensi Pintar — {settings?.school_name ?? 'SD NEGERI NGUWOK'}
+            {process.env.NEXT_PUBLIC_APP_SUBTITLE ?? 'Sistem Informasi Guru Absensi Pintar'} — {settings?.school_name ?? ''}
           </p>
         </div>
         <div className="flex items-center gap-4 bg-surface-container-low px-5 py-2.5 rounded-2xl border border-outline-variant/10 shadow-sm">

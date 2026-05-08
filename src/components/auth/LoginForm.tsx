@@ -86,10 +86,10 @@ export default function LoginForm({ schoolName, logoUrl }: LoginFormProps) {
             />
           </div>
           <h1 className="font-headline text-[2.5rem] font-black tracking-tighter text-on-surface mb-0 leading-tight">
-            SIGAP
+            {process.env.NEXT_PUBLIC_APP_NAME ?? 'SIGAP'}
           </h1>
           <p className="text-primary font-bold text-[10px] uppercase tracking-[0.2em] mb-3">
-            (Sistem Informasi Guru Absensi Pintar)
+            ({process.env.NEXT_PUBLIC_APP_SUBTITLE ?? 'Sistem Informasi Guru Absensi Pintar'})
           </p>
           <div className="h-px w-8 bg-outline-variant/30 mx-auto mb-3"></div>
           <p className="text-on-surface-variant text-[0.75rem] font-black opacity-60 uppercase tracking-[0.05em]">

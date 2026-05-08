@@ -10,12 +10,18 @@ e-Absensi adalah sistem manajemen kehadiran modern yang dirancang dengan estetik
 - **📊 SD NEGERI NGUWOK Analytics**: Dashboard informatif untuk Admin dengan visualisasi data real-time.
 - **📩 Leave Journey**: Alur pengajuan izin dan cuti yang seamlessly terintegrasi.
 
-## 🚀 Teknologi
+## 🚀 Arsitektur Multi-Sekolah (SaaS-like)
+Project ini menggunakan arsitektur *Satu Core Banyak Cabang* untuk memudahkan manajemen banyak sekolah:
+- **Git Strategy**: Branch `main` bertindak sebagai *core template*. Setiap sekolah menggunakan branch mereka sendiri (contoh: `smart-attendance` untuk SD Nguwok) yang akan menerima pembaruan dari `main`.
+- **Database Terisolasi**: Setiap sekolah menggunakan project Supabase yang terpisah.
+- **Dynamic Branding**: Nama dan sub-judul aplikasi dikendalikan sepenuhnya lewat Environment Variables di Netlify, tanpa mengubah kode sama sekali.
+
+## 🛠️ Teknologi
 - **Framework**: Next.js 16 (App Router)
 - **AI/ML**: `face-api.js` (TensorFlow.js)
 - **Perlindungan**: `@dhamaddam/anti-fake-gps`
 - **Styling**: Tailwind CSS v4 (Custom Tonal Configuration)
-- **Database**: Supabase / PostgreSQL
+- **Database**: Supabase / PostgreSQL (1 project per sekolah)
 - **Icons**: Material Symbols Outlined (Self-hosted)
 
 ## 🔑 Akun Demo (Default)
@@ -38,12 +44,20 @@ Gunakan akun berikut untuk menguji coba fitur dalam lingkungan pengembangan:
    ```
 
 2. **Konfigurasi Environment**:
-   Pastikan sudah mengatur file `.env.local` dengan kredensial Supabase Anda.
+   Pastikan sudah mengatur file `.env.local` dengan kredensial Supabase sekolah. Variabel baru:
+   ```env
+   NEXT_PUBLIC_APP_NAME=SIGAP Nguwok
+   NEXT_PUBLIC_APP_SUBTITLE=Sistem Informasi Guru Absensi Pintar
+   ```
 
 3. **Database Setup**:
-   Jalankan perintah berikut untuk menyinkronkan skema dan menyuntikkan data seed:
+   Jalankan perintah berikut untuk migrasi skema dan data (Hanya untuk instalasi baru):
    ```bash
    npm run db:fresh
+   ```
+   *Catatan: Untuk pembaruan pada sekolah yang sudah berjalan, gunakan migrasi inkremental:*
+   ```bash
+   npm run migrate:run supabase/migrations/nama_file.sql
    ```
 
 4. **Jalankan Aplikasi**:

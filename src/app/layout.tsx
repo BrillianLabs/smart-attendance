@@ -37,7 +37,8 @@ export const viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getSettings();
   return (
     <html lang="id" className={`${inter.variable} ${materialSymbols.variable} antialiased`} suppressHydrationWarning>
       <head>
@@ -62,6 +63,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
+        {settings?.primary_color && (
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              :root {
+                --color-primary: ${settings.primary_color};
+                --primary: ${settings.primary_color};
+              }
+            `
+          }} />
+        )}
       </head>
       <body className={`${inter.className} font-sans`}>
         <ConfirmProvider>

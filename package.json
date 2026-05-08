@@ -1,6 +1,6 @@
 {
-  "name": "sis-smart-temp",
-  "version": "0.1.0",
+  "name": "sis-smart-core",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,6 +9,7 @@
     "lint": "eslint",
     "seed": "node scripts/seed.js",
     "migrate": "node scripts/migrate.js",
+    "migrate:run": "node scripts/run_migration.js",
     "db:fresh": "npm run migrate && npm run seed",
     "test": "vitest run",
     "test:watch": "vitest"

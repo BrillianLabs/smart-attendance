@@ -1,0 +1,6 @@
+-- Letakkan file migrasi incremental di folder ini.
+-- Format nama file: NNN_YYYYMMDD_deskripsi_singkat.sql
+-- Contoh: 001_20260510_add_face_descriptor.sql
+--
+-- PENTING: Jangan jalankan schema.sql untuk update sekolah yang sudah produksi!
+-- Gunakan: node scripts/run_migration.js supabase/migrations/NNN_xxx.sql

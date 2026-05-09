@@ -7,17 +7,66 @@
     "email": "admin@kacangan.sch.id"
   },
   {
-    "full_name": "Guru Contoh Satu",
-    "nip": "199001012026012001",
-    "position": "Guru Kelas",
-    "role": "staff",
-    "email": "guru1@kacangan.sch.id"
+    "full_name": "TRIA ERMINAWATI, S.Pd.",
+    "nip": "198505032008012004",
+    "position": "Kepala Sekolah",
+    "role": "admin",
+    "email": "triaerminawati35@admin.sd.belajar.id"
   },
   {
-    "full_name": "Guru Contoh Dua",
-    "nip": "199501012026012002",
-    "position": "Guru Mapel",
+    "full_name": "LUDFI ASTI WULANDARI, S.Pd.",
+    "nip": "199008312019032009",
+    "position": "Guru Kelas",
     "role": "staff",
-    "email": "guru2@kacangan.sch.id"
+    "email": "ludfiwulandari18@guru.sd.belajar.id"
+  },
+  {
+    "full_name": "NIA ELIS HAMIDAH, S.Pd.",
+    "nip": "199211092022212001",
+    "position": "Guru Kelas",
+    "role": "staff",
+    "email": "niahamidah91@guru.sd.belajar.id"
+  },
+  {
+    "full_name": "M. AWALUDIN MASYKURI, S.Pd.I",
+    "nip": "198101232022211011",
+    "position": "GURU PAI",
+    "role": "staff",
+    "email": "mmasykuri31@guru.sd.belajar.id"
+  },
+  {
+    "full_name": "MUHAMAD YUNUS ARDIANSYAH, S.Pd.",
+    "nip": "199007242023211015",
+    "position": "Guru Kelas",
+    "role": "staff",
+    "email": "muhamadardiansyah47@guru.sd.belajar.id"
+  },
+  {
+    "full_name": "LELY DWI NURAINI, S.Pd.",
+    "nip": "199407162023212019",
+    "position": "Guru Kelas",
+    "role": "staff",
+    "email": "lelynuraini67@guru.sd.belajar.id"
+  },
+  {
+    "full_name": "YUGI SAFITRI, S.Pd",
+    "nip": "198107262023212005",
+    "position": "Guru Kelas",
+    "role": "staff",
+    "email": "yugi.safitri10@guru.sd.belajar.id"
+  },
+  {
+    "full_name": "WILDANUL AULIA’ SURYANSAH, S.Pd.",
+    "nip": "199908242024211007",
+    "position": "Guru Mapel PJOK",
+    "role": "staff",
+    "email": "wildanul481@guru.sd.belajar.id"
+  },
+  {
+    "full_name": "KHOERUL HUDA, S.Pd.",
+    "nip": "198806272023211006",
+    "position": "Guru Kelas",
+    "role": "staff",
+    "email": "khoerulhuda76@guru.sd.belajar.id"
   }
 ]

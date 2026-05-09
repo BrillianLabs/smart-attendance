@@ -65,6 +65,11 @@ async function runUpdate() {
     await pgClient.connect();
     console.log("✅ Terhubung ke database.");
 
+    // Add columns if not exists
+    console.log("🔹 Menyiapkan skema database...");
+    await pgClient.query(`ALTER TABLE profiles ADD COLUMN IF NOT EXISTS nip TEXT;`);
+    await pgClient.query(`ALTER TABLE profiles ADD COLUMN IF NOT EXISTS nip_hash TEXT;`);
+
     // DROP TRIGGER temporarily to avoid Supabase Auth errors
     console.log("🔹 Menonaktifkan trigger auth sementara...");
     await pgClient.query(`

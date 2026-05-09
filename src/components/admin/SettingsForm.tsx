@@ -14,6 +14,7 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [logoPreview, setLogoPreview] = useState<string | null>(initial?.school_logo_url ?? null);
+  const [colorValue, setColorValue] = useState<string>(initial?.primary_color ?? '#006a61');
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -127,9 +128,17 @@ export function SettingsForm({ initial }: { initial: Settings | null }) {
                 <div className="flex items-center gap-4 bg-surface-container-low p-3 rounded-2xl border border-outline-variant/5">
                   <input
                     type="color"
-                    name="primary_color"
-                    defaultValue={initial?.primary_color ?? '#006a61'}
+                    value={colorValue}
+                    onChange={(e) => setColorValue(e.target.value)}
                     className="w-12 h-10 rounded-xl cursor-pointer border-none bg-transparent"
+                  />
+                  <input
+                    type="text"
+                    name="primary_color"
+                    value={colorValue}
+                    onChange={(e) => setColorValue(e.target.value)}
+                    className="bg-surface-container-highest/50 border border-outline-variant/20 rounded-xl px-4 py-2 text-sm w-28 font-mono focus:outline-none focus:ring-1 focus:ring-primary"
+                    placeholder="#000000"
                   />
                   <p className="text-[11px] font-medium text-on-surface-variant opacity-70">
                     Warna utama untuk tombol dan indikator aktif di aplikasi.

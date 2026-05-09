@@ -36,6 +36,7 @@ yarn-error.log*
 
 # Data sensitif staf sekolah (tidak boleh masuk repo)
 scripts/users_data.json
+scripts/users_data_guwok.json
 
 # vercel
 .vercel

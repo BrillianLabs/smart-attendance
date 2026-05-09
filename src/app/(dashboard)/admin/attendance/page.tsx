@@ -8,6 +8,7 @@ import { ExportButton } from '@/components/admin/ExportButton';
 import { formatWIB, getAcademicYear } from '@/lib/utils/date';
 import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
+import { AttendanceTableClient } from '@/components/admin/AttendanceTableClient';
 
 export const metadata: Metadata = { title: 'Laporan Presensi | SD Negeri Nguwok' };
 
@@ -78,102 +79,7 @@ export default async function AdminAttendancePage({ searchParams }: Props) {
         </form>
       </section>
 
-      {/* Results Table - Matching Template Style */}
-      <section className="bg-surface-container-lowest rounded-[2.5rem] overflow-hidden shadow-sm shadow-primary/5 border border-outline-variant/10">
-        <div className="px-8 py-6 border-b border-surface-container-low flex justify-between items-center">
-           <h3 className="text-lg font-bold text-on-surface">Data Indices</h3>
-           <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-        </div>
-        <div className="overflow-x-auto scrollbar-hide">
-          <table className="w-full text-left border-collapse min-w-[800px]">
-            <thead>
-              <tr className="bg-surface-container-low/50">
-                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Nama Anggota</th>
-                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Date Index</th>
-                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Masuk</th>
-                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Pulang</th>
-                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant opacity-70">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-surface-container-low">
-              {attendance.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="px-8 py-20 text-center">
-                    <span className="material-symbols-outlined text-4xl text-outline/20 mb-3 block">search_off</span>
-                    <p className="text-xs font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">No matching records found</p>
-                  </td>
-                </tr>
-              ) : (
-                attendance.map(att => (
-                  <tr key={att.id} className="hover:bg-surface-container-low/30 transition-all group">
-                    <td className="px-8 py-5">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-surface-container-low overflow-hidden flex-shrink-0 flex items-center justify-center font-black text-primary border border-outline-variant/5">
-                          {att.profiles?.avatar_url ? (
-                            <Image src={att.profiles.avatar_url} alt="Profile" width={40} height={40} className="w-full h-full object-cover" />
-                          ) : (
-                            att.profiles?.full_name?.charAt(0).toUpperCase()
-                          )}
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-on-surface">{att.profiles?.full_name ?? 'Unknown'}</p>
-                          <p className="text-[10px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">{att.profiles?.position ?? 'Staff'}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-8 py-5">
-                      <p className="text-sm font-bold text-on-surface">
-                        {formatWIB(att.date, 'EEEE, d MMM')}
-                      </p>
-                      <p className="text-[10px] font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">TA {getAcademicYear(att.date)}</p>
-                    </td>
-                    <td className="px-8 py-5">
-                       <div className="flex flex-col">
-                          <span className="text-sm font-bold text-on-surface">{formatWIB(att.check_in, 'HH:mm')}</span>
-                          <span className="text-[9px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">Masuk</span>
-                       </div>
-                    </td>
-                    <td className="px-8 py-5">
-                       <div className="flex flex-col">
-                          <span className="text-sm font-bold text-on-surface">{att.check_out ? formatWIB(att.check_out, 'HH:mm') : '--:--'}</span>
-                          <span className="text-[9px] font-bold text-on-surface-variant opacity-50 uppercase tracking-widest">Pulang</span>
-                       </div>
-                    </td>
-                    <td className="px-8 py-5">
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                          <Badge variant={statusVariant(att.status)} className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest whitespace-nowrap">
-                            {statusLabel(att.status)}
-                          </Badge>
-                        </div>
-                        {att.check_out && (
-                          <div className="flex items-center gap-2">
-                            {(() => {
-                              let coStatus = att.checkout_status;
-                              if (!coStatus) {
-                                const coTime = new Date(att.check_out);
-                                const wibString = coTime.toLocaleTimeString('en-GB', { timeZone: 'Asia/Jakarta', hour12: false });
-                                const [h, m] = wibString.split(':').map(Number);
-                                const isEarly = h < 12 || (h === 12 && m < 10);
-                                coStatus = isEarly ? 'pulang_awal' : 'pulang_sesuai';
-                              }
-                              return (
-                                <Badge variant={statusVariant(coStatus)} className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest whitespace-nowrap">
-                                  {statusLabel(coStatus)}
-                                </Badge>
-                              );
-                            })()}
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <AttendanceTableClient initialData={attendance} />
     </div>
   );
 }

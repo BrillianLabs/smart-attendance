@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   avatar_url  TEXT,
   is_active   BOOLEAN NOT NULL DEFAULT TRUE,
   nip         TEXT,
+  nip_hash    TEXT,
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -273,3 +274,22 @@ CREATE POLICY "leave_attachments_delete" ON storage.objects
     bucket_id = 'leave-attachments'
     AND (auth.uid()::text = (storage.foldername(name))[1] OR get_my_role() = 'admin')
   );
+
+-- ================================================
+-- FUNCTIONS
+-- ================================================
+
+-- Function to get database size in MB
+CREATE OR REPLACE FUNCTION get_db_size()
+RETURNS float AS $$
+BEGIN
+  RETURN pg_database_size(current_database()) / 1024.0 / 1024.0;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- ================================================
+-- PERMISSIONS (Fix for direct postgres connection)
+-- ================================================
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO anon, authenticated;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;

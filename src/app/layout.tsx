@@ -7,6 +7,8 @@ import { Toaster } from 'react-hot-toast';
 import { getSettings } from '@/lib/actions/admin';
 import { ConfirmProvider } from '@/context/ConfirmContext';
 
+export const dynamic = 'force-dynamic';
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',

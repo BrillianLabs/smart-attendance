@@ -1,7 +1,8 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
-import { revalidatePath } from 'next/cache';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { revalidatePath, unstable_cache, revalidateTag } from 'next/cache';
 import { ActionResult, Profile, Settings, Role } from '@/lib/types';
 import { isAdmin } from './auth';
 import sharp from 'sharp';
@@ -10,15 +11,22 @@ import { encrypt, decrypt, hashNip } from '@/lib/utils/encryption';
 // ========================
 // SETTINGS
 // ========================
-export async function getSettings(): Promise<Settings | null> {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from('settings')
-    .select('*')
-    .eq('id', 1)
-    .single();
-  return data;
-}
+export const getSettings = unstable_cache(
+  async (): Promise<Settings | null> => {
+    const supabase = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    const { data } = await supabase
+      .from('settings')
+      .select('*')
+      .eq('id', 1)
+      .single();
+    return data;
+  },
+  ['school-settings'],
+  { revalidate: 3600, tags: ['settings'] }
+);
 
 export async function updateSettings(formData: FormData): Promise<ActionResult> {
   if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };
@@ -39,6 +47,7 @@ export async function updateSettings(formData: FormData): Promise<ActionResult> 
   if (error) return { success: false, error: error.message };
 
   revalidatePath('/', 'layout');
+  revalidateTag('settings', { expire: 0 });
   return { success: true, data: undefined };
 }
 
@@ -54,6 +63,7 @@ export async function updateSchoolLocation(lat: number, lng: number): Promise<Ac
   if (error) return { success: false, error: error.message };
 
   revalidatePath('/', 'layout');
+  revalidateTag('settings', { expire: 0 });
   return { success: true, data: undefined };
 }
 

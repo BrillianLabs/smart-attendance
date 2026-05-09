@@ -95,13 +95,19 @@ export async function getSession() {
 export async function getProfile(): Promise<Profile | null> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  
+  console.log('🔍 [getProfile] User from auth:', user?.email || 'null');
+  
   if (!user) return null;
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
     .single();
+
+  console.log('🔍 [getProfile] Profile data:', data ? 'Found' : 'Null');
+  if (error) console.log('🔍 [getProfile] Profile error:', error.message);
 
   if (!data) return null;
 

@@ -14,16 +14,34 @@ import { Attendance, LeaveRequest } from '@/lib/types';
 export const metadata: Metadata = { title: `Dashboard | ${process.env.NEXT_PUBLIC_APP_NAME ?? 'SIGAP'}` };
 
 export default async function DashboardPage() {
-  const [profile, settings, todayAtt, history, leaves] = await Promise.all([
-    getProfile(),
-    getSettings(),
-    getTodayAttendance(),
-    getMyAttendanceHistory(7),
-    getMyLeaveRequests(),
-  ]);
+  const profile = await getProfile();
+  console.log('🔍 [ROOT PAGE] Profile:', profile);
 
-  if (!profile) redirect('/login');
-  if (profile.role === 'admin') redirect('/admin');
+  if (!profile) {
+    redirect('/login');
+  }
+  
+  if (profile.role === 'admin') {
+    redirect('/admin');
+  }
+
+  let settings, todayAtt, history, leaves;
+  try {
+    [settings, todayAtt, history, leaves] = await Promise.all([
+      getSettings(),
+      getTodayAttendance(),
+      getMyAttendanceHistory(7),
+      getMyLeaveRequests(),
+    ]);
+  } catch (err: any) {
+    console.error('🔍 [ROOT PAGE] Data fetching error:', err.message);
+    return (
+      <div className="p-10 text-red-500 bg-red-50 rounded-2xl m-10">
+        <h1 className="text-xl font-bold mb-2">Error Loading Data</h1>
+        <p className="text-sm">{err.message}</p>
+      </div>
+    );
+  }
 
   const todayStr = formatWIB(new Date(), 'EEEE, d MMMM yyyy');
   const pendingLeavesCount = leaves.filter((l: LeaveRequest) => l.status === 'pending').length;

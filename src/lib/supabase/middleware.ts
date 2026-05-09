@@ -29,6 +29,9 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  console.log('🔍 [MIDDLEWARE] Path:', request.nextUrl.pathname);
+  console.log('🔍 [MIDDLEWARE] User:', user?.email || 'null');
+
   // Redirect unauthenticated users to login
   if (
     !user &&

@@ -135,25 +135,35 @@ async function runSeed() {
     // 2. UPDATE PROFIL MENJADI LENGKAP
     // --------------------------------------------------------------------------------
     console.log("\n➡️ Membangun & Memperbarui Profil Database...");
+    const pgClient2 = new Client({ connectionString: dbUrl, ssl: { rejectUnauthorized: false } });
+    await pgClient2.connect();
+    
     for (const u of DUMMY_USERS) {
       if (userIds[u.email]) {
-        // Karena trigger dihapus, kita INSERT manual dari awal supaya 100% aman
-        const profileUpdates = {
-          id: userIds[u.email],
-          full_name: u.name,
-          role: u.role,
-          position: u.pos
-        };
+        const id = userIds[u.email];
+        const full_name = u.name;
+        const role = u.role;
+        const position = u.pos || null;
+        const nip = u.nip ? encrypt(u.nip) : null;
+        const nip_hash = u.nip ? hashNip(u.nip) : null;
 
-        if (u.nip) {
-          profileUpdates.nip = encrypt(u.nip);
-          profileUpdates.nip_hash = hashNip(u.nip);
+        try {
+          await pgClient2.query(`
+            INSERT INTO public.profiles (id, full_name, role, position, nip, nip_hash)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            ON CONFLICT (id) DO UPDATE SET
+              full_name = EXCLUDED.full_name,
+              role = EXCLUDED.role,
+              position = EXCLUDED.position,
+              nip = EXCLUDED.nip,
+              nip_hash = EXCLUDED.nip_hash;
+          `, [id, full_name, role, position, nip, nip_hash]);
+        } catch (err) {
+          console.error(`Gagal simpan profil untuk ${u.email}:`, err.message);
         }
-
-        const { error: insErr } = await supabase.from('profiles').upsert(profileUpdates);
-        if (insErr) console.error("Gagal simpan profil: ", insErr.message);
       }
     }
+    await pgClient2.end();
 
     // --------------------------------------------------------------------------------
     // 3. SEED SETTINGS AWAL

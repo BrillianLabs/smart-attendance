@@ -10,12 +10,23 @@ import { cn } from '@/lib/utils/cn';
 export const metadata: Metadata = { title: 'Log Presensi | SD Negeri Nguwok' };
 
 export default async function AttendancePage() {
-  const [todayAtt, settings, history, profile] = await Promise.all([
-    getTodayAttendance(),
-    getSettings(),
-    getMyAttendanceHistory(30),
-    getProfile(),
-  ]);
+  let todayAtt, settings, history, profile;
+  try {
+    [todayAtt, settings, history, profile] = await Promise.all([
+      getTodayAttendance(),
+      getSettings(),
+      getMyAttendanceHistory(30),
+      getProfile(),
+    ]);
+  } catch (err: any) {
+    console.error('🔍 [ATTENDANCE PAGE] Data fetching error:', err.message);
+    return (
+      <div className="p-10 text-red-500 bg-red-50 rounded-2xl m-10">
+        <h1 className="text-xl font-bold mb-2">Error Loading Attendance Data</h1>
+        <p className="text-sm">{err.message}</p>
+      </div>
+    );
+  }
 
   if (!profile) return null;
 

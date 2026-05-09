@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getProfile } from '@/lib/actions/auth';
-import { getAdminStats, getSettings } from '@/lib/actions/admin';
+import { getAdminStats, getSettings, getDbSize } from '@/lib/actions/admin';
 import { getAdminAttendance, getMonthlyStats } from '@/lib/actions/attendance';
 import { getAllLeaveRequests } from '@/lib/actions/leave';
 import { Badge, statusVariant, statusLabel } from '@/components/ui/Badge';
@@ -37,17 +37,48 @@ function MetricCard({ icon, label, value, trend, colorClass, barWidth, barColor 
 
 export default async function AdminDashboard() {
   const profile = await getProfile();
-  if (!profile || profile.role !== 'admin') redirect('/');
+  
+  if (!profile || profile.role !== 'admin') {
+    redirect('/');
+  }
 
   const today = formatWIB(new Date(), 'yyyy-MM-dd');
-  const [stats, todayAttendance, settings] = await Promise.all([
-    getAdminStats(today),
-    getAdminAttendance({ date: today, limit: 10 }),
-    getSettings(),
-  ]);
+  let stats, todayAttendance, settings, dbSize;
+  try {
+    [stats, todayAttendance, settings, dbSize] = await Promise.all([
+      getAdminStats(today),
+      getAdminAttendance({ date: today, limit: 10 }),
+      getSettings(),
+      getDbSize(),
+    ]);
+  } catch (err: any) {
+    console.error('🔍 [ADMIN PAGE] Data fetching error:', err.message);
+    return (
+      <div className="p-10 text-red-500 bg-red-50 rounded-2xl m-10">
+        <h1 className="text-xl font-bold mb-2">Error Loading Admin Data</h1>
+        <p className="text-sm">{err.message}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 sm:space-y-12 animate-fade-in pb-24">
+      {/* Database Size Warning Banner */}
+      {dbSize > 400 && (
+        <div className="bg-error-container/20 border border-error/30 text-error p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-4 mx-1">
+          <div className="flex items-center gap-3 flex-1">
+            <span className="material-symbols-outlined text-error" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
+            <div>
+              <p className="text-sm font-bold">Peringatan: Kapasitas Database Hampir Penuh!</p>
+              <p className="text-xs font-medium opacity-80">Ukuran database saat ini adalah {dbSize.toFixed(2)} MB (Batas Free Tier: 500 MB). Segera lakukan pengarsipan data agar aplikasi tetap berjalan lancar.</p>
+            </div>
+          </div>
+          <Link href="/admin/settings" className="btn btn-error btn-sm self-start sm:self-auto">
+            Buka Pengaturan
+          </Link>
+        </div>
+      )}
+
       {/* Header Section */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-1">
         <div>

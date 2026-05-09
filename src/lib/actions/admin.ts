@@ -264,3 +264,15 @@ export async function getAdminStats(date: string) {
 
   return { ...counts, total_staff: total, pending_izin: pendingIzin ?? 0 };
 }
+
+export async function getDbSize(): Promise<number> {
+  if (!await isAdmin()) return 0;
+  const supabase = await createClient();
+  
+  const { data, error } = await supabase.rpc('get_db_size');
+  if (error) {
+    console.error('Error fetching DB size:', error.message);
+    return 0;
+  }
+  return data as number;
+}

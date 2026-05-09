@@ -106,6 +106,9 @@ async function runSeed() {
     // 1. BUAT AKUN MENGGUNAKAN ADMIN API
     // --------------------------------------------------------------------------------
     console.log("\n➡️ Menciptakan/Update Pengguna Auth (Aman via API)...");
+    const pgClient2 = new Client({ connectionString: dbUrl, ssl: { rejectUnauthorized: false } });
+    await pgClient2.connect();
+
     for (const u of DUMMY_USERS) {
       // Create User (jika email konflik, asumsikan akun sudah ada)
       const { data, error } = await supabase.auth.admin.createUser({
@@ -116,20 +119,24 @@ async function runSeed() {
       });
 
       let uid;
-      if (error && error.message.includes('already exists')) {
-        console.log(`   - Akun ${u.email} sudah eksis (di-skip).`);
-        // Ambil UUID milik user yang sudah ada (hanya tersedia via RPC custom atau re-query).
-        // Sebagai fallback ringan via client admin:
-        const { data: qry } = await supabase.from('profiles').select('id').eq('full_name', u.name).single();
-        uid = qry?.id;
-      } else if (error) {
-        throw new Error(`Gagal membuat ${u.email}: ${error.message}`);
+      if (error) {
+        console.log(`   - Gagal membuat via API (${error.message}). Mencari di database...`);
+        // Cari UUID di auth.users menggunakan pgClient
+        const res = await pgClient2.query('SELECT id FROM auth.users WHERE email = $1', [u.email]);
+        if (res.rows.length > 0) {
+          uid = res.rows[0].id;
+          console.log(`   - ✅ Ditemukan user ${u.email} di database.`);
+        } else {
+          console.log(`   - ❌ User ${u.email} tidak ditemukan di auth.users. Lewati.`);
+          continue;
+        }
       } else {
         console.log(`   - ✅ ${u.email} berhasil dibuat.`);
         uid = data.user.id;
       }
       userIds[u.email] = uid;
     }
+    await pgClient2.end();
 
     // --------------------------------------------------------------------------------
     // 2. UPDATE PROFIL MENJADI LENGKAP

@@ -1,65 +1,23 @@
 [
   {
-    "full_name": "SISWANTO, S.Pd., M.Pd.",
-    "nip": "198505042011011012",
+    "full_name": "Admin SIGURU",
+    "nip": "197001012026011001",
     "position": "Kepala Sekolah",
     "role": "admin",
-    "email": "siswanto452@admin.sd.belajar.id"
+    "email": "admin@kacangan.sch.id"
   },
   {
-    "full_name": "ENI NUR INDAH, S.Pd.",
-    "nip": "198202162023212008",
+    "full_name": "Guru Contoh Satu",
+    "nip": "199001012026012001",
     "position": "Guru Kelas",
     "role": "staff",
-    "email": "eniindah62@guru.sd.belajar.id"
+    "email": "guru1@kacangan.sch.id"
   },
   {
-    "full_name": "INDRI DINAR YULYANI, S.Pd.",
-    "nip": "199607102023212021",
-    "position": "Guru Kelas",
+    "full_name": "Guru Contoh Dua",
+    "nip": "199501012026012002",
+    "position": "Guru Mapel",
     "role": "staff",
-    "email": "indriyulyani07@guru.sd.belajar.id"
-  },
-  {
-    "full_name": "SITI MARIYAM, S.Pd.",
-    "nip": "197808052023212005",
-    "position": "Guru Kelas",
-    "role": "staff",
-    "email": "sitimariyam58@guru.sd.belajar.id"
-  },
-  {
-    "full_name": "SUHARTATIK, S.Pd.SD.",
-    "nip": "198708012023212034",
-    "position": "Guru Kelas",
-    "role": "staff",
-    "email": "suhartatik181@guru.sd.belajar.id"
-  },
-  {
-    "full_name": "MOH. SUN'AN JUNAIDI, S.Pd.",
-    "nip": "199401052024211015",
-    "position": "Guru PAI",
-    "role": "staff",
-    "email": "mohjunaidi51@guru.sd.belajar.id"
-  },
-  {
-    "full_name": "MUHAMMAD FIRMAN MUZAKKI, S.Pd.",
-    "nip": "199409202024211016",
-    "position": "Guru PJOK",
-    "role": "staff",
-    "email": "muhmuzakki09@guru.sd.belajar.id"
-  },
-  {
-    "full_name": "DESSY FEBRIANA PRAVITRI, S.Pd.",
-    "nip": "199602152024212012",
-    "position": "Guru Kelas",
-    "role": "staff",
-    "email": "dessy522@guru.sd.belajar.id"
-  },
-  {
-    "full_name": "MIFTAHUL HUDA, S.Pd.",
-    "nip": "199107012023211009",
-    "position": "Guru Kelas",
-    "role": "staff",
-    "email": "miftahul.huda3160@guru.sd.belajar.id"
+    "email": "guru2@kacangan.sch.id"
   }
 ]

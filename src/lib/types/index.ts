@@ -17,6 +17,7 @@ export interface Profile {
   nip?: string | null;
   email?: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 export interface Attendance {

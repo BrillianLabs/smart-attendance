@@ -21,7 +21,7 @@ export default async function ProfilePage() {
         </p>
       </div>
 
-      <ProfileClient profile={profile} />
+      <ProfileClient key={profile.updated_at} profile={profile} />
     </div>
   );
 }

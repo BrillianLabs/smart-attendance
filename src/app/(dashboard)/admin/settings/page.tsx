@@ -22,7 +22,7 @@ export default async function AdminSettingsPage() {
       </section>
 
       {/* Main Settings Form Component */}
-      <SettingsForm initial={settings} />
+      <SettingsForm key={settings?.updated_at || 'initial'} initial={settings} />
     </div>
   );
 }

@@ -11,22 +11,40 @@ import { encrypt, decrypt, hashNip } from '@/lib/utils/encryption';
 // ========================
 // SETTINGS
 // ========================
-export const getSettings = unstable_cache(
-  async (): Promise<Settings | null> => {
-    const supabase = createSupabaseClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-    const { data } = await supabase
-      .from('settings')
-      .select('*')
-      .eq('id', 1)
-      .single();
-    return data;
-  },
-  ['school-settings'],
-  { revalidate: 3600, tags: ['settings'] }
-);
+const USE_CACHE = process.env.ENABLE_CACHE === 'true'; // Toggle via .env
+
+export async function getSettings(): Promise<Settings | null> {
+  const fetcher = async () => {
+    try {
+      const supabase = createSupabaseClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      );
+      const { data, error } = await supabase
+        .from('settings')
+        .select('*')
+        .eq('id', 1)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error fetching settings from DB:', error);
+        return null;
+      }
+      return data;
+    } catch (err) {
+      console.error('Exception in getSettings:', err);
+      return null;
+    }
+  };
+
+  if (!USE_CACHE) return fetcher();
+
+  return unstable_cache(
+    fetcher,
+    ['school-settings'],
+    { revalidate: 300, tags: ['settings'] }
+  )();
+}
 
 export async function updateSettings(formData: FormData): Promise<ActionResult> {
   if (!await isAdmin()) return { success: false, error: 'Unauthorized.' };

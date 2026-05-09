@@ -193,7 +193,7 @@ CREATE POLICY "leave_update" ON leave_requests FOR UPDATE
   );
 
 -- SETTINGS policies
-CREATE POLICY "settings_select_all"   ON settings FOR SELECT USING (auth.uid() IS NOT NULL);
+CREATE POLICY "settings_select_all"   ON settings FOR SELECT USING (true);
 CREATE POLICY "settings_update_admin" ON settings FOR UPDATE USING (get_my_role() = 'admin');
 
 -- ========================

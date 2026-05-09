@@ -334,3 +334,18 @@ async function uploadVerificationPhoto(userId: string, type: 'check_in' | 'check
     return null;
   }
 }
+
+export async function deleteAttendanceRecords(ids: string[]): Promise<ActionResult> {
+  if (!await isAdmin()) return { success: false, error: 'Hanya admin yang bisa menghapus data.' };
+  
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from('attendance')
+    .delete()
+    .in('id', ids);
+
+  if (error) return { success: false, error: error.message };
+  
+  revalidatePath('/admin/attendance');
+  return { success: true, data: undefined };
+}

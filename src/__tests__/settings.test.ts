@@ -16,6 +16,7 @@ vi.mock('@supabase/supabase-js', () => {
     select: mockSelect,
     eq: mockEq,
     single: mockSingle,
+    maybeSingle: mockSingle,
   });
 
   return {

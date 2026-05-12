@@ -1,8 +1,9 @@
 'use client';
 
-import { useTransition } from 'react';
+import { useTransition, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { submitLeave } from '@/lib/actions/leave';
+import { getSettings } from '@/lib/actions/admin';
 import { Input, Select, Textarea } from '@/components/ui/Input';
 import toast from 'react-hot-toast';
 import { formatWIB } from '@/lib/utils/date';
@@ -12,6 +13,15 @@ export default function NewLeavePage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const today = formatWIB(new Date(), 'yyyy-MM-dd');
+  const [schoolName, setSchoolName] = useState('SD NEGERI NGUWOK');
+
+  useEffect(() => {
+    getSettings().then(settings => {
+      if (settings?.school_name) {
+        setSchoolName(settings.school_name);
+      }
+    });
+  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -153,7 +163,7 @@ export default function NewLeavePage() {
           </form>
 
           <footer className="mt-20 text-center opacity-20">
-             <p className="text-[10px] font-black uppercase tracking-[0.5em] text-on-surface">SD NEGERI NGUWOK</p>
+             <p className="text-[10px] font-black uppercase tracking-[0.5em] text-on-surface">{schoolName}</p>
           </footer>
         </div>
 

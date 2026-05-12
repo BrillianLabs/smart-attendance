@@ -201,11 +201,14 @@ export async function createStaffUser(
   // Primary email for Auth. Use realEmail if provided, otherwise derive from username
   const authEmail = realEmail || (username.includes('@') ? username : `${username.trim().replace(/\s/g, '')}@absen.smart`);
 
+  // Handle NIP '-' or empty for non-PNS
+  const finalNip = (nip && nip !== '-') ? nip : `NONPNS-${Date.now()}`;
+
   // Use admin API to create user
   const { data, error } = await supabase.auth.admin.createUser({
     email: authEmail,
     password,
-    user_metadata: { full_name: fullName, role, nip: nip || username },
+    user_metadata: { full_name: fullName, role, nip: finalNip || username },
     email_confirm: true,
   });
 
@@ -216,10 +219,10 @@ export async function createStaffUser(
       email: authEmail, 
     };
     if (position) profileUpdates.position = position;
-    if (nip) {
-      profileUpdates.nip = encrypt(nip);
-      profileUpdates.nip_hash = hashNip(nip);
-    }
+    
+    // Always save NIP (either provided or generated)
+    profileUpdates.nip = encrypt(finalNip);
+    profileUpdates.nip_hash = hashNip(finalNip);
     
     // Profiles row is automatically created by trigger, so we update it
     const { error: profError } = await supabase.from('profiles').update(profileUpdates).eq('id', data.user.id);
